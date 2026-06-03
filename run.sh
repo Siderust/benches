@@ -10,7 +10,8 @@
 #   ./run.sh full         # Build available adapters + run full config
 #   ./run.sh phase-b ci   # Build available adapters + run a Phase B matrix leg
 #   ./run.sh pipeline/configs/ci.toml
-#   ./run.sh run pipeline/configs/diagnostic.toml
+#   ./run.sh run pipeline/configs/full_fast.toml --allow-dirty-publish
+#   ./run.sh pipeline/configs/full_fast.toml --allow-dirty-publish --allow-partial-publish
 # =================================================================
 
 set -euo pipefail
@@ -113,11 +114,12 @@ resolve_config() {
 run_all() {
     local CONFIG
     CONFIG="$(resolve_config "${1:-core}")"
+    shift || true
     source .venv/bin/activate
     setup_benchmark_cache
 
     log "Running pipeline config: $CONFIG"
-    python3 pipeline/run_pipeline.py --config "$CONFIG"
+    python3 pipeline/run_pipeline.py --config "$CONFIG" "$@"
 
     log "Done. Results in results/"
 }
@@ -136,7 +138,11 @@ case "${1:-all}" in
         build_all
         ;;
     run)
-        run_all "${2:-pipeline/configs/core.toml}"
+        if [ "${2:-}" ] && [ "${2:0:1}" != "-" ]; then
+            run_all "$2" "${@:3}"
+        else
+            run_all "pipeline/configs/core.toml" "${@:2}"
+        fi
         ;;
     export)
         export_static "${2:-static_export}"
@@ -155,7 +161,7 @@ case "${1:-all}" in
         CONFIG="$(resolve_config "${1:-core}")"
         if [ -f "$CONFIG" ]; then
             build_all
-            run_all "$CONFIG"
+            run_all "$CONFIG" "${@:2}"
             export_static "static_export"
         else
             echo "Usage: $0 [build|run|export|all|core|ci|diagnostic|full] [config.toml]"

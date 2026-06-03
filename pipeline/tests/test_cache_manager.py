@@ -219,6 +219,40 @@ def test_run_sh_exports_cache_env():
     assert "ln -sf" in text
 
 
+def test_run_sh_run_forwards_publication_override_flags(tmp_path):
+    temp_root = tmp_path / "repo"
+    temp_root.mkdir()
+    (temp_root / "run.sh").symlink_to(LAB_ROOT / "run.sh")
+    (temp_root / "pipeline").symlink_to(LAB_ROOT / "pipeline")
+
+    venv_activate = temp_root / ".venv/bin/activate"
+    venv_activate.parent.mkdir(parents=True)
+    venv_activate.write_text("export VIRTUAL_ENV=/tmp\n", encoding="utf-8")
+    venv_activate.chmod(0o755)
+
+    stub_bin = temp_root / "stubbin"
+    stub_bin.mkdir()
+    stub_python = stub_bin / "python3"
+    stub_python.write_text(
+        "#!/usr/bin/env bash\nprintf '%s\\n' \"$@\"\n",
+        encoding="utf-8",
+    )
+    stub_python.chmod(0o755)
+
+    result = subprocess.run(
+        ["bash", "-lc", "./run.sh run pipeline/configs/full_fast.toml --allow-dirty-publish"],
+        cwd=str(temp_root),
+        env={**os.environ, "PATH": str(stub_bin) + ":" + os.environ.get("PATH", "")},
+        text=True,
+        capture_output=True,
+        timeout=30,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "--allow-dirty-publish" in result.stdout
+    assert "pipeline/run_pipeline.py" in result.stdout
+
+
 def test_build_orchestrator_command_includes_perf_from_config(tmp_path):
     config = tmp_path / "perf.toml"
     config.write_text(

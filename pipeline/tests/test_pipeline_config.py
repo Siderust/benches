@@ -98,3 +98,46 @@ def test_full_fast_is_offline_smoke_draft():
     cmd = build_orchestrator_command(PIPELINE_DIR / "configs" / "full_fast.toml")
     assert "--horizons-offline" in cmd
     assert "--publish-latest" not in cmd
+
+
+def test_build_orchestrator_command_forwards_publication_overrides():
+    cmd = build_orchestrator_command(
+        PIPELINE_DIR / "configs" / "full_fast.toml",
+        allow_dirty_publish=True,
+        allow_partial_publish=True,
+    )
+    assert "--allow-dirty-publish" in cmd
+    assert "--allow-partial-publish" in cmd
+
+
+def test_run_pipeline_cli_rejects_unknown_args(monkeypatch):
+    import run_pipeline
+
+    monkeypatch.setattr(run_pipeline, "prepare_run_environment", lambda path: {"SIDERUST_BENCHES_CACHE": "dummy"})
+    monkeypatch.setattr(run_pipeline, "subprocess", run_pipeline.subprocess)
+    monkeypatch.setattr(sys, "argv", [
+        "run_pipeline.py",
+        "--config",
+        "pipeline/configs/full_fast.toml",
+        "--allow-dirty-publish",
+    ])
+
+    class DummyCompletedProcess:
+        returncode = 0
+
+    def fake_run(cmd, cwd, env):
+        assert "--allow-dirty-publish" in cmd
+        return DummyCompletedProcess()
+
+    monkeypatch.setattr(run_pipeline.subprocess, "run", fake_run)
+    assert run_pipeline.main() == 0
+
+    with pytest.raises(SystemExit) as excinfo:
+        monkeypatch.setattr(sys, "argv", [
+            "run_pipeline.py",
+            "--config",
+            "pipeline/configs/full_fast.toml",
+            "--unknown-flag",
+        ])
+        run_pipeline.main()
+    assert excinfo.value.code != 0

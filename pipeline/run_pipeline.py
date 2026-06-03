@@ -29,7 +29,13 @@ def _resolve_cache_root(cfg_cache_root: str) -> Path:
     return (LAB_ROOT / path).resolve()
 
 
-def build_orchestrator_command(config_path: Path, *, env: dict[str, str] | None = None) -> list[str]:
+def build_orchestrator_command(
+    config_path: Path,
+    *,
+    env: dict[str, str] | None = None,
+    allow_dirty_publish: bool = False,
+    allow_partial_publish: bool = False,
+) -> list[str]:
     cfg = load_pipeline_config(config_path)
     cmd = [
         sys.executable,
@@ -76,9 +82,9 @@ def build_orchestrator_command(config_path: Path, *, env: dict[str, str] | None 
         cmd.append("--horizons-offline")
     if cfg.publish_latest:
         cmd.append("--publish-latest")
-    if cfg.allow_dirty_publish:
+    if cfg.allow_dirty_publish or allow_dirty_publish:
         cmd.append("--allow-dirty-publish")
-    if cfg.allow_partial_publish:
+    if cfg.allow_partial_publish or allow_partial_publish:
         cmd.append("--allow-partial-publish")
     return cmd
 
@@ -113,6 +119,16 @@ def main() -> int:
         default=str(PIPELINE_DIR / "configs" / "core.toml"),
         help="Path to pipeline config TOML",
     )
+    parser.add_argument(
+        "--allow-dirty-publish",
+        action="store_true",
+        help="Allow dirty publish override when running orchestrator.",
+    )
+    parser.add_argument(
+        "--allow-partial-publish",
+        action="store_true",
+        help="Allow partial publish override when running orchestrator.",
+    )
     args = parser.parse_args()
 
     config_path = Path(args.config)
@@ -125,7 +141,12 @@ def main() -> int:
         print(f"Cache setup failed: {exc}", file=sys.stderr)
         return 1
 
-    cmd = build_orchestrator_command(config_path, env=env)
+    cmd = build_orchestrator_command(
+        config_path,
+        env=env,
+        allow_dirty_publish=args.allow_dirty_publish,
+        allow_partial_publish=args.allow_partial_publish,
+    )
     try:
         display_path = config_path.relative_to(LAB_ROOT)
     except ValueError:

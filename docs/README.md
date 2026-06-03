@@ -129,6 +129,18 @@ Use the shell wrapper for build + run + export:
 ./run.sh pipeline/configs/publication.toml
 ```
 
+For draft or smoke publication override runs:
+
+```bash
+./run.sh pipeline/configs/full_fast.toml --allow-dirty-publish --allow-partial-publish
+```
+
+For a publication-grade run:
+
+```bash
+./run.sh pipeline/configs/publication.toml
+```
+
 `run.sh` maps aliases to files in `pipeline/configs/`. For example, a
 `diagnostic` alias would resolve to `pipeline/configs/diagnostic.toml`; that
 file is not currently checked in. To run diagnostics with the current configs,
