@@ -13,7 +13,7 @@ python3 -m pipeline.export_static --lab-root . --output static_export
 ```
 
 The standalone frontend build copies `../../static_export` into
-`webapp/frontend/dist/data/lab/` through `scripts/copy-data.mjs`.
+`webapp/frontend/dist/data/benches/` through `scripts/copy-data.mjs`.
 
 ## Commands
 
@@ -32,7 +32,7 @@ npm run preview
 
 | Command | Output | Data source |
 | --- | --- | --- |
-| `npm run dev` | Vite dev server | `/data/lab/` path expected by the app |
+| `npm run dev` | Vite dev server | `/data/benches/` path expected by the app |
 | `npm run build:standalone` | `dist/` | copied from `../../static_export` |
 | `npm run preview` | local static preview | built `dist/` |
 

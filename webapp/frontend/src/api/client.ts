@@ -2,11 +2,11 @@
  * Static JSON client for the internal standalone dashboard.
  *
  * Layout (see pipeline/export_static.py):
- *   /data/lab/index.json
- *   /data/lab/latest/{scorecard,manifest}.json
- *   /data/lab/latest/experiments/<id>.json
- *   /data/lab/runs/<run_id>/{scorecard,manifest}.json
- *   /data/lab/runs/<run_id>/experiments/<id>.json
+ *   /data/benches/index.json
+ *   /data/benches/latest/{scorecard,manifest}.json
+ *   /data/benches/latest/experiments/<id>.json
+ *   /data/benches/runs/<run_id>/{scorecard,manifest}.json
+ *   /data/benches/runs/<run_id>/experiments/<id>.json
  */
 
 import type {

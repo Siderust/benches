@@ -83,7 +83,7 @@ def main() -> int:
     parser.add_argument(
         "--skip-export",
         action="store_true",
-        help="Do not regenerate lab/static_export after successful runs",
+        help="Do not regenerate benches/static_export after successful runs",
     )
     args = parser.parse_args()
 

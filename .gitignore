@@ -161,7 +161,7 @@ dmypy.json
 .pytype/
 
 # Local static export scratch output. The parent GitHub Pages site reads the
-# versioned latest bundle from lab/latest_results/ directly.
+# versioned latest bundle from benches/latest_results/ directly.
 static_export/
 
 # Cython debug symbols
