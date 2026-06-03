@@ -80,7 +80,8 @@ macro_rules! dir_experiment {
                 jds.push(p[0]);
                 dirs.push(cartesian::Direction::<$Src>::new(p[1], p[2], p[3]));
             }
-            for i in 0..n.min(100) {
+            let warmup = crate::perf_warmup();
+            for i in 0..n.min(warmup) {
                 let jd = JulianDate::new(jds[i]);
                 let ctx: AstroContext<DefaultEphemeris, NullEop> = AstroContext::with_types();
                 let rot = frame_rotation_selected::<$Src, $Dst, _, _>(jd, &ctx);
@@ -270,7 +271,8 @@ pub(crate) fn run_frame_rotation_bpn_perf(lines: &mut impl Iterator<Item = Strin
     }
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let jd = JulianDate::new(jds[i]);
         let rot = pure_bpn_matrix(jd);
         let dir_tod = normalize3(rot.apply_array(dirs[i].as_vec3()));
@@ -320,7 +322,8 @@ pub(crate) fn run_gmst_era_perf(lines: &mut impl Iterator<Item = String>) {
     }
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let jd_ut1 = JulianDate::new(jd_ut1_vals[i]);
         let jd_tt = JulianDate::new(jd_tt_vals[i]);
         let gst = siderust::astro::sidereal::gmst_iau2006(jd_ut1, jd_tt);
@@ -434,7 +437,8 @@ pub fn run_inv_bpn_perf(lines: &mut impl Iterator<Item = String>) {
         jds.push(p[0]);
         dirs.push([p[1], p[2], p[3]]);
     }
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let jd = JulianDate::new(jds[i]);
         let inv_rot = pure_bpn_matrix(jd).transpose();
         let vout = normalize3(inv_rot.apply_array(dirs[i]));

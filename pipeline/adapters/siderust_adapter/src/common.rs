@@ -89,6 +89,13 @@ pub(crate) fn normalize3(v: [f64; 3]) -> [f64; 3] {
     [v[0] / n, v[1] / n, v[2] / n]
 }
 
+pub(crate) fn perf_warmup() -> usize {
+    std::env::var("LAB_PERF_WARMUP")
+        .ok()
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap_or(100_usize)
+}
+
 pub(crate) fn selected_nutation_profile() -> String {
     std::env::var("SIDERUST_NUTATION_PROFILE")
         .or_else(|_| std::env::var("SIDERUST_NUTATION"))

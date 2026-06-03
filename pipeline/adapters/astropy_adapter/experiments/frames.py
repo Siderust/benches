@@ -1,4 +1,5 @@
 import json
+import os
 import math
 import sys
 import time
@@ -110,7 +111,8 @@ def _run_mean_ecliptic_perf(exp_name, lines_iter):
         parts = next(lines_iter).strip().split()
         params.append((float(parts[0]), float(parts[1]), float(parts[2])))
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _icrs_to_mean_ecliptic(*params[i])
 
     t0 = time.perf_counter_ns()

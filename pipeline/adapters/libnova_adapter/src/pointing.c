@@ -87,7 +87,7 @@ void run_equ_horizontal_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double jd_ut1 = params_deg[5*i];
         double ra = params_deg[5*i+1];
         double dec = params_deg[5*i+2];
@@ -213,7 +213,7 @@ void run_horiz_to_equ_perf(void) {
         p_deg[5*i+4] = params[6*i+5] * (180.0 / M_PI); /* lat */
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_hrz_posn hrz = { p_deg[5*i+1], p_deg[5*i+2] };
         struct ln_lnlat_posn obs = { p_deg[5*i+3], p_deg[5*i+4] };
         struct ln_equ_posn equ;

@@ -9,6 +9,14 @@ void normalize3(double v[3]) {
     if (r > 0.0) { v[0] /= r; v[1] /= r; v[2] /= r; }
 }
 
+int get_perf_warmup(void) {
+    char *w = getenv("LAB_PERF_WARMUP");
+    if (!w) return 100;
+    int v = atoi(w);
+    if (v < 0) return 0;
+    return v;
+}
+
 /* Multiply 3x3 matrix by 3-vector: out = m * v */
 void mv3(double m[3][3], const double v[3], double out[3]) {
     for (int i = 0; i < 3; i++) {

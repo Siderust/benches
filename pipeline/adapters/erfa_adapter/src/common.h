@@ -78,4 +78,6 @@ void run_planet_position_perf(const char *experiment, int np);
 void run_kepler_solver(void);
 void run_kepler_solver_perf(void);
 
+int get_perf_warmup(void);
+
 #endif

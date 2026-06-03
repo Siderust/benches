@@ -98,7 +98,7 @@ void run_frame_rotation_bpn_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double vin[3] = {vecs[3*i], vecs[3*i+1], vecs[3*i+2]};
         normalize3(vin);
         double vout[3];
@@ -145,7 +145,7 @@ void run_gmst_era_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double gmst = ln_get_mean_sidereal_time(jd_ut1_arr[i]);
         (void)gmst;
     }
@@ -272,7 +272,7 @@ void run_precession_perf(void) {
         cart_to_radec(vin, &ras_deg[i], &decs_deg[i]);
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn mean_pos = { ras_deg[i], decs_deg[i] };
         struct ln_equ_posn prec_pos;
         ln_get_equ_prec(&mean_pos, jds[i], &prec_pos);
@@ -375,7 +375,7 @@ void run_nutation_perf(void) {
         cart_to_radec(vin, &ras_deg[i], &decs_deg[i]);
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn pos = { ras_deg[i], decs_deg[i] };
         struct ln_equ_posn out;
         ln_get_equ_nut(&pos, jds[i], &out);
@@ -469,7 +469,7 @@ void run_inv_precession_perf(void) {
         scanf("%lf %lf %lf %lf", &jd_tt, &vx, &vy, &vz);
         jds[i] = jd_tt; double v[3]={vx,vy,vz}; normalize3(v); cart_to_radec(v, &ras[i], &decs[i]);
     }
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn p={ras[i],decs[i]}, o;
         ln_get_equ_prec2(&p, jds[i], JD2000, &o);
     }

@@ -1,4 +1,5 @@
 import json
+import os
 import math
 import sys
 import time
@@ -137,7 +138,8 @@ def run_solar_position_perf(lines_iter):
     n = int(next(lines_iter).strip())
     jds = [float(next(lines_iter).strip()) for _ in range(n)]
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _astropy_geometric_geocentric(jds[i], "sun", ephemeris)
 
     t0 = time.perf_counter_ns()
@@ -169,7 +171,8 @@ def run_lunar_position_perf(lines_iter):
     n = int(next(lines_iter).strip())
     jds = [float(next(lines_iter).strip()) for _ in range(n)]
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _astropy_geometric_geocentric(jds[i], "moon", ephemeris)
 
     t0 = time.perf_counter_ns()
@@ -202,7 +205,8 @@ def run_planet_position_perf(lines_iter, experiment, planet_np):
     n = int(next(lines_iter).strip())
     jds = [float(next(lines_iter).strip()) for _ in range(n)]
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _astropy_geometric_geocentric(jds[i], planet_name, ephemeris)
 
     t0 = time.perf_counter_ns()
@@ -229,7 +233,8 @@ def run_planet_barycenter_position_perf(lines_iter, experiment, planet_name):
     n = int(next(lines_iter).strip())
     jds = [float(next(lines_iter).strip()) for _ in range(n)]
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _astropy_geometric_geocentric(jds[i], planet_name.lower(), "jpl")
 
     t0 = time.perf_counter_ns()

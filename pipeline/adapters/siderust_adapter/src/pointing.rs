@@ -129,7 +129,8 @@ pub(crate) fn run_equ_horizontal_perf(lines: &mut impl Iterator<Item = String>) 
     }
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let (jd_ut1, jd_tt, ra, dec, lon, lat) = params[i];
         let jd_ut1_q = JulianDate::new(jd_ut1);
         let jd_tt_q = JulianDate::new(jd_tt);
@@ -295,7 +296,8 @@ pub fn run_horiz_to_equ_perf(lines: &mut impl Iterator<Item = String>) {
         params.push((parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]));
     }
 
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let (jd_ut1_v, jd_tt_v, az, alt, lon, lat) = params[i];
         let jd_ut1 = JulianDate::new(jd_ut1_v);
         let jd_tt = JulianDate::new(jd_tt_v);

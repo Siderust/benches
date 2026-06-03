@@ -77,7 +77,7 @@ void run_equ_ecl_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
         ln_get_ecl_from_equ(&equ, jds[i], &ecl);
@@ -180,7 +180,7 @@ void run_icrs_ecl_j2000_perf(void) {
         cart_to_radec(vin, &ras_deg[i], &decs_deg[i]);
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
         ln_get_ecl_from_equ(&equ, JD2000, &ecl);
@@ -268,7 +268,7 @@ void run_icrs_ecl_tod_perf(void) {
         decs_deg[i] = dec_rad * (180.0 / M_PI);
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
         ln_get_ecl_from_equ(&equ, jds[i], &ecl);

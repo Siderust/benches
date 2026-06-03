@@ -105,4 +105,6 @@ void run_planet_position_geometric(const char *experiment, const char *model, pl
 void run_planet_position_perf(const char *experiment, planet_equ_fn_t equ_fn, planet_dist_fn_t dist_fn);
 void run_planet_position_geometric_perf(const char *experiment, planet_rect_helio_fn_t rect_helio_fn);
 
+int get_perf_warmup(void);
+
 #endif

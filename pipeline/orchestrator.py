@@ -1582,9 +1582,13 @@ def run_perf_workloads(cmd, exp_name: str, input_gen_fn, perf_fmt_fn, seed: int,
 
     scalar_inputs = input_gen_fn(scalar_n, seed)
     scalar_input = perf_fmt_fn(*scalar_inputs) if not isinstance(scalar_inputs, str) else scalar_inputs
+    # Ensure adapters receive configured warmup via environment variable
+    merged_env = dict(extra_env or {})
+    merged_env["LAB_PERF_WARMUP"] = str(warmup)
+
     scalar_perf = run_multi_sample_perf(
         cmd, scalar_input, f"{adapter_exp}_scalar_warm",
-        rounds=scalar_rounds, extra_env=extra_env, timeout=timeout_s,
+        rounds=scalar_rounds, extra_env=merged_env, timeout=timeout_s,
     )
     workloads["scalar_warm"] = _scalar_warm_summary(
         scalar_perf, rounds=scalar_rounds, n_per_round=scalar_n, warmup=warmup,
@@ -1594,14 +1598,14 @@ def run_perf_workloads(cmd, exp_name: str, input_gen_fn, perf_fmt_fn, seed: int,
     batch_input = perf_fmt_fn(*batch_inputs) if not isinstance(batch_inputs, str) else batch_inputs
     batch_perf = run_multi_sample_perf(
         cmd, batch_input, f"{adapter_exp}_batch_throughput",
-        rounds=batch_rounds, extra_env=extra_env, timeout=timeout_s,
+        rounds=batch_rounds, extra_env=merged_env, timeout=timeout_s,
     )
     workloads["batch_throughput"] = _batch_throughput_summary(
         batch_perf, rounds=batch_rounds, n=batch_n, warmup=warmup,
     )
 
     setup_result = run_adapter(
-        cmd, f"{adapter_exp}_setup\n", f"{adapter_exp}_setup", extra_env=extra_env, timeout=timeout_s,
+        cmd, f"{adapter_exp}_setup\n", f"{adapter_exp}_setup", extra_env=merged_env, timeout=timeout_s,
     )
     workloads["setup_metrics"] = _setup_metrics_summary(setup_result)
     return workloads
@@ -4501,13 +4505,33 @@ def main():
     parser.add_argument("--run-tags", default="",
                         help="Comma-separated run tags written to the manifest")
     args = parser.parse_args()
-
-    # CI mode overrides
+    # Apply CI-mode overrides (only when requested)
     if args.ci:
-        if args.n == 1000:  # Only override if default
-            args.n = 100
-        if args.perf_rounds == DEFAULT_PERF_ROUNDS:
-            args.perf_rounds = 2
+        _apply_ci_overrides(args)
+
+
+def _apply_ci_overrides(args) -> None:
+    """Apply CI-mode overrides to argparse Namespace in-place.
+
+    Only overrides values that are still the publication defaults.
+    """
+    # Reduce N if still default
+    if getattr(args, "n", None) == 1000:
+        args.n = 100
+    # Reduce perf rounds if still default
+    if getattr(args, "perf_rounds", None) == DEFAULT_PERF_ROUNDS:
+        args.perf_rounds = 2
+    # Reduce perf sizes/timeouts only when they are publication defaults
+    if getattr(args, "perf_scalar_n", None) == SCALAR_WARM_N:
+        args.perf_scalar_n = 500
+    if getattr(args, "perf_batch_n", None) == BATCH_THROUGHPUT_N:
+        args.perf_batch_n = 5000
+    if getattr(args, "perf_batch_rounds", None) == BATCH_THROUGHPUT_ROUNDS:
+        args.perf_batch_rounds = 1
+    if getattr(args, "perf_timeout_s", None) == 120:
+        args.perf_timeout_s = 30
+
+    # No return; mutate in-place
 
     adapters = [a.strip() for a in args.adapters.split(",") if a.strip()] if args.adapters else None
     siderust_profiles = [p.strip() for p in args.siderust_profiles.split(",") if p.strip()]
@@ -4542,7 +4566,16 @@ def main():
     print(f"  Experiments:   {', '.join(experiments_to_run)}")
     print(f"  N (cases):     {args.n}")
     print(f"  Seed:          {args.seed}")
-    print(f"  Performance:   {'enabled (' + str(args.perf_rounds) + ' rounds)' if run_perf else 'disabled'}")
+    if run_perf:
+        print(f"  Performance:   enabled ({args.perf_rounds} rounds)")
+        print(f"    rounds:       {args.perf_rounds}")
+        print(f"    scalar_n:     {args.perf_scalar_n}")
+        print(f"    batch_n:      {args.perf_batch_n}")
+        print(f"    batch_rounds: {args.perf_batch_rounds}")
+        print(f"    warmup:       {args.perf_warmup}")
+        print(f"    timeout_s:    {args.perf_timeout_s}")
+    else:
+        print(f"  Performance:   disabled")
     print(f"  CI mode:       {'yes' if args.ci else 'no'}")
     print(f"  Adapters:      {', '.join(adapters or ['siderust', 'astropy', 'libnova', 'anise'])}")
     print(f"  Siderust:      {', '.join(SIDERUST_PROFILES)}")

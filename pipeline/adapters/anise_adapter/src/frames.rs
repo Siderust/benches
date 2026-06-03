@@ -87,7 +87,8 @@ fn run_direction_rotation_perf(
         vecs.push(normalize(Vector3::new(p[1], p[2], p[3])));
     }
 
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let _ = jds[i];
         let dcm = if j2000_to_ecliptic {
             base

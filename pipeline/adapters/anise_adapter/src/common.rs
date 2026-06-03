@@ -34,6 +34,13 @@ pub(crate) fn read_n(lines: &mut impl Iterator<Item = String>) -> usize {
     lines.next().unwrap().trim().parse::<usize>().unwrap()
 }
 
+pub(crate) fn perf_warmup() -> usize {
+    std::env::var("LAB_PERF_WARMUP")
+        .ok()
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap_or(100_usize)
+}
+
 pub(crate) fn skip_experiment(lines: &mut impl Iterator<Item = String>, exp: &str, reason: &str) {
     let n = read_n(lines);
     for _ in 0..n {

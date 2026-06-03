@@ -1,4 +1,5 @@
 import json
+import os
 import math
 import sys
 import time
@@ -159,7 +160,8 @@ def run_frame_rotation_bpn_perf(lines_iter):
         jds.append(float(parts[0]))
         vecs.append(normalize3(np.array([float(parts[1]), float(parts[2]), float(parts[3])])))
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _gcrs_to_tete_vector(jds[i], vecs[i])
 
     t0 = time.perf_counter_ns()
@@ -191,7 +193,8 @@ def run_gmst_era_perf(lines_iter):
         parts = next(lines_iter).strip().split()
         params.append((float(parts[0]), float(parts[1])))
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         jd_ut1, jd_tt = params[i]
         t = _time_from_tt_ut1(jd_tt, jd_ut1)
         t.sidereal_time("mean", longitude=0 * u.deg, model="IAU2006")
@@ -258,7 +261,8 @@ def run_inv_bpn_perf(lines_iter):
         jds.append(float(parts[0]))
         vecs.append(normalize3(np.array([float(parts[1]), float(parts[2]), float(parts[3])])))
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _tete_to_gcrs_vector(jds[i], vecs[i])
 
     t0 = time.perf_counter_ns()

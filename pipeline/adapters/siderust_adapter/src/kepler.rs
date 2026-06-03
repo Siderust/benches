@@ -87,7 +87,8 @@ pub(crate) fn run_kepler_solver_perf(lines: &mut impl Iterator<Item = String>) {
     }
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let e_anom = solve_keplers_equation(m_vals[i], e_vals[i]);
         std::hint::black_box(e_anom);
     }

@@ -63,7 +63,7 @@ void run_equ_horizontal_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double jd_ut1 = params[6*i];
         double jd_tt = params[6*i+1];
         double ra = params[6*i+2];
@@ -176,7 +176,7 @@ void run_horiz_to_equ_perf(void) {
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double jd_ut1 = params[6*i], jd_tt = params[6*i+1];
         double az = params[6*i+2], alt = params[6*i+3];
         double lon = params[6*i+4], lat = params[6*i+5];

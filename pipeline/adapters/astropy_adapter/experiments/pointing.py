@@ -1,4 +1,5 @@
 import json
+import os
 import math
 import sys
 import time
@@ -136,7 +137,8 @@ def run_equ_horizontal_perf(lines_iter):
         parts = next(lines_iter).strip().split()
         params.append(tuple(float(p) for p in parts))
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _equ_to_horizontal(*params[i])
 
     t0 = time.perf_counter_ns()
@@ -221,7 +223,8 @@ def run_horiz_to_equ_perf(lines_iter):
         parts = next(lines_iter).strip().split()
         params.append(tuple(float(p) for p in parts))
 
-    for i in range(min(n, 100)):
+    warmup = int(os.environ.get("LAB_PERF_WARMUP", "100"))
+    for i in range(min(n, warmup)):
         _horizontal_to_equ(*params[i])
 
     t0 = time.perf_counter_ns()

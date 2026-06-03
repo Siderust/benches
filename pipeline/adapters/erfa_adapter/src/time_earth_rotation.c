@@ -120,7 +120,11 @@ void run_frame_rotation_bpn_perf(void) {
     }
 
     /* Warm-up: use GAST, matching functional equ_horizontal path. */
-    for (int i = 0; i < n && i < 100; i++) {
+    int warmup = 100;
+    char *w = getenv("LAB_PERF_WARMUP");
+    if (w) warmup = atoi(w);
+    if (warmup < 0) warmup = 0;
+    for (int i = 0; i < n && i < warmup; i++) {
         double rnpb[3][3];
         eraPnm06a(2451545.0, jds[i] - 2451545.0, rnpb);
     }
@@ -169,7 +173,11 @@ void run_gmst_era_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    warmup = 100;
+    w = getenv("LAB_PERF_WARMUP");
+    if (w) warmup = atoi(w);
+    if (warmup < 0) warmup = 0;
+    for (int i = 0; i < n && i < warmup; i++) {
         double gmst = eraGmst06(2451545.0, jd_ut1_arr[i] - 2451545.0,
                                 2451545.0, jd_tt_arr[i] - 2451545.0);
         (void)gmst;
@@ -261,7 +269,7 @@ void run_frame_bias_perf(void) {
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double rb[3][3], rp[3][3], rbp[3][3];
         eraBp06(2451545.0, 0.0, rb, rp, rbp);
     }
@@ -345,7 +353,7 @@ void run_precession_perf(void) {
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double rb[3][3], rp[3][3], rbp[3][3];
         eraBp06(2451545.0, jds[i] - 2451545.0, rb, rp, rbp);
     }
@@ -428,7 +436,7 @@ void run_nutation_perf(void) {
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double rn[3][3];
         eraNum06a(2451545.0, jds[i] - 2451545.0, rn);
     }
@@ -516,7 +524,7 @@ static void _run_dir_perf(const char *exp_name, matrix_fn_t fn) {
     }
 
     /* warmup */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double mat[3][3];
         fn(jds[i], 2451545.0, jds[i] - 2451545.0, mat);
     }

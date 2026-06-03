@@ -96,3 +96,21 @@ def test_run_perf_workloads_uses_configured_sizes():
             assert mock_input_gen.call_args_list[1][0] == (500, 42)
             assert mock_run_multi.call_args_list[1][1]["rounds"] == 3
             assert mock_run_multi.call_args_list[1][1]["timeout"] == 10
+            # Warmup is forwarded via extra_env
+            assert mock_run_multi.call_args_list[0][1]["extra_env"]["LAB_PERF_WARMUP"] == '5'
+            assert mock_run_multi.call_args_list[1][1]["extra_env"]["LAB_PERF_WARMUP"] == '5'
+            # Setup run_adapter also receives the warmup env
+            assert mock_run_adapter.call_args_list[0][1]["extra_env"]["LAB_PERF_WARMUP"] == '5'
+
+def test_apply_ci_overrides_respects_defaults():
+    from types import SimpleNamespace
+    from orchestrator import _apply_ci_overrides
+
+    args = SimpleNamespace(n=1000, perf_rounds=10, perf_scalar_n=5000, perf_batch_n=100000, perf_batch_rounds=5, perf_timeout_s=120)
+    _apply_ci_overrides(args)
+    assert args.n == 100
+    assert args.perf_rounds == 2
+    assert args.perf_scalar_n == 500
+    assert args.perf_batch_n == 5000
+    assert args.perf_batch_rounds == 1
+    assert args.perf_timeout_s == 30

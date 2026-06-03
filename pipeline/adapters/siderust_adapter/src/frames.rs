@@ -82,7 +82,8 @@ macro_rules! dir_experiment {
                 jds.push(p[0]);
                 dirs.push(cartesian::Direction::<$Src>::new(p[1], p[2], p[3]));
             }
-            for i in 0..n.min(100) {
+            let warmup = crate::perf_warmup();
+            for i in 0..n.min(warmup) {
                 let jd = JulianDate::new(jds[i]);
                 let ctx: AstroContext<DefaultEphemeris, NullEop> = AstroContext::with_types();
                 let rot = frame_rotation_selected::<$Src, $Dst, _, _>(jd, &ctx);
@@ -175,7 +176,8 @@ macro_rules! inv_ecl_tod_experiment {
                     p[1], p[2], p[3],
                 ));
             }
-            for i in 0..n.min(100) {
+            let warmup = crate::perf_warmup();
+            for i in 0..n.min(warmup) {
                 let jd = JulianDate::new(jds[i]);
                 let d: cartesian::Direction<$Dst> = dirs[i].$to_dst(&jd);
                 std::hint::black_box(&d);
@@ -306,7 +308,8 @@ pub(crate) fn run_equ_ecl_perf(lines: &mut impl Iterator<Item = String>) {
     }
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let res = icrs_dirs[i].to_ecliptic_of_date(&jds[i]);
         std::hint::black_box(&res);
     }
@@ -405,7 +408,8 @@ pub fn run_icrs_ecl_j2000_perf(lines: &mut impl Iterator<Item = String>) {
         ));
     }
 
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let jd = JulianDate::new(jds[i]);
         let d: cartesian::Direction<EclipticMeanJ2000> = dirs[i].to_frame(&jd);
         std::hint::black_box(&d);
@@ -526,7 +530,8 @@ pub fn run_icrs_ecl_tod_perf(lines: &mut impl Iterator<Item = String>) {
         decs.push(parts[2]);
     }
 
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let jd = JulianDate::new(jds[i]);
         let sph = affn::spherical::Direction::<ICRS>::new_raw(
             Degrees::new(decs[i].to_degrees()),

@@ -127,3 +127,11 @@ void epoch_to_j2000(double jd_tt, const double vin[3], double vout[3]) {
     radec_to_cart(j2000_pos.ra, j2000_pos.dec, vout);
     normalize3(vout);
 }
+
+int get_perf_warmup(void) {
+    char *w = getenv("LAB_PERF_WARMUP");
+    if (!w) return 100;
+    int v = atoi(w);
+    if (v < 0) return 0;
+    return v;
+}

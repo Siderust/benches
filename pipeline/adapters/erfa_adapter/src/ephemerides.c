@@ -127,7 +127,7 @@ void run_solar_position_perf(void) {
     }
 
     /* Warm-up: include full RA/Dec/dist extraction (same scope as functional). */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double pvh[2][3], pvb[2][3];
         eraEpv00(2451545.0, jds[i] - 2451545.0, pvh, pvb);
         double sx = -pvh[0][0], sy = -pvh[0][1], sz = -pvh[0][2];
@@ -178,7 +178,7 @@ void run_lunar_position_perf(void) {
     }
 
     /* Warm-up: use eraMoon98, same as the accuracy benchmark. */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double date1 = 2451545.0, date2 = jds[i] - 2451545.0;
         double pv[2][3];
         eraMoon98(date1, date2, pv);
@@ -230,7 +230,7 @@ void run_planet_position_perf(const char *experiment, int np) {
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double ra, dec, dist_au;
         planet_geocentric_ra_dec_dist(jds[i], np, &ra, &dec, &dist_au);
         (void)ra;

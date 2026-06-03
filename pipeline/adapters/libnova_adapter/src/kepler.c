@@ -61,7 +61,7 @@ void run_kepler_solver_perf(void) {
     }
 
     /* Warm-up */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double E = ln_solve_kepler(e_arr[i], m_deg_arr[i]);
         (void)E;
     }

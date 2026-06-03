@@ -668,7 +668,8 @@ pub(crate) fn run_solar_position_perf(lines: &mut impl Iterator<Item = String>) 
     let (library, _model) = solar_library_and_model();
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let (ra, dec, dist) = compute_solar_ra_dec_dist(JulianDate::new(jds[i]));
         std::hint::black_box((ra, dec, dist));
     }
@@ -698,7 +699,8 @@ pub(crate) fn run_lunar_position_perf(lines: &mut impl Iterator<Item = String>) 
     let (library, _model) = lunar_library_and_model();
 
     // Warm-up
-    for i in 0..n.min(100) {
+    let warmup = crate::perf_warmup();
+    for i in 0..n.min(warmup) {
         let (ra, dec, dist) = compute_lunar_ra_dec_dist(JulianDate::new(jds[i]));
         std::hint::black_box((ra, dec, dist));
     }
@@ -728,7 +730,8 @@ pub(crate) fn run_planet_position_perf(
         jds.push(line.trim().parse().unwrap());
     }
 
-    for jd_tt in jds.iter().take(n.min(100)) {
+    let warmup = crate::perf_warmup();
+    for jd_tt in jds.iter().take(n.min(warmup)) {
         let (ra, dec, dist) = planet_ra_dec_dist(planet_vsop87a, JulianDate::new(*jd_tt));
         std::hint::black_box(ra + dec + dist);
     }
@@ -842,7 +845,8 @@ fn run_major_planet_position_perf(
         }
     };
 
-    for jd_tt in jds.iter().take(n.min(100)) {
+    let warmup = crate::perf_warmup();
+    for jd_tt in jds.iter().take(n.min(warmup)) {
         let (ra, dec, dist) = compute(*jd_tt);
         std::hint::black_box(ra + dec + dist);
     }

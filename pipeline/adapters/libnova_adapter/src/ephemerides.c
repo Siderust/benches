@@ -222,7 +222,7 @@ void run_solar_position_geometric_perf(void) {
     for (int i = 0; i < n; i++) {
         if (scanf("%lf", &jds[i]) != 1) { fprintf(stderr, "bad input line %d\n", i); exit(1); }
     }
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_rect_posn r;
         ln_get_solar_geo_coords(jds[i], &r);
         (void)r;
@@ -252,7 +252,7 @@ void run_lunar_position_geometric_perf(void) {
     for (int i = 0; i < n; i++) {
         if (scanf("%lf", &jds[i]) != 1) { fprintf(stderr, "bad input line %d\n", i); exit(1); }
     }
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_rect_posn r;
         ln_get_lunar_geo_posn(jds[i], &r, 0.0);
         (void)r;
@@ -283,7 +283,7 @@ void run_planet_position_geometric_perf(const char *experiment,
     for (int i = 0; i < n; i++) {
         if (scanf("%lf", &jds[i]) != 1) { fprintf(stderr, "bad input line %d\n", i); exit(1); }
     }
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_rect_posn p, e;
         rect_helio_fn(jds[i], &p);
         ln_get_earth_rect_helio(jds[i], &e);
@@ -333,7 +333,7 @@ void run_solar_position_perf(void) {
     }
 
     /* Warm-up: match functional scope (RA/Dec plus distance). */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn equ;
         ln_get_solar_equ_coords(jds[i], &equ);
         double dist_au = ln_get_earth_solar_dist(jds[i]);
@@ -377,7 +377,7 @@ void run_lunar_position_perf(void) {
     }
 
     /* Warm-up: match functional scope (RA/Dec plus distance). */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn equ;
         ln_get_lunar_equ_coords(jds[i], &equ);
         double dist_km = ln_get_lunar_earth_dist(jds[i]);
@@ -422,7 +422,7 @@ void run_planet_position_perf(const char *experiment,
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         struct ln_equ_posn equ;
         equ_fn(jds[i], &equ);
         double dist_au = dist_fn(jds[i]);

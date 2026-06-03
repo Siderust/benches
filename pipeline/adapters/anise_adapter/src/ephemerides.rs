@@ -268,7 +268,8 @@ fn run_translate_ephemeris_perf(
         }
     }
 
-    for jd in jds.iter().take(n.min(100)) {
+    let warmup = crate::perf_warmup();
+    for jd in jds.iter().take(n.min(warmup)) {
         let epoch = epoch_from_jd_tt(*jd);
         let state = almanac
             .translate(from, to, epoch, Aberration::NONE)

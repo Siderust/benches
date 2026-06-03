@@ -56,7 +56,7 @@ void run_equ_ecl_perf(void) {
     }
 
     /* Warm-up: match measured operation to functional path (Eqec06). */
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double ecl_lon, ecl_lat;
         eraEqec06(2451545.0, jds[i] - 2451545.0, ras[i], decs[i], &ecl_lon, &ecl_lat);
     }
@@ -153,7 +153,7 @@ void run_icrs_ecl_j2000_perf(void) {
     double rm[3][3];
     eraEcm06(2451545.0, 0.0, rm);
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double vin[3] = {vecs[3*i], vecs[3*i+1], vecs[3*i+2]};
         normalize3(vin);
         double vout[3];
@@ -230,7 +230,7 @@ void run_icrs_ecl_tod_perf(void) {
         }
     }
 
-    for (int i = 0; i < n && i < 100; i++) {
+    for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
         double ecl_lon, ecl_lat;
         eraEqec06(2451545.0, jds[i] - 2451545.0, ras[i], decs[i], &ecl_lon, &ecl_lat);
     }
