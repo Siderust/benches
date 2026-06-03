@@ -174,6 +174,11 @@ class PipelineConfig:
     siderust_profiles: list[str]
     performance_enabled: bool
     perf_rounds: int
+    perf_scalar_n: int
+    perf_batch_n: int
+    perf_batch_rounds: int
+    perf_warmup: int
+    perf_timeout_s: int
     no_build: bool
     horizons_use_cache: bool
     horizons_allow_network: bool
@@ -247,6 +252,11 @@ def load_pipeline_config(path: str | Path) -> PipelineConfig:
         siderust_profiles=profiles,
         performance_enabled=bool(performance.get("enabled", True)),
         perf_rounds=int(performance.get("rounds", 10)),
+        perf_scalar_n=int(performance.get("scalar_n", 5000)),
+        perf_batch_n=int(performance.get("batch_n", 100000)),
+        perf_batch_rounds=int(performance.get("batch_rounds", 5)),
+        perf_warmup=int(performance.get("warmup", 100)),
+        perf_timeout_s=int(performance.get("timeout_s", 120)),
         no_build=bool(raw.get("no_build", False)),
         horizons_use_cache=bool(horizons.get("use_cache", True)),
         horizons_allow_network=bool(horizons.get("allow_network", True)),

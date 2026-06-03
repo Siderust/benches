@@ -3,15 +3,20 @@ n = 10
 seed = 42
 adapters = ["siderust", "astropy", "libnova", "anise"]
 siderust_profiles = ["iau2006a", "iau2000a", "iau2000b", "precession_only"]
-no_build = true
+no_build = false
 
 [performance]
 enabled = true
 rounds = 1
+scalar_n = 500
+batch_n = 5000
+batch_rounds = 1
+warmup = 20
+timeout_s = 30
 
 [horizons]
 use_cache = true
-allow_network = false
+allow_network = true
 
 [output]
 dir = "results"

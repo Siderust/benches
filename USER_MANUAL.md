@@ -63,10 +63,10 @@ Important config fields:
 
 - `suite`: `core`, `ci`, or `diagnostic`
 - `experiments`: optional explicit experiment ids
-- `n` and `seed`: input size and deterministic random seed
+- `n` and `seed`: accuracy input size and deterministic random seed. Note that `n` affects accuracy cases only.
 - `adapters`: enabled candidate adapters
 - `siderust_profiles`: enabled Siderust model profiles
-- `performance`: enable timing and choose rounds/warmup
+- `performance`: enable timing and choose workload sizes. Quick runs use smaller `scalar_n` and `batch_n` for diagnostics; publication runs must use standardized defaults (see `pipeline/PERFORMANCE_BENCHMARKING.md`).
 - `horizons`: cache and offline/network policy
 - `output_dir`: where timestamped runs are written
 - `publish_latest`: copy the completed run to `latest_results/` locally (blocked

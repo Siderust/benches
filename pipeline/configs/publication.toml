@@ -1,20 +1,17 @@
-# Phase B normal public baseline, canonical seed.
-# Publishes to latest_results/ when it completes successfully.
-
-run_label = "phase-b-public-seed42"
-phase = "phase-b"
-tags = ["phase-b", "public", "normal", "seed42"]
-
 suite = "core"
 n = 1000
 seed = 42
 adapters = ["siderust", "astropy", "libnova", "anise"]
 siderust_profiles = ["iau2006a"]
-no_build = false
 
 [performance]
 enabled = true
-rounds = 12
+rounds = 10
+scalar_n = 5000
+batch_n = 100000
+batch_rounds = 5
+warmup = 100
+timeout_s = 120
 
 [horizons]
 use_cache = true
@@ -23,3 +20,5 @@ allow_network = true
 [output]
 dir = "results"
 publish_latest = true
+allow_dirty_publish = false
+allow_partial_publish = false

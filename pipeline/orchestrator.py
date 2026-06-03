@@ -1270,7 +1270,7 @@ def empty_performance_workloads() -> dict:
 def _adapter_experiment_name(experiment: str) -> str:
     return strip_apparent_suffix(experiment)
 
-def run_adapter(cmd, input_text: str, label: str, *, extra_env: dict | None = None) -> dict:
+def run_adapter(cmd, input_text: str, label: str, *, extra_env: dict | None = None, timeout: int = 120) -> dict:
     """Run an adapter process, return parsed JSON output.
 
     ``extra_env`` is merged into the child environment (e.g. ``LAB_LANE``
@@ -1286,14 +1286,14 @@ def run_adapter(cmd, input_text: str, label: str, *, extra_env: dict | None = No
             input=input_text,
             capture_output=True,
             text=True,
-            timeout=120,
+            timeout=timeout,
             env=env,
         )
     except FileNotFoundError:
         print(f"  ⚠ {label}: binary not found ({cmd[0]}), skipping.", file=sys.stderr)
         return None
     except subprocess.TimeoutExpired:
-        print(f"  ⚠ {label}: timed out after 120s, skipping.", file=sys.stderr)
+        print(f"  ⚠ {label}: timed out after {timeout}s, skipping.", file=sys.stderr)
         return None
 
     if result.returncode != 0:
@@ -1358,7 +1358,8 @@ def _adapter_perf_round_issues(result: dict | None) -> list[str]:
 def run_multi_sample_perf(cmd, input_text: str, label: str,
                           rounds: int = DEFAULT_PERF_ROUNDS,
                           *,
-                          extra_env: dict | None = None) -> dict | None:
+                          extra_env: dict | None = None,
+                          timeout: int = 120) -> dict | None:
     """Run performance adapter multiple rounds, compute statistical summary.
 
     A5 / fairness-audit F1: ``extra_env`` (e.g. ``{"LAB_LANE": "geometric_vector"}``)
@@ -1374,7 +1375,7 @@ def run_multi_sample_perf(cmd, input_text: str, label: str,
     last_result: dict | None = None
 
     for r in range(rounds):
-        result = run_adapter(cmd, input_text, f"{label}_round{r}", extra_env=extra_env)
+        result = run_adapter(cmd, input_text, f"{label}_round{r}", extra_env=extra_env, timeout=timeout)
         last_result = result
         issues = _adapter_perf_round_issues(result)
         if issues:
@@ -1497,7 +1498,7 @@ def run_multi_sample_perf(cmd, input_text: str, label: str,
     }
 
 
-def _scalar_warm_summary(perf: dict | None, *, rounds: int, n_per_round: int) -> dict | None:
+def _scalar_warm_summary(perf: dict | None, *, rounds: int, n_per_round: int, warmup: int = DEFAULT_PERF_WARMUP) -> dict | None:
     if not perf:
         return None
     count_requested = perf.get("count_requested", perf.get("batch_size") or n_per_round)
@@ -1510,7 +1511,7 @@ def _scalar_warm_summary(perf: dict | None, *, rounds: int, n_per_round: int) ->
         "count_requested": count_requested,
         "count_valid": count_valid,
         "error_count": perf.get("error_count", 0),
-        "warmup": DEFAULT_PERF_WARMUP,
+        "warmup": warmup,
         "valid": perf.get("valid"),
         "warnings": perf.get("warnings") or [],
         "skipped": perf.get("skipped"),
@@ -1522,7 +1523,7 @@ def _scalar_warm_summary(perf: dict | None, *, rounds: int, n_per_round: int) ->
     return block
 
 
-def _batch_throughput_summary(perf: dict | None, *, rounds: int, n: int) -> dict | None:
+def _batch_throughput_summary(perf: dict | None, *, rounds: int, n: int, warmup: int = DEFAULT_PERF_WARMUP) -> dict | None:
     if not perf:
         return None
     ns = perf.get("per_op_ns")
@@ -1540,7 +1541,7 @@ def _batch_throughput_summary(perf: dict | None, *, rounds: int, n: int) -> dict
         "count_requested": count_requested,
         "count_valid": count_valid,
         "error_count": perf.get("error_count", 0),
-        "warmup": DEFAULT_PERF_WARMUP,
+        "warmup": warmup,
         "valid": perf.get("valid"),
         "warnings": perf.get("warnings") or [],
         "skipped": perf.get("skipped"),
@@ -1569,34 +1570,38 @@ def _setup_metrics_summary(result: dict | None) -> dict | None:
 
 def run_perf_workloads(cmd, exp_name: str, input_gen_fn, perf_fmt_fn, seed: int,
                        *, scalar_rounds: int = DEFAULT_PERF_ROUNDS,
+                       scalar_n: int = SCALAR_WARM_N,
                        batch_rounds: int = BATCH_THROUGHPUT_ROUNDS,
+                       batch_n: int = BATCH_THROUGHPUT_N,
+                       warmup: int = DEFAULT_PERF_WARMUP,
+                       timeout_s: int = 120,
                        extra_env: dict | None = None) -> dict:
     """Run Phase-6 performance workloads for one adapter candidate."""
     workloads = empty_performance_workloads()
     adapter_exp = _adapter_experiment_name(exp_name)
 
-    scalar_inputs = input_gen_fn(SCALAR_WARM_N, seed)
+    scalar_inputs = input_gen_fn(scalar_n, seed)
     scalar_input = perf_fmt_fn(*scalar_inputs) if not isinstance(scalar_inputs, str) else scalar_inputs
     scalar_perf = run_multi_sample_perf(
         cmd, scalar_input, f"{adapter_exp}_scalar_warm",
-        rounds=scalar_rounds, extra_env=extra_env,
+        rounds=scalar_rounds, extra_env=extra_env, timeout=timeout_s,
     )
     workloads["scalar_warm"] = _scalar_warm_summary(
-        scalar_perf, rounds=scalar_rounds, n_per_round=SCALAR_WARM_N,
+        scalar_perf, rounds=scalar_rounds, n_per_round=scalar_n, warmup=warmup,
     )
 
-    batch_inputs = input_gen_fn(BATCH_THROUGHPUT_N, seed)
+    batch_inputs = input_gen_fn(batch_n, seed)
     batch_input = perf_fmt_fn(*batch_inputs) if not isinstance(batch_inputs, str) else batch_inputs
     batch_perf = run_multi_sample_perf(
         cmd, batch_input, f"{adapter_exp}_batch_throughput",
-        rounds=batch_rounds, extra_env=extra_env,
+        rounds=batch_rounds, extra_env=extra_env, timeout=timeout_s,
     )
     workloads["batch_throughput"] = _batch_throughput_summary(
-        batch_perf, rounds=batch_rounds, n=BATCH_THROUGHPUT_N,
+        batch_perf, rounds=batch_rounds, n=batch_n, warmup=warmup,
     )
 
     setup_result = run_adapter(
-        cmd, f"{adapter_exp}_setup\n", f"{adapter_exp}_setup", extra_env=extra_env,
+        cmd, f"{adapter_exp}_setup\n", f"{adapter_exp}_setup", extra_env=extra_env, timeout=timeout_s,
     )
     workloads["setup_metrics"] = _setup_metrics_summary(setup_result)
     return workloads
@@ -3530,7 +3535,7 @@ def generate_summary_table(all_results: list) -> str:
 # ---------------------------------------------------------------------------
 
 def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
-                                      perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                      perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """
     Run the frame_rotation_bpn experiment end-to-end.
 
@@ -3669,11 +3674,16 @@ def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
             perf_data = run_perf_workloads(
                 cmd, exp_name, _bpn_perf_inputs, format_bpn_perf_input, seed,
                 scalar_rounds=perf_rounds,
+                scalar_n=perf_scalar_n,
+                batch_rounds=perf_batch_rounds,
+                batch_n=perf_batch_n,
+                warmup=perf_warmup,
+                timeout_s=perf_timeout_s,
             )
             for r in results:
                 if r["candidate_library"] == adapter_base(lib) and r.get("candidate_profile") == adapter_profile(lib):
                     r["performance"] = _invalidate_perf_if_incomplete(
-                        perf_data, expected_scalar_n=SCALAR_WARM_N,
+                        perf_data, expected_scalar_n=perf_scalar_n,
                     )
 
         step += 1
@@ -3681,6 +3691,11 @@ def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
         perf_erfa = run_perf_workloads(
             [str(ERFA_BIN)], exp_name, _bpn_perf_inputs, format_bpn_perf_input, seed,
             scalar_rounds=perf_rounds,
+            scalar_n=perf_scalar_n,
+            batch_rounds=perf_batch_rounds,
+            batch_n=perf_batch_n,
+            warmup=perf_warmup,
+            timeout_s=perf_timeout_s,
         )
         for r in results:
             r["reference_performance"] = perf_erfa
@@ -3836,11 +3851,12 @@ def _run_external_reference_experiment(exp_name: str, n: int, seed: int,
             "model": adapter_model,
             "benchmark_config": {
                 "perf_rounds": perf_rounds if run_perf else 0,
-                "perf_warmup": DEFAULT_PERF_WARMUP,
-                "perf_scalar_n": SCALAR_WARM_N,
-                "perf_batch_n": BATCH_THROUGHPUT_N,
-                "perf_batch_rounds": BATCH_THROUGHPUT_ROUNDS if run_perf else 0,
+                "perf_warmup": perf_warmup,
+                "perf_scalar_n": perf_scalar_n,
+                "perf_batch_n": perf_batch_n,
+                "perf_batch_rounds": perf_batch_rounds if run_perf else 0,
                 "perf_enabled": run_perf,
+                "perf_timeout_s": perf_timeout_s,
             },
             "run_metadata": meta,
         }
@@ -3902,12 +3918,17 @@ def _run_external_reference_experiment(exp_name: str, n: int, seed: int,
             perf_data = run_perf_workloads(
                 cmd, exp_name, input_gen_fn, perf_fmt_fn, seed,
                 scalar_rounds=perf_rounds,
+                scalar_n=perf_scalar_n,
+                batch_rounds=perf_batch_rounds,
+                batch_n=perf_batch_n,
+                warmup=perf_warmup,
+                timeout_s=perf_timeout_s,
                 extra_env={"LAB_LANE": lane},
             )
             for r in results:
                 if r["candidate_library"] == adapter_base(lib) and r.get("candidate_profile") == adapter_profile(lib):
                     r["performance"] = _invalidate_perf_if_incomplete(
-                        perf_data, expected_scalar_n=SCALAR_WARM_N,
+                        perf_data, expected_scalar_n=perf_scalar_n,
                     )
 
     progress("Experiment complete.", exp_name, "done", total_steps, total_steps)
@@ -3915,6 +3936,11 @@ def _run_external_reference_experiment(exp_name: str, n: int, seed: int,
 
 def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = True,
                              perf_rounds: int = DEFAULT_PERF_ROUNDS,
+                             perf_scalar_n: int = SCALAR_WARM_N,
+                             perf_batch_n: int = BATCH_THROUGHPUT_N,
+                             perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS,
+                             perf_warmup: int = DEFAULT_PERF_WARMUP,
+                             perf_timeout_s: int = 120,
                              input_gen_fn=None, input_fmt_fn=None, perf_fmt_fn=None,
                              accuracy_fn=None, accuracy_kwargs=None,
                              python_reference_fn=None,
@@ -3999,11 +4025,12 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
             "reference_performance": empty_performance_workloads(),
             "benchmark_config": {
                 "perf_rounds": perf_rounds if run_perf else 0,
-                "perf_warmup": DEFAULT_PERF_WARMUP,
-                "perf_scalar_n": SCALAR_WARM_N,
-                "perf_batch_n": BATCH_THROUGHPUT_N,
-                "perf_batch_rounds": BATCH_THROUGHPUT_ROUNDS if run_perf else 0,
+                "perf_warmup": perf_warmup,
+                "perf_scalar_n": perf_scalar_n,
+                "perf_batch_n": perf_batch_n,
+                "perf_batch_rounds": perf_batch_rounds if run_perf else 0,
                 "perf_enabled": run_perf,
+                "perf_timeout_s": perf_timeout_s,
             },
             "run_metadata": meta,
         }
@@ -4063,11 +4090,16 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
             perf_data = run_perf_workloads(
                 cmd, exp_name, input_gen_fn, perf_fmt_fn, seed,
                 scalar_rounds=perf_rounds,
+                scalar_n=perf_scalar_n,
+                batch_rounds=perf_batch_rounds,
+                batch_n=perf_batch_n,
+                warmup=perf_warmup,
+                timeout_s=perf_timeout_s,
             )
             for r in results:
                 if r["candidate_library"] == adapter_base(lib) and r.get("candidate_profile") == adapter_profile(lib):
                     r["performance"] = _invalidate_perf_if_incomplete(
-                        perf_data, expected_scalar_n=SCALAR_WARM_N,
+                        perf_data, expected_scalar_n=perf_scalar_n,
                     )
 
         if python_reference_fn is None:
@@ -4076,6 +4108,11 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
             perf_erfa = run_perf_workloads(
                 [str(ERFA_BIN)], exp_name, input_gen_fn, perf_fmt_fn, seed,
                 scalar_rounds=perf_rounds,
+                scalar_n=perf_scalar_n,
+                batch_rounds=perf_batch_rounds,
+                batch_n=perf_batch_n,
+                warmup=perf_warmup,
+                timeout_s=perf_timeout_s,
             )
             for r in results:
                 r["reference_performance"] = perf_erfa
@@ -4083,10 +4120,10 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
     progress("Experiment complete.", exp_name, "done", total_steps, total_steps)
     return results
 def run_experiment_gmst_era(n: int, seed: int, run_perf: bool = True,
-                            perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                            perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the gmst_era experiment end-to-end."""
     return _run_generic_experiment(
-        exp_name="gmst_era", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="gmst_era", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_gmst_era_inputs,
         input_fmt_fn=format_gmst_input,
         perf_fmt_fn=format_gmst_perf_input,
@@ -4095,10 +4132,10 @@ def run_experiment_gmst_era(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_equ_ecl(n: int, seed: int, run_perf: bool = True,
-                           perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                           perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the equ_ecl experiment: equatorial ↔ ecliptic coordinate transform."""
     return _run_generic_experiment(
-        exp_name="equ_ecl", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="equ_ecl", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_equ_ecl_inputs,
         input_fmt_fn=format_equ_ecl_input,
         perf_fmt_fn=format_equ_ecl_perf_input,
@@ -4108,10 +4145,10 @@ def run_experiment_equ_ecl(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_equ_horizontal(n: int, seed: int, run_perf: bool = True,
-                                   perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                   perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the equ_horizontal experiment: equatorial → horizontal (AltAz)."""
     return _run_generic_experiment(
-        exp_name="equ_horizontal", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="equ_horizontal", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_equ_horizontal_inputs,
         input_fmt_fn=format_equ_horizontal_input,
         perf_fmt_fn=format_equ_horizontal_perf_input,
@@ -4120,8 +4157,7 @@ def run_experiment_equ_horizontal(n: int, seed: int, run_perf: bool = True,
     )
 
 
-def run_experiment_solar_position(n: int, seed: int, run_perf: bool = True,
-                                   perf_rounds: int = DEFAULT_PERF_ROUNDS,
+def run_experiment_solar_position(n: int, seed: int, run_perf: bool = True, perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120,
                                    exp_name: str = "solar_position"):
     """Run the solar_position experiment: geocentric Sun RA/Dec vs JPL Horizons."""
     def _solar_gen(n, seed):
@@ -4129,7 +4165,7 @@ def run_experiment_solar_position(n: int, seed: int, run_perf: bool = True,
         return (epochs,)
 
     return _run_external_reference_experiment(
-        exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=_solar_gen,
         input_fmt_fn=lambda epochs: format_solar_position_input(epochs),
         perf_fmt_fn=lambda epochs: format_solar_position_perf_input(epochs),
@@ -4138,8 +4174,7 @@ def run_experiment_solar_position(n: int, seed: int, run_perf: bool = True,
     )
 
 
-def run_experiment_lunar_position(n: int, seed: int, run_perf: bool = True,
-                                   perf_rounds: int = DEFAULT_PERF_ROUNDS,
+def run_experiment_lunar_position(n: int, seed: int, run_perf: bool = True, perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120,
                                    exp_name: str = "lunar_position"):
     """Run the lunar_position experiment: geocentric Moon RA/Dec vs JPL Horizons."""
     def _lunar_gen(n, seed):
@@ -4147,7 +4182,7 @@ def run_experiment_lunar_position(n: int, seed: int, run_perf: bool = True,
         return (epochs,)
 
     return _run_external_reference_experiment(
-        exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=_lunar_gen,
         input_fmt_fn=lambda epochs: format_lunar_position_input(epochs),
         perf_fmt_fn=lambda epochs: format_lunar_position_perf_input(epochs),
@@ -4157,7 +4192,7 @@ def run_experiment_lunar_position(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_planet_position(exp_name: str, n: int, seed: int, run_perf: bool = True,
-                                   perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                   perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run one planetary geocentric/barycenter position experiment vs JPL Horizons."""
     if exp_name not in PLANET_POSITION_EXPERIMENTS:
         raise KeyError(f"Unknown planetary position experiment '{exp_name}'")
@@ -4167,7 +4202,7 @@ def run_experiment_planet_position(exp_name: str, n: int, seed: int, run_perf: b
         return (epochs,)
 
     return _run_external_reference_experiment(
-        exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=_planet_gen,
         input_fmt_fn=lambda epochs, exp_name=exp_name: _format_external_position_input(exp_name, epochs),
         perf_fmt_fn=lambda epochs, exp_name=exp_name: _format_external_position_perf_input(exp_name, epochs),
@@ -4214,14 +4249,14 @@ def kepler_python_reference(M_arr, e_arr):
 
 
 def run_experiment_kepler_solver(n: int, seed: int, run_perf: bool = True,
-                                  perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                  perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the kepler_solver experiment: Kepler's equation M→E→ν.
 
     Reference is a pipeline-side Newton-Raphson solver to ~machine
     epsilon (no SOFA/ERFA public Kepler solver exists).
     """
     return _run_generic_experiment(
-        exp_name="kepler_solver", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="kepler_solver", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_kepler_inputs,
         input_fmt_fn=format_kepler_input,
         perf_fmt_fn=format_kepler_perf_input,
@@ -4233,10 +4268,10 @@ def run_experiment_kepler_solver(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_frame_bias(n: int, seed: int, run_perf: bool = True,
-                               perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                               perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the frame_bias experiment: ICRS → Mean J2000 frame bias."""
     return _run_generic_experiment(
-        exp_name="frame_bias", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="frame_bias", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_direction_vector_inputs,
         input_fmt_fn=format_frame_bias_input,
         perf_fmt_fn=format_frame_bias_perf_input,
@@ -4245,10 +4280,10 @@ def run_experiment_frame_bias(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_precession(n: int, seed: int, run_perf: bool = True,
-                               perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                               perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the precession experiment: Mean J2000 → Mean of Date."""
     return _run_generic_experiment(
-        exp_name="precession", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="precession", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_direction_vector_inputs,
         input_fmt_fn=format_precession_input,
         perf_fmt_fn=format_precession_perf_input,
@@ -4257,10 +4292,10 @@ def run_experiment_precession(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_nutation(n: int, seed: int, run_perf: bool = True,
-                             perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                             perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the nutation experiment: Mean of Date → True of Date."""
     return _run_generic_experiment(
-        exp_name="nutation", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="nutation", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_direction_vector_inputs,
         input_fmt_fn=format_nutation_input,
         perf_fmt_fn=format_nutation_perf_input,
@@ -4269,10 +4304,10 @@ def run_experiment_nutation(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_icrs_ecl_j2000(n: int, seed: int, run_perf: bool = True,
-                                    perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                    perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the icrs_ecl_j2000 experiment: ICRS → Ecliptic J2000."""
     return _run_generic_experiment(
-        exp_name="icrs_ecl_j2000", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="icrs_ecl_j2000", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_direction_vector_inputs,
         input_fmt_fn=format_icrs_ecl_j2000_input,
         perf_fmt_fn=format_icrs_ecl_j2000_perf_input,
@@ -4281,10 +4316,10 @@ def run_experiment_icrs_ecl_j2000(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_icrs_ecl_tod(n: int, seed: int, run_perf: bool = True,
-                                 perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                 perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the icrs_ecl_tod experiment: ICRS → Ecliptic of Date."""
     return _run_generic_experiment(
-        exp_name="icrs_ecl_tod", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="icrs_ecl_tod", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_equ_ecl_inputs,
         input_fmt_fn=format_icrs_ecl_tod_input,
         perf_fmt_fn=format_icrs_ecl_tod_perf_input,
@@ -4294,10 +4329,10 @@ def run_experiment_icrs_ecl_tod(n: int, seed: int, run_perf: bool = True,
 
 
 def run_experiment_horiz_to_equ(n: int, seed: int, run_perf: bool = True,
-                                 perf_rounds: int = DEFAULT_PERF_ROUNDS):
+                                 perf_rounds: int = DEFAULT_PERF_ROUNDS, perf_scalar_n: int = SCALAR_WARM_N, perf_batch_n: int = BATCH_THROUGHPUT_N, perf_batch_rounds: int = BATCH_THROUGHPUT_ROUNDS, perf_warmup: int = DEFAULT_PERF_WARMUP, perf_timeout_s: int = 120):
     """Run the horiz_to_equ experiment: Horizontal → Equatorial."""
     return _run_generic_experiment(
-        exp_name="horiz_to_equ", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+        exp_name="horiz_to_equ", n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
         input_gen_fn=generate_horiz_to_equ_inputs,
         input_fmt_fn=format_horiz_to_equ_input,
         perf_fmt_fn=format_horiz_to_equ_perf_input,
@@ -4309,9 +4344,9 @@ def run_experiment_horiz_to_equ(n: int, seed: int, run_perf: bool = True,
 # 13 new matrix experiment runner functions
 def _make_dir_experiment_runner(exp_name, fmt_input, fmt_perf_input):
     """Factory for direction-vector experiment runners."""
-    def runner(n, seed, run_perf=True, perf_rounds=DEFAULT_PERF_ROUNDS):
+    def runner(n, seed, run_perf=True, perf_rounds=DEFAULT_PERF_ROUNDS, perf_scalar_n=SCALAR_WARM_N, perf_batch_n=BATCH_THROUGHPUT_N, perf_batch_rounds=BATCH_THROUGHPUT_ROUNDS, perf_warmup=DEFAULT_PERF_WARMUP, perf_timeout_s=120):
         return _run_generic_experiment(
-            exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds,
+            exp_name=exp_name, n=n, seed=seed, run_perf=run_perf, perf_rounds=perf_rounds, perf_scalar_n=perf_scalar_n, perf_batch_n=perf_batch_n, perf_batch_rounds=perf_batch_rounds, perf_warmup=perf_warmup, perf_timeout_s=perf_timeout_s,
             input_gen_fn=generate_direction_vector_inputs,
             input_fmt_fn=fmt_input,
             perf_fmt_fn=fmt_perf_input,
@@ -4406,6 +4441,16 @@ def main():
                         help="Skip performance tests")
     parser.add_argument("--perf-rounds", type=int, default=DEFAULT_PERF_ROUNDS,
                         help=f"Number of performance timing rounds (default: {DEFAULT_PERF_ROUNDS})")
+    parser.add_argument("--perf-scalar-n", type=int, default=SCALAR_WARM_N,
+                        help=f"Scalar workload size for latency (default: {SCALAR_WARM_N})")
+    parser.add_argument("--perf-batch-n", type=int, default=BATCH_THROUGHPUT_N,
+                        help=f"Batch workload size for throughput (default: {BATCH_THROUGHPUT_N})")
+    parser.add_argument("--perf-batch-rounds", type=int, default=BATCH_THROUGHPUT_ROUNDS,
+                        help=f"Number of timing rounds for batch throughput (default: {BATCH_THROUGHPUT_ROUNDS})")
+    parser.add_argument("--perf-warmup", type=int, default=DEFAULT_PERF_WARMUP,
+                        help=f"Number of warmup iterations (default: {DEFAULT_PERF_WARMUP})")
+    parser.add_argument("--perf-timeout-s", type=int, default=120,
+                        help="Timeout in seconds for each adapter performance round (default: 120)")
     parser.add_argument("--ci", action="store_true",
                         help="CI mode: fewer rounds, smaller N for faster execution")
     parser.add_argument("--no-build", action="store_true",
@@ -4489,85 +4534,83 @@ def main():
     all_results = []
 
     dispatch = {
-        "frame_rotation_bpn": lambda: run_experiment_frame_rotation_bpn(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
-        ),
+        "frame_rotation_bpn": lambda: run_experiment_frame_rotation_bpn(args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "gmst_era": lambda: run_experiment_gmst_era(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "equ_ecl": lambda: run_experiment_equ_ecl(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "equ_horizontal": lambda: run_experiment_equ_horizontal(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "solar_position": lambda: run_experiment_solar_position(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "solar_position_apparent": lambda: run_experiment_solar_position(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds,
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s,
             exp_name="solar_position_apparent",
         ),
         "lunar_position": lambda: run_experiment_lunar_position(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "lunar_position_apparent": lambda: run_experiment_lunar_position(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds,
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s,
             exp_name="lunar_position_apparent",
         ),
         "kepler_solver": lambda: run_experiment_kepler_solver(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "frame_bias": lambda: run_experiment_frame_bias(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "precession": lambda: run_experiment_precession(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "nutation": lambda: run_experiment_nutation(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "icrs_ecl_j2000": lambda: run_experiment_icrs_ecl_j2000(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "icrs_ecl_tod": lambda: run_experiment_icrs_ecl_tod(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         "horiz_to_equ": lambda: run_experiment_horiz_to_equ(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         ),
         # 13 new matrix experiments
         "inv_frame_bias": lambda: run_experiment_inv_frame_bias(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_precession": lambda: run_experiment_inv_precession(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_nutation": lambda: run_experiment_inv_nutation(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_bpn": lambda: run_experiment_inv_bpn(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_icrs_ecl_j2000": lambda: run_experiment_inv_icrs_ecl_j2000(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "obliquity": lambda: run_experiment_obliquity(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_obliquity": lambda: run_experiment_inv_obliquity(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "bias_precession": lambda: run_experiment_bias_precession(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_bias_precession": lambda: run_experiment_inv_bias_precession(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "precession_nutation": lambda: run_experiment_precession_nutation(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_precession_nutation": lambda: run_experiment_inv_precession_nutation(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_icrs_ecl_tod": lambda: run_experiment_inv_icrs_ecl_tod_dir(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
         "inv_equ_ecl": lambda: run_experiment_inv_equ_ecl_dir(
-            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds),
+            args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s),
     }
 
     for exp_name in planet_experiments:
         dispatch[exp_name] = lambda exp_name=exp_name: run_experiment_planet_position(
-            exp_name, args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds
+            exp_name, args.n, args.seed, run_perf=run_perf, perf_rounds=args.perf_rounds, perf_scalar_n=args.perf_scalar_n, perf_batch_n=args.perf_batch_n, perf_batch_rounds=args.perf_batch_rounds, perf_warmup=args.perf_warmup, perf_timeout_s=args.perf_timeout_s
         )
 
     total_experiments = len(experiments_to_run)
@@ -4683,6 +4726,11 @@ def main():
                 "seed": args.seed,
                 "perf_enabled": run_perf,
                 "perf_rounds": args.perf_rounds,
+                "perf_scalar_n": args.perf_scalar_n,
+                "perf_batch_n": args.perf_batch_n,
+                "perf_batch_rounds": args.perf_batch_rounds,
+                "perf_warmup": args.perf_warmup,
+                "perf_timeout_s": args.perf_timeout_s,
                 "ci_mode": args.ci,
                 "adapters": adapters or ["siderust", "astropy", "libnova", "anise"],
                 "siderust_profiles": SIDERUST_PROFILES,

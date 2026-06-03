@@ -1,17 +1,15 @@
-suite = "diagnostic"
-n = 500
+suite = "all"
+n = 10000
 seed = 42
 adapters = ["siderust", "astropy", "libnova", "anise"]
 siderust_profiles = ["iau2006a", "iau2000a", "iau2000b", "precession_only"]
-no_build = false
 
 [performance]
-enabled = true
-rounds = 5
+enabled = false
 
 [horizons]
 use_cache = true
-allow_network = false
+allow_network = true
 
 [output]
 dir = "results"
