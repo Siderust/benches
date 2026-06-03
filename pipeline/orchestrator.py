@@ -4400,6 +4400,11 @@ run_experiment_inv_equ_ecl_dir = _make_dir_experiment_runner("inv_equ_ecl", form
 # Output
 # ---------------------------------------------------------------------------
 
+def _display_path(path: Path) -> Path:
+    """Return a repo-relative path when possible, otherwise the absolute path."""
+    return path.relative_to(LAB_ROOT) if path.is_relative_to(LAB_ROOT) else path
+
+
 def write_results(results: list, experiment: str, timestamp_str: str | None = None):
     """Write result JSON files and summary table."""
     # Use provided timestamp or generate new one (for backward compatibility)
@@ -4415,7 +4420,7 @@ def write_results(results: list, experiment: str, timestamp_str: str | None = No
         path = out_dir / f"{file_stem}.json"
         with open(path, "w") as f:
             json.dump(r, f, indent=2)
-        print(f"  ✓ Wrote {path.relative_to(LAB_ROOT)}")
+        print(f"  ✓ Wrote {_display_path(path)}")
 
     # Summary table
     summary = generate_summary_table(results)
@@ -4429,7 +4434,7 @@ def write_results(results: list, experiment: str, timestamp_str: str | None = No
             f.write("```json\n")
             json.dump(results[0].get("alignment", {}), f, indent=2)
             f.write("\n```\n")
-    print(f"  ✓ Wrote {summary_path.relative_to(LAB_ROOT)}")
+    print(f"  ✓ Wrote {_display_path(summary_path)}")
 
     return out_dir
 
@@ -4437,6 +4442,30 @@ def write_results(results: list, experiment: str, timestamp_str: str | None = No
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
+def _apply_ci_overrides(args) -> None:
+    """Apply CI-mode overrides to argparse Namespace in-place.
+
+    Only overrides values that are still the publication defaults.
+    """
+    # Reduce N if still default
+    if getattr(args, "n", None) == 1000:
+        args.n = 100
+    # Reduce perf rounds if still default
+    if getattr(args, "perf_rounds", None) == DEFAULT_PERF_ROUNDS:
+        args.perf_rounds = 2
+    # Reduce perf sizes/timeouts only when they are publication defaults
+    if getattr(args, "perf_scalar_n", None) == SCALAR_WARM_N:
+        args.perf_scalar_n = 500
+    if getattr(args, "perf_batch_n", None) == BATCH_THROUGHPUT_N:
+        args.perf_batch_n = 5000
+    if getattr(args, "perf_batch_rounds", None) == BATCH_THROUGHPUT_ROUNDS:
+        args.perf_batch_rounds = 1
+    if getattr(args, "perf_timeout_s", None) == 120:
+        args.perf_timeout_s = 30
+
+    # No return; mutate in-place
+
 
 def main():
     planet_experiments = list(PLANET_POSITION_EXPERIMENTS.keys())
@@ -4510,29 +4539,6 @@ def main():
         _apply_ci_overrides(args)
 
 
-def _apply_ci_overrides(args) -> None:
-    """Apply CI-mode overrides to argparse Namespace in-place.
-
-    Only overrides values that are still the publication defaults.
-    """
-    # Reduce N if still default
-    if getattr(args, "n", None) == 1000:
-        args.n = 100
-    # Reduce perf rounds if still default
-    if getattr(args, "perf_rounds", None) == DEFAULT_PERF_ROUNDS:
-        args.perf_rounds = 2
-    # Reduce perf sizes/timeouts only when they are publication defaults
-    if getattr(args, "perf_scalar_n", None) == SCALAR_WARM_N:
-        args.perf_scalar_n = 500
-    if getattr(args, "perf_batch_n", None) == BATCH_THROUGHPUT_N:
-        args.perf_batch_n = 5000
-    if getattr(args, "perf_batch_rounds", None) == BATCH_THROUGHPUT_ROUNDS:
-        args.perf_batch_rounds = 1
-    if getattr(args, "perf_timeout_s", None) == 120:
-        args.perf_timeout_s = 30
-
-    # No return; mutate in-place
-
     adapters = [a.strip() for a in args.adapters.split(",") if a.strip()] if args.adapters else None
     siderust_profiles = [p.strip() for p in args.siderust_profiles.split(",") if p.strip()]
     run_tags = [t.strip() for t in args.run_tags.split(",") if t.strip()]
@@ -4580,7 +4586,7 @@ def _apply_ci_overrides(args) -> None:
     print(f"  Adapters:      {', '.join(adapters or ['siderust', 'astropy', 'libnova', 'anise'])}")
     print(f"  Siderust:      {', '.join(SIDERUST_PROFILES)}")
     print(f"  Horizons:      cache={'yes' if HORIZONS_USE_CACHE else 'no'}, network={'yes' if HORIZONS_ALLOW_NETWORK else 'no'}")
-    print(f"  Output dir:    {RESULTS_DIR.relative_to(LAB_ROOT) if RESULTS_DIR.is_relative_to(LAB_ROOT) else RESULTS_DIR}")
+    print(f"  Output dir:    {_display_path(RESULTS_DIR)}")
     if args.run_label or args.run_phase or run_tags:
         print(f"  Run label:     {args.run_label or '-'}")
         print(f"  Run phase:     {args.run_phase or '-'}")
@@ -4825,7 +4831,7 @@ def _apply_ci_overrides(args) -> None:
         manifest_path.parent.mkdir(parents=True, exist_ok=True)
         with open(manifest_path, "w") as f:
             json.dump(manifest, f, indent=2)
-        print(f"\n  ✓ Run manifest: {manifest_path.relative_to(LAB_ROOT)}")
+        print(f"\n  ✓ Run manifest: {_display_path(manifest_path)}")
 
         if args.publish_latest:
             if pub_blockers and not _publish_overrides_satisfy(
@@ -4853,9 +4859,7 @@ def _apply_ci_overrides(args) -> None:
             grade = publication.get("grade", "draft")
             print(
                 f"  ✓ Published latest artifact ({grade}): "
-                f"{latest_dir.relative_to(LAB_ROOT)}"
+                f"{_display_path(latest_dir)}"
             )
-
-
 if __name__ == "__main__":
     main()
