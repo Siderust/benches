@@ -533,6 +533,12 @@ def _rankability(
                 f"{catalog_entry.id}/{experiment}: api_surface={catalog_entry.api_surface} "
                 f"(not a public ranked candidate)"
             )
+        if catalog_entry.parity == "model-mismatch":
+            result["comparability_class"] = "not-comparable"
+            return False, (
+                catalog_entry.exclusion_reason
+                or f"{candidate} uses a different physical model than the reference for this observable"
+            )
         if (
             lane in {EPHEMERIS_LANE_GEOMETRIC, EPHEMERIS_LANE_APPARENT}
             and catalog_entry.parity in {"exact-same-kernel", "same-family-jpl", "best-available"}
@@ -644,6 +650,9 @@ def enrich_result(
         result.setdefault("lane", alignment["lane"])
     result["rankable_accuracy"] = rankable
     result["rank_exclusion_reason"] = reason
+    result["rankable_performance"] = rankable
+    if reason:
+        result["exclusion_reason"] = reason
     result["source_provenance"] = source_provenance or {
         "source": "SOFA",
         "adapter": result.get("reference_library", "erfa"),
@@ -3069,6 +3078,67 @@ def _invalidate_perf_if_incomplete(
 _COMPLETENESS_STATUSES = ("ok", "partial", "skipped", "failed")
 
 
+def result_integrity_issues(all_results: list[dict]) -> list[str]:
+    """Validate result rows against the catalog and executed adapter set."""
+    catalog = _default_catalog()
+    issues: list[str] = []
+    executed_by_exp: dict[str, set[str]] = {}
+
+    for r in all_results:
+        exp_id = r.get("experiment")
+        if not exp_id:
+            issues.append("row missing experiment")
+            continue
+        if exp_id not in executed_by_exp:
+            executed_by_exp[exp_id] = {
+                candidate_id_for(label)
+                for label, _cmd in candidate_adapters_for(exp_id)
+            }
+            if ephemeris_lane_for(exp_id) is not None and catalog.get("erfa", exp_id):
+                executed_by_exp[exp_id].add("erfa")
+
+        cid = r.get("candidate_id")
+        if not cid:
+            issues.append(f"{exp_id}: row missing candidate_id")
+            continue
+        entry = catalog.get(cid, exp_id)
+        row_name = f"{exp_id}/{cid}"
+        if entry is None:
+            issues.append(f"{row_name}: candidate_id is not catalogued")
+            continue
+
+        status = r.get("status") or "ok"
+        rankable_accuracy = r.get("rankable_accuracy") is True
+        rankable_performance = r.get("rankable_performance") is True
+        support_status = r.get("support_status")
+
+        if support_status != entry.support:
+            issues.append(
+                f"{row_name}: support_status={support_status!r} does not match catalog {entry.support!r}"
+            )
+
+        if entry.support == "supported" and cid not in executed_by_exp[exp_id]:
+            issues.append(f"{row_name}: supported row was not in executed adapter candidates")
+
+        if entry.support != "supported":
+            if status == "ok":
+                issues.append(f"{row_name}: non-supported placeholder has status=ok")
+            if support_status == "supported":
+                issues.append(f"{row_name}: non-supported row claims support_status=supported")
+            if rankable_accuracy or rankable_performance:
+                issues.append(f"{row_name}: non-supported row is rankable")
+            if not (r.get("exclusion_reason") or r.get("rank_exclusion_reason") or r.get("catalog_exclusion_reason")):
+                issues.append(f"{row_name}: non-supported row lacks exclusion reason")
+
+        if entry.parity == "model-mismatch" and (rankable_accuracy or rankable_performance):
+            issues.append(f"{row_name}: model-mismatch row is rankable")
+
+        if status != "ok" and (rankable_accuracy or rankable_performance):
+            issues.append(f"{row_name}: status={status} row is rankable")
+
+    return issues
+
+
 def summarize_experiment_completeness(all_results: list[dict]) -> dict[str, dict]:
     """Build per-experiment ok/partial/skipped/failed counts for the run manifest."""
     experiment_completeness: dict[str, dict] = {}
@@ -3653,9 +3723,11 @@ def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
         enriched = enrich_result(result_, exp_name, lib_label)
         if status != "ok":
             enriched["rankable_accuracy"] = False
+            enriched["rankable_performance"] = False
             enriched["rank_exclusion_reason"] = (
                 skip_reason or failure_reason or f"status={status}"
             )
+            enriched["exclusion_reason"] = enriched["rank_exclusion_reason"]
         enriched["rankable"] = enriched.get("rankable_accuracy", False)
         enriched["rankability_reason"] = enriched.get("rank_exclusion_reason")
         return enriched
@@ -3907,9 +3979,11 @@ def _run_external_reference_experiment(exp_name: str, n: int, seed: int,
         # Force non-ok rows out of accuracy rankings.
         if status != "ok":
             enriched["rankable_accuracy"] = False
+            enriched["rankable_performance"] = False
             enriched["rank_exclusion_reason"] = (
                 skip_reason or failure_reason or f"status={status}"
             )
+            enriched["exclusion_reason"] = enriched["rank_exclusion_reason"]
         # Expose lane-aware additive aliases.
         enriched["rankable"] = enriched.get("rankable_accuracy", False)
         enriched["rankability_reason"] = enriched.get("rank_exclusion_reason")
@@ -4082,9 +4156,11 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
         enriched = enrich_result(result_, exp_name, lib_label)
         if status != "ok":
             enriched["rankable_accuracy"] = False
+            enriched["rankable_performance"] = False
             enriched["rank_exclusion_reason"] = (
                 skip_reason or failure_reason or f"status={status}"
             )
+            enriched["exclusion_reason"] = enriched["rank_exclusion_reason"]
         enriched["rankable"] = enriched.get("rankable_accuracy", False)
         enriched["rankability_reason"] = enriched.get("rank_exclusion_reason")
         return enriched
@@ -4753,6 +4829,15 @@ def main():
                             print(f"    ⚠ {w}")
 
     if all_results:
+        integrity_issues = result_integrity_issues(all_results)
+        if integrity_issues:
+            print("\n  ✗ Result integrity check failed:", file=sys.stderr)
+            for issue in integrity_issues[:50]:
+                print(f"    - {issue}", file=sys.stderr)
+            if len(integrity_issues) > 50:
+                print(f"    ... {len(integrity_issues) - 50} more", file=sys.stderr)
+            raise SystemExit(2)
+
         # Write combined summary
         summary = generate_summary_table(all_results)
         print(f"\n{'='*70}")

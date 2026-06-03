@@ -13,6 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import orchestrator as o  # noqa: E402
+from lab_config import load_pipeline_config  # noqa: E402
 
 
 def test_kepler_solver_excludes_astropy_and_erfa():
@@ -100,3 +101,76 @@ def test_de440_local_only_when_kernel_enabled():
         labels_disabled = {label for label, _cmd in o.candidate_adapters_for("solar_position")}
     assert "astropy:de440-local" in labels_enabled
     assert "astropy:de440-local" not in labels_disabled
+
+
+def test_full_fast_candidate_rows_are_catalogued_and_executed():
+    """The full smoke config must not emit dense cross-product placeholders."""
+    cfg = load_pipeline_config(Path(__file__).resolve().parents[1] / "configs" / "full_fast.toml")
+    previous_adapters = o.ACTIVE_ADAPTERS.copy() if o.ACTIVE_ADAPTERS is not None else None
+    previous_profiles = list(o.SIDERUST_PROFILES)
+    try:
+        o.configure_run(adapters=cfg.adapters, siderust_profiles=cfg.siderust_profiles)
+        for exp in cfg.experiments:
+            labels = {label for label, _cmd in o.candidate_adapters_for(exp)}
+            ids = {o.candidate_id_for(label) for label in labels}
+            for label in labels:
+                assert o._default_catalog().get(o.candidate_id_for(label), exp) is not None
+
+            if exp in {"gmst_era", "frame_rotation_bpn", "equ_ecl", "equ_horizontal"}:
+                assert "siderust:elp2000" not in labels
+                assert "siderust:de440" not in labels
+                assert "astropy:de440-local" not in labels
+                assert "anise" not in labels
+                assert "siderust:elp2000" not in ids
+                assert "siderust:de440" not in ids
+                assert "astropy:de440-local" not in ids
+                assert "anise" not in ids
+    finally:
+        o.ACTIVE_ADAPTERS = previous_adapters
+        o.SIDERUST_PROFILES = previous_profiles
+
+
+def test_result_integrity_rejects_non_executed_supported_row():
+    row = {
+        "experiment": "gmst_era",
+        "candidate_library": "siderust",
+        "candidate_profile": "elp2000",
+        "candidate_id": "siderust:elp2000",
+        "status": "ok",
+        "support_status": "supported",
+        "rankable_accuracy": True,
+        "rankable_performance": True,
+    }
+    issues = o.result_integrity_issues([row])
+    assert any("not catalogued" in issue for issue in issues)
+
+
+def test_result_integrity_rejects_non_supported_ok_placeholder():
+    row = {
+        "experiment": "kepler_solver",
+        "candidate_library": "astropy",
+        "candidate_id": "astropy",
+        "status": "ok",
+        "support_status": "unsupported",
+        "rankable_accuracy": False,
+        "rankable_performance": False,
+    }
+    issues = o.result_integrity_issues([row])
+    assert any("status=ok" in issue for issue in issues)
+
+
+def test_libnova_equ_ecl_model_mismatch_is_not_rankable():
+    result = {
+        "experiment": "equ_ecl",
+        "candidate_library": "libnova",
+        "reference_library": "erfa",
+        "status": "ok",
+        "alignment": o.alignment_checklist("equ_ecl", candidate_library="libnova", candidate_label="libnova"),
+        "accuracy": {},
+    }
+    enriched = o.enrich_result(result, "equ_ecl", "libnova")
+    assert enriched["support_status"] == "supported"
+    assert enriched["catalog_parity"] == "model-mismatch"
+    assert enriched["rankable_accuracy"] is False
+    assert enriched["rankable_performance"] is False
+    assert "Meeus/equinox-of-date convention" in enriched["rank_exclusion_reason"]

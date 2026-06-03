@@ -79,3 +79,22 @@ def test_phase_b_labels_are_passed_to_orchestrator_command():
     assert cmd[cmd.index("--run-label") + 1] == "phase-b-ci-seed42"
     assert cmd[cmd.index("--run-phase") + 1] == "phase-b"
     assert "phase-b,ci,small,seed42" == cmd[cmd.index("--run-tags") + 1]
+
+
+def test_full_fast_is_offline_smoke_draft():
+    cfg = load_pipeline_config(PIPELINE_DIR / "configs" / "full_fast.toml")
+    assert cfg.n == 10
+    assert len(cfg.experiments) == 32
+    assert "icrs_ecl_tod" not in cfg.experiments
+    assert not any(exp.endswith("_apparent") for exp in cfg.experiments)
+    assert cfg.perf_rounds == 1
+    assert cfg.perf_scalar_n == 50
+    assert cfg.perf_batch_n == 50
+    assert cfg.publish_latest is False
+    assert cfg.horizons_allow_network is False
+    assert cfg.run_phase == "smoke"
+    assert {"smoke", "draft"} <= set(cfg.run_tags)
+
+    cmd = build_orchestrator_command(PIPELINE_DIR / "configs" / "full_fast.toml")
+    assert "--horizons-offline" in cmd
+    assert "--publish-latest" not in cmd

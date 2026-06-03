@@ -7,10 +7,6 @@ edition = "2021"
 name = "siderust-adapter"
 path = "src/main.rs"
 
-[[bin]]
-name = "siderust_adapter"
-path = "src/main.rs"
-
 [features]
 # Enable JPL DE440 adapter paths. On by default; disable with --no-default-features.
 de440 = []
