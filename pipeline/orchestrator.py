@@ -205,10 +205,11 @@ def candidate_adapters():
         ))
     if _adapter_enabled("astropy"):
         adapters.append(("astropy", [sys.executable, str(ASTROPY_SCRIPT)]))
-        adapters.append((
-            "astropy:jpl",
-            ["env", "ASTROPY_EPHEMERIS=jpl", sys.executable, str(ASTROPY_SCRIPT)],
-        ))
+        if os.environ.get("SIDERUST_KERNEL_DE440_ENABLED", "1") != "0":
+            adapters.append((
+                "astropy:de440-local",
+                ["env", "ASTROPY_EPHEMERIS=de440-local", sys.executable, str(ASTROPY_SCRIPT)],
+            ))
     if _adapter_enabled("libnova"):
         adapters.append(("libnova", [str(LIBNOVA_BIN)]))
     if _adapter_enabled("anise"):
@@ -340,7 +341,9 @@ EPHEMERIS_CANDIDATE_PARITY: dict[tuple[str, str], str] = {
     (LANE_GEOMETRIC, "siderust_de440_barycenter"): "jpl-spk",
     (LANE_GEOMETRIC, "siderust_spk_center"): "jpl-spk",
     (LANE_GEOMETRIC, "siderust_spk_barycenter"): "jpl-spk",
-    (LANE_GEOMETRIC, "astropy_jpl"): "jpl-spk",     # Astropy get_body() with DE430
+    (LANE_GEOMETRIC, "astropy_jpl"): "jpl-spk",     # Astropy JPL ephemeris resolver
+    (LANE_GEOMETRIC, "astropy_de440_local"): "jpl-spk",
+    (LANE_GEOMETRIC, "astropy_de440-local"): "jpl-spk",
     # Apparent lane — only libnova applies aberration/nutation; others are
     # geometric-only and not comparable to the OBSERVER-style reference.
     (LANE_APPARENT, "erfa"): "geometric-only",
@@ -353,6 +356,8 @@ EPHEMERIS_CANDIDATE_PARITY: dict[tuple[str, str], str] = {
     (LANE_APPARENT, "siderust_spk_center"): "jpl-spk",
     (LANE_APPARENT, "siderust_spk_barycenter"): "jpl-spk",
     (LANE_APPARENT, "astropy_jpl"): "jpl-spk",
+    (LANE_APPARENT, "astropy_de440_local"): "jpl-spk",
+    (LANE_APPARENT, "astropy_de440-local"): "jpl-spk",
 }
 
 
@@ -3039,6 +3044,7 @@ def _invalidate_perf_if_incomplete(
     perf_workloads: dict | None,
     *,
     expected_scalar_n: int,
+    expected_batch_n: int,
     row_status: str | None = None,
 ) -> dict | None:
     """Mark performance workloads invalid when coverage or row status forbids ranking."""
@@ -3047,7 +3053,10 @@ def _invalidate_perf_if_incomplete(
     row_issues: list[str] = []
     if row_status in ("partial", "failed", "skipped"):
         row_issues.append(f"row status is {row_status}")
-    for key, expected_n in (("scalar_warm", expected_scalar_n), ("batch_throughput", BATCH_THROUGHPUT_N)):
+    for key, expected_n in (
+        ("scalar_warm", expected_scalar_n),
+        ("batch_throughput", expected_batch_n),
+    ):
         block = perf_workloads.get(key)
         if not isinstance(block, dict):
             continue
@@ -3216,6 +3225,11 @@ def _discover_anise_spk_provenance() -> dict | None:
             candidates.append(p)
         elif p.is_dir():
             candidates.extend(sorted(p.glob("*.bsp")))
+    cache_root = os.environ.get("SIDERUST_BENCHES_CACHE")
+    if cache_root:
+        cache_bsp = Path(cache_root) / "kernels" / "de440.bsp"
+        if cache_bsp.is_file():
+            candidates.append(cache_bsp)
     datasets = os.environ.get("SIDERUST_DATASETS_DIR")
     if datasets:
         for sub in ("de441_dataset", "de440_dataset"):
@@ -3629,9 +3643,9 @@ def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
             "reference_performance": empty_performance_workloads(),
             "benchmark_config": {
                 "perf_rounds": perf_rounds if run_perf else 0,
-                "perf_scalar_n": SCALAR_WARM_N,
-                "perf_batch_n": BATCH_THROUGHPUT_N,
-                "perf_batch_rounds": BATCH_THROUGHPUT_ROUNDS if run_perf else 0,
+                "perf_scalar_n": perf_scalar_n,
+                "perf_batch_n": perf_batch_n,
+                "perf_batch_rounds": perf_batch_rounds if run_perf else 0,
                 "perf_enabled": run_perf,
             },
             "run_metadata": meta,
@@ -3682,7 +3696,7 @@ def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
     # 4) Performance measurement (Phase-6 workloads)
     if run_perf:
         progress(
-            f"Running performance workloads (scalar N={SCALAR_WARM_N}, batch N={BATCH_THROUGHPUT_N})...",
+            f"Running performance workloads (scalar N={perf_scalar_n}, batch N={perf_batch_n})...",
             exp_name, "performance", total_steps, step + 1,
         )
 
@@ -3705,7 +3719,9 @@ def run_experiment_frame_rotation_bpn(n: int, seed: int, run_perf: bool = True,
             for r in results:
                 if r["candidate_library"] == adapter_base(lib) and r.get("candidate_profile") == adapter_profile(lib):
                     r["performance"] = _invalidate_perf_if_incomplete(
-                        perf_data, expected_scalar_n=perf_scalar_n,
+                        perf_data,
+                        expected_scalar_n=perf_scalar_n,
+                        expected_batch_n=perf_batch_n,
                     )
 
         step += 1
@@ -3934,7 +3950,7 @@ def _run_external_reference_experiment(exp_name: str, n: int, seed: int,
     # 5) Performance measurement (Phase-6 workloads) — no reference_performance for external refs
     if run_perf and perf_fmt_fn is not None:
         progress(
-            f"Running performance workloads (scalar N={SCALAR_WARM_N}, batch N={BATCH_THROUGHPUT_N})...",
+            f"Running performance workloads (scalar N={perf_scalar_n}, batch N={perf_batch_n})...",
             exp_name, "performance", total_steps, step + 1,
         )
 
@@ -3955,7 +3971,9 @@ def _run_external_reference_experiment(exp_name: str, n: int, seed: int,
             for r in results:
                 if r["candidate_library"] == adapter_base(lib) and r.get("candidate_profile") == adapter_profile(lib):
                     r["performance"] = _invalidate_perf_if_incomplete(
-                        perf_data, expected_scalar_n=perf_scalar_n,
+                        perf_data,
+                        expected_scalar_n=perf_scalar_n,
+                        expected_batch_n=perf_batch_n,
                     )
 
     progress("Experiment complete.", exp_name, "done", total_steps, total_steps)
@@ -4107,7 +4125,7 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
     # 4) Performance measurement (Phase-6 workloads)
     if run_perf and perf_fmt_fn is not None:
         progress(
-            f"Running performance workloads (scalar N={SCALAR_WARM_N}, batch N={BATCH_THROUGHPUT_N})...",
+            f"Running performance workloads (scalar N={perf_scalar_n}, batch N={perf_batch_n})...",
             exp_name, "performance", total_steps, step + 1,
         )
 
@@ -4126,7 +4144,9 @@ def _run_generic_experiment(exp_name: str, n: int, seed: int, run_perf: bool = T
             for r in results:
                 if r["candidate_library"] == adapter_base(lib) and r.get("candidate_profile") == adapter_profile(lib):
                     r["performance"] = _invalidate_perf_if_incomplete(
-                        perf_data, expected_scalar_n=perf_scalar_n,
+                        perf_data,
+                        expected_scalar_n=perf_scalar_n,
+                        expected_batch_n=perf_batch_n,
                     )
 
         if python_reference_fn is None:

@@ -1,6 +1,8 @@
 """Shared helpers for the Astropy adapter experiments."""
 
 import math
+import os
+from pathlib import Path
 
 import numpy as np
 
@@ -50,6 +52,50 @@ def solve_kepler_newton(M_rad, e, max_iter=100, tol=1e-15):
         "Astropy does not expose a public Kepler-equation solver; "
         "this row is excluded by the capability catalog."
     )
+
+
+def _astropy_jpl_bsp_path():
+    """Return the candidate local DE440 BSP path for Astropy or None."""
+    explicit = os.environ.get("ASTROPY_JPL_BSP_PATH")
+    if explicit:
+        return Path(explicit).expanduser()
+
+    cache_root = os.environ.get("SIDERUST_BENCHES_CACHE")
+    if cache_root:
+        return Path(cache_root) / "kernels" / "de440.bsp"
+
+    datasets_dir = os.environ.get("SIDERUST_DATASETS_DIR")
+    if datasets_dir:
+        return Path(datasets_dir) / "de440_dataset" / "de440.bsp"
+    return None
+
+
+def _astropy_ephemeris_spec():
+    """Return the Astropy solar_system_ephemeris parameter for the current run.
+
+    Supports:
+    - "builtin"         -> builtin analytic ephemeris
+    - "jpl" / "jpl-auto" -> Astropy default JPL resolver (may download)
+    - "de440-local"     -> resolved local DE440 BSP path
+    - "<path>.bsp"      -> explicit BSP path passed through
+    """
+    raw = os.environ.get("ASTROPY_EPHEMERIS", "builtin").strip()
+    if raw == "" or raw == "builtin":
+        return "builtin"
+    if raw in {"jpl", "jpl-auto"}:
+        return "jpl"
+    if raw == "de440-local":
+        path = _astropy_jpl_bsp_path()
+        if path is None:
+            raise FileNotFoundError(
+                "Astropy local BSP lookup failed: configure SIDERUST_BENCHES_CACHE, "
+                "ASTROPY_JPL_BSP_PATH, or SIDERUST_DATASETS_DIR"
+            )
+        if not path.is_file():
+            raise FileNotFoundError(f"Astropy local BSP path missing: {path}")
+        return str(path)
+    return raw
+
 
 def _astropy_geometric_geocentric(jd_tt, body, ephemeris):
     """Return (ra_rad, dec_rad, dist_au) on the geometric lane using

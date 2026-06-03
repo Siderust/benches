@@ -87,6 +87,14 @@ def test_de440_lunar_is_supported(registry):
     # strict exact-model class (audit issue #4).
     assert entry.parity == "same-family-jpl"
 
+
+def test_astropy_de440_local_candidate_is_present(registry):
+    entry = registry.get("astropy:de440-local", "solar_position")
+    assert entry is not None
+    assert entry.support == "supported"
+    assert "local" in entry.source.lower()
+
+
 def test_planet_center_and_barycenter_siderust_profiles_are_separate(registry):
     center = registry.get("siderust:spk_center", "mars_position")
     bary_embedded = registry.get("siderust:de440_barycenter", "mars_barycenter_position")

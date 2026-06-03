@@ -17,6 +17,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 LAB_ROOT="$(pwd)"
+SIDERUST_BENCHES_CACHE="${SIDERUST_BENCHES_CACHE:-$LAB_ROOT/.benches_cache}"
 
 # ---- Colours (safe for non-TTY) ----
 if [ -t 1 ]; then
@@ -30,6 +31,20 @@ fi
 
 log()  { echo -e "${GREEN}>${RESET} $*"; }
 warn() { echo -e "${YELLOW}!${RESET} $*"; }
+
+# ---- Benchmark cache (DE440 + Siderust datasets) ----
+setup_benchmark_cache() {
+    export SIDERUST_BENCHES_CACHE
+    export ASTROPY_JPL_BSP_PATH="$SIDERUST_BENCHES_CACHE/kernels/de440.bsp"
+    export ANISE_BSP_PATH="${ANISE_BSP_PATH:-$ASTROPY_JPL_BSP_PATH}"
+    export SIDERUST_DATASETS_DIR="$SIDERUST_BENCHES_CACHE/siderust_datasets"
+
+    mkdir -p "$SIDERUST_BENCHES_CACHE/kernels"
+    mkdir -p "$SIDERUST_DATASETS_DIR/de440_dataset"
+    if [ ! -e "$SIDERUST_DATASETS_DIR/de440_dataset/de440.bsp" ]; then
+        ln -sf "$ASTROPY_JPL_BSP_PATH" "$SIDERUST_DATASETS_DIR/de440_dataset/de440.bsp"
+    fi
+}
 
 # ---- Submodules ----
 init_submodules_if_needed() {
@@ -51,6 +66,7 @@ init_submodules_if_needed() {
 # ---- Build ----
 build_all() {
     init_submodules_if_needed
+    setup_benchmark_cache
 
     log "Building ERFA adapter (C)..."
     if ! make -C pipeline/adapters/erfa_adapter -j"$(nproc)" 2>&1 | tail -3; then
@@ -63,18 +79,6 @@ build_all() {
     fi
 
     log "Building Siderust adapter (Rust, release)..."
-    # Stable datasets dir ensures DE440 BSP is found without re-downloading.
-    SIDERUST_DATASETS_DIR="$(pwd)/pipeline/adapters/siderust_adapter/datasets"
-    mkdir -p "$SIDERUST_DATASETS_DIR/de440_dataset"
-    # If the BSP is not yet in the stable dir, copy it from any existing build cache.
-    if [ ! -f "$SIDERUST_DATASETS_DIR/de440_dataset/de440.bsp" ]; then
-        BSP_CACHE=$(find pipeline/adapters/siderust_adapter/target -name 'de440.bsp' -size +100M 2>/dev/null | head -1)
-        if [ -n "$BSP_CACHE" ]; then
-            cp "$BSP_CACHE" "$SIDERUST_DATASETS_DIR/de440_dataset/de440.bsp"
-            log "Copied DE440 BSP from build cache to stable dir."
-        fi
-    fi
-    export SIDERUST_DATASETS_DIR
     if ! (cd pipeline/adapters/siderust_adapter && cargo build --release 2>&1 | tail -3); then
         warn "Siderust adapter build failed; Siderust results may be skipped."
     fi
@@ -110,6 +114,7 @@ run_all() {
     local CONFIG
     CONFIG="$(resolve_config "${1:-core}")"
     source .venv/bin/activate
+    setup_benchmark_cache
 
     log "Running pipeline config: $CONFIG"
     python3 pipeline/run_pipeline.py --config "$CONFIG"

@@ -42,6 +42,10 @@ def test_performance_config_defaults(tmp_path):
     assert cfg.perf_batch_rounds == 5
     assert cfg.perf_warmup == 100
     assert cfg.perf_timeout_s == 120
+    assert cfg.cache_root == ".benches_cache"
+    assert cfg.cache_auto_download is True
+    assert cfg.kernels_de440_enabled is True
+    assert cfg.kernels_de440_filename == "de440.bsp"
 
 def test_orchestrator_cli_receives_perf_values(tmp_path):
     config_path = tmp_path / "perf_cli.toml"

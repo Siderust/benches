@@ -40,7 +40,7 @@ PLANET_BARYCENTER_POSITION_EXPERIMENTS = [
 ]
 
 # Public planet-position benchmarks use planet system barycenters (NAIF IDs
-# 1-8) so that DE440-capable adapters (siderust:de440, astropy:jpl, anise)
+# 1-8) so that DE440-capable adapters (siderust:de440, astropy:de440-local, anise)
 # can all be compared without requiring satellite center SPK kernels.
 PLANET_POSITION_EXPERIMENTS = list(PLANET_BARYCENTER_POSITION_EXPERIMENTS)
 
@@ -182,6 +182,10 @@ class PipelineConfig:
     no_build: bool
     horizons_use_cache: bool
     horizons_allow_network: bool
+    cache_root: str
+    cache_auto_download: bool
+    kernels_de440_enabled: bool
+    kernels_de440_filename: str
     output_dir: str
     publish_latest: bool
     allow_dirty_publish: bool
@@ -238,6 +242,8 @@ def load_pipeline_config(path: str | Path) -> PipelineConfig:
 
     performance = raw.get("performance", {})
     horizons = raw.get("horizons", {})
+    cache = raw.get("cache", {})
+    kernels_de440 = raw.get("kernels", {}).get("de440", {})
     output = raw.get("output", {})
 
     return PipelineConfig(
@@ -260,6 +266,10 @@ def load_pipeline_config(path: str | Path) -> PipelineConfig:
         no_build=bool(raw.get("no_build", False)),
         horizons_use_cache=bool(horizons.get("use_cache", True)),
         horizons_allow_network=bool(horizons.get("allow_network", True)),
+        cache_root=str(cache.get("root", ".benches_cache")),
+        cache_auto_download=bool(cache.get("auto_download", True)),
+        kernels_de440_enabled=bool(kernels_de440.get("enabled", True)),
+        kernels_de440_filename=str(kernels_de440.get("filename", "de440.bsp")),
         output_dir=str(output.get("dir", "results")),
         publish_latest=bool(output.get("publish_latest", False)),
         allow_dirty_publish=bool(output.get("allow_dirty_publish", False)),

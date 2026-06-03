@@ -6,10 +6,10 @@ import json
 import time
 
 try:
-    from .common import PLANET_EXPERIMENTS, PLANET_BARYCENTER_EXPERIMENTS
+    from .common import PLANET_EXPERIMENTS, PLANET_BARYCENTER_EXPERIMENTS, _astropy_ephemeris_spec
     from .experiments import ephemerides, frames, kepler, pointing, time_earth_rotation
 except ImportError:
-    from common import PLANET_EXPERIMENTS, PLANET_BARYCENTER_EXPERIMENTS
+    from common import PLANET_EXPERIMENTS, PLANET_BARYCENTER_EXPERIMENTS, _astropy_ephemeris_spec
     from experiments import ephemerides, frames, kepler, pointing, time_earth_rotation
 
 
@@ -19,20 +19,29 @@ def run_setup(experiment):
     setup_ms = 0.0
     measured = True
     barycenter_exps = set(PLANET_BARYCENTER_EXPERIMENTS.keys())
-    if os.environ.get("ASTROPY_EPHEMERIS") == "jpl" and experiment.replace("_setup", "") in {
+    if experiment.replace("_setup", "") in {
         "solar_position", "lunar_position", "mercury_position", "venus_position",
         "mars_position", "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
     } | barycenter_exps:
         body = experiment.replace("_setup", "").replace("_position", "").replace("_barycenter", "")
         body = {"solar": "sun", "lunar": "moon"}.get(body, body)
-        t0 = time.perf_counter_ns()
         try:
-            from common import _astropy_geometric_geocentric
-        except ImportError:
-            from .common import _astropy_geometric_geocentric
-        _astropy_geometric_geocentric(2451545.0, body, "jpl")
-        setup_ms = (time.perf_counter_ns() - t0) / 1e6
-        measured = True
+            ephemeris = _astropy_ephemeris_spec()
+        except Exception:
+            ephemeris = None
+            measured = False
+        if ephemeris is not None and ephemeris != "builtin":
+            t0 = time.perf_counter_ns()
+            try:
+                from common import _astropy_geometric_geocentric
+            except ImportError:
+                from .common import _astropy_geometric_geocentric
+            try:
+                _astropy_geometric_geocentric(2451545.0, body, ephemeris)
+                setup_ms = (time.perf_counter_ns() - t0) / 1e6
+                measured = True
+            except Exception:
+                measured = False
     json.dump({"setup_ms": setup_ms, "measured": measured}, sys.stdout)
     print()
 

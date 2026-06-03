@@ -93,7 +93,9 @@ def test_invalidate_perf_on_row_partial_status():
         "batch_throughput": None,
         "setup_metrics": None,
     }
-    out = orch._invalidate_perf_if_incomplete(perf, expected_scalar_n=1000, row_status="partial")
+    out = orch._invalidate_perf_if_incomplete(
+        perf, expected_scalar_n=1000, expected_batch_n=100000, row_status="partial",
+    )
     assert out["scalar_warm"]["valid"] is False
     assert any("partial" in w for w in out["scalar_warm"]["warnings"])
 

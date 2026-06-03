@@ -36,6 +36,8 @@ def test_perf_invalid_when_case_count_mismatch():
         "batch_throughput": None,
         "setup_metrics": None,
     }
-    out = orch._invalidate_perf_if_incomplete(perf, expected_scalar_n=1000)
+    out = orch._invalidate_perf_if_incomplete(
+        perf, expected_scalar_n=1000, expected_batch_n=100000,
+    )
     assert out["scalar_warm"]["valid"] is False
     assert any("50" in w or "perf" in w.lower() for w in out["scalar_warm"]["warnings"])

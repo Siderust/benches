@@ -149,15 +149,15 @@ def test_comparability_class_best_available_for_geometric_lane():
     assert enriched["comparability_class"] == "best-available"
 
 
-def test_astropy_jpl_barycenter_row_uses_same_family_jpl_parity():
-    """astropy:jpl uses JPL DE440 via get_body_barycentric for planet-system
-    barycenters; the reference is Horizons DE441, so this is same-family-jpl
-    (a JPL kernel of a different version), NOT exact-model (audit issue #4)."""
+def test_astropy_de440_local_barycenter_row_uses_same_family_jpl_parity():
+    """astropy:de440-local uses a local JPL DE440 BSP via get_body_barycentric for
+    planet-system barycenters; the reference is Horizons DE441, so this is
+    same-family-jpl (a JPL kernel of a different version), NOT exact-model."""
     result = _base_result("mars_barycenter_position", "astropy", reference="jpl_horizons")
     enriched = orch.enrich_result(
         result,
         "mars_barycenter_position",
-        "astropy:jpl",
+        "astropy:de440-local",
         source_provenance={"source": "JPL Horizons", "source_tag": "DE441"},
     )
     assert enriched["catalog_parity"] == "same-family-jpl"

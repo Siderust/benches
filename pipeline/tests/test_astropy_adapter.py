@@ -1,5 +1,6 @@
 import json
 import math
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -7,7 +8,7 @@ from unittest.mock import patch
 
 from pipeline.adapters.astropy_adapter import adapter
 from pipeline.adapters.astropy_adapter import common
-from pipeline.adapters.astropy_adapter.experiments import time_earth_rotation
+from pipeline.adapters.astropy_adapter.experiments import ephemerides, time_earth_rotation
 
 
 LAB_ROOT = Path(__file__).resolve().parents[2]
@@ -29,6 +30,76 @@ def test_jpl_lunar_setup_uses_astropy_moon_body(capsys):
 
     geometric.assert_called_once_with(2451545.0, "moon", "jpl")
     assert json.loads(capsys.readouterr().out)["measured"] is True
+
+
+def test_de440_local_resolves_benches_cache_path(tmp_path, capsys):
+    bsp = tmp_path / "kernels" / "de440.bsp"
+    bsp.parent.mkdir(parents=True, exist_ok=True)
+    bsp.write_text("")
+
+    with patch.dict(
+        os.environ,
+        {
+            "ASTROPY_EPHEMERIS": "de440-local",
+            "SIDERUST_BENCHES_CACHE": str(tmp_path),
+        },
+        clear=False,
+    ), patch.object(common, "_astropy_geometric_geocentric") as geometric:
+        for key in ("ASTROPY_JPL_BSP_PATH", "SIDERUST_DATASETS_DIR"):
+            os.environ.pop(key, None)
+        adapter.run_setup("solar_position_setup")
+
+    geometric.assert_called_once_with(2451545.0, "sun", str(bsp))
+    assert json.loads(capsys.readouterr().out)["measured"] is True
+
+
+def test_de440_local_resolves_siderust_datasets_path(tmp_path, capsys):
+    bsp = tmp_path / "de440_dataset" / "de440.bsp"
+    bsp.parent.mkdir(parents=True, exist_ok=True)
+    bsp.write_text("")
+
+    with patch.dict(
+        os.environ,
+        {
+            "ASTROPY_EPHEMERIS": "de440-local",
+            "SIDERUST_DATASETS_DIR": str(tmp_path),
+        },
+        clear=False,
+    ), patch.object(common, "_astropy_geometric_geocentric") as geometric:
+        for key in ("SIDERUST_BENCHES_CACHE", "ASTROPY_JPL_BSP_PATH"):
+            os.environ.pop(key, None)
+        adapter.run_setup("solar_position_setup")
+
+    geometric.assert_called_once_with(2451545.0, "sun", str(bsp))
+    assert json.loads(capsys.readouterr().out)["measured"] is True
+
+
+def test_explicit_bsp_path_passes_through(tmp_path):
+    bsp = tmp_path / "de440.bsp"
+    bsp.write_text("")
+
+    with patch.dict("os.environ", {"ASTROPY_EPHEMERIS": str(bsp)}), \
+         patch.object(ephemerides, "_astropy_geometric_geocentric") as geometric:
+        ephemerides.run_solar_position(iter(["1", "2451545.0"]))
+
+    geometric.assert_called_once_with(2451545.0, "sun", str(bsp))
+
+
+def test_missing_de440_local_bsp_emits_skipped_json():
+    env = {"ASTROPY_EPHEMERIS": "de440-local"}
+    result = subprocess.run(
+        [sys.executable, str(ASTROPY_ADAPTER), "solar_position"],
+        input="1\n2451545.0\n",
+        text=True,
+        capture_output=True,
+        check=True,
+        env={**os.environ, **env},
+        cwd=LAB_ROOT,
+    )
+    data = json.loads(result.stdout)
+    assert data["skipped"] is True
+    assert data["status"] == "skipped"
+    assert "ASTROPY_EPHEMERIS" in data["reason"] or "SIDERUST_DATASETS_DIR" in data["reason"] or "de440.bsp" in data["reason"].lower()
 
 
 def run_adapter(experiment, stdin):

@@ -1,6 +1,7 @@
 # Siderust Lab — reproducible Python dependencies (install: pip install -r pipeline/requirements.txt)
 numpy>=1.24,<3
 astropy>=5.3,<8
+jplephem>=2.0,<4
 pyerfa>=2.0.1,<3
 pytest>=7.4,<9
 tomli>=2.0.1; python_version < "3.11"

@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
+out.txt
 
 pipeline/adapters/siderust_adapter/vendor/deps
 
@@ -178,6 +179,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Unified benchmark cache (DE440 BSP, datasets)
+.benches_cache/
 
 # artifacts
 .vscode

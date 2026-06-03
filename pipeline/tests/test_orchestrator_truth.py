@@ -7,6 +7,7 @@ downstream pipeline.
 
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -40,10 +41,10 @@ def test_lunar_de440_not_runtime_blocked():
 
 
 def test_variant_identity_distinct():
-    """``astropy:jpl`` and ``siderust:de440`` must be canonical ids,
+    """``astropy:de440-local`` and ``siderust:de440`` must be canonical ids,
     distinct from their base library (no collapse to ``astropy`` /
     ``siderust``)."""
-    assert o.candidate_id_for("astropy:jpl") == "astropy:jpl"
+    assert o.candidate_id_for("astropy:de440-local") == "astropy:de440-local"
     assert o.candidate_id_for("siderust:de440") == "siderust:de440"
     assert o.candidate_id_for("siderust:spk_center") == "siderust:spk_center"
     assert o.candidate_id_for("siderust:elp2000") == "siderust:elp2000"
@@ -89,5 +90,13 @@ def test_unknown_variant_drops_to_none():
     silent passthrough that would re-publish the base candidate's
     numbers under a different label."""
     labels = {label for label, _cmd in o.candidate_adapters_for("frame_rotation_bpn")}
-    assert "astropy:jpl" not in labels
+    assert "astropy:de440-local" not in labels
     assert "siderust:de440" not in labels
+
+
+def test_de440_local_only_when_kernel_enabled():
+    labels_enabled = {label for label, _cmd in o.candidate_adapters_for("solar_position")}
+    with patch.dict("os.environ", {"SIDERUST_KERNEL_DE440_ENABLED": "0"}):
+        labels_disabled = {label for label, _cmd in o.candidate_adapters_for("solar_position")}
+    assert "astropy:de440-local" in labels_enabled
+    assert "astropy:de440-local" not in labels_disabled

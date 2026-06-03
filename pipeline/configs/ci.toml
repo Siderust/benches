@@ -5,6 +5,14 @@ adapters = ["siderust", "astropy", "libnova"]
 siderust_profiles = ["iau2006a"]
 no_build = true
 
+[cache]
+root = ".benches_cache"
+auto_download = false
+
+[kernels.de440]
+enabled = true
+filename = "de440.bsp"
+
 [performance]
 enabled = false
 rounds = 1

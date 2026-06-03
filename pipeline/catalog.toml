@@ -355,6 +355,62 @@ support     = "supported"
 exclusion_reason = ""
 
 
+[[candidate]]
+id          = "astropy:de440-local"
+library     = "astropy"
+display     = "astropy (JPL DE440 local BSP)"
+description = "Astropy's local JPL DE440 BSP path, resolved from the benchmark cache (SIDERUST_BENCHES_CACHE/kernels/de440.bsp)."
+experiments = [
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position",
+]
+api_surface = "public"
+api_method  = "with solar_system_ephemeris.set('<local BSP path>'): get_body_barycentric(body) - get_body_barycentric('earth')"
+model       = "Local JPL DE440 via Astropy solar_system_ephemeris"
+source      = "Local JPL DE440 SPK kernel from SIDERUST_BENCHES_CACHE/kernels/de440.bsp"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+exclusion_reason = ""
+
+[[candidate]]
+id          = "astropy:de440-local"
+library     = "astropy"
+display     = "astropy (JPL DE440 local BSP barycenters)"
+description = "Astropy's local JPL DE440 BSP for planet-system barycenters via get_body_barycentric(body) − get_body_barycentric('earth')."
+experiments = [
+  "mercury_barycenter_position", "venus_barycenter_position",
+  "mars_barycenter_position", "jupiter_barycenter_position",
+  "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+]
+api_surface = "public"
+api_method  = "with solar_system_ephemeris.set('<local BSP path>'): get_body_barycentric(body) - get_body_barycentric('earth')"
+model       = "Local JPL DE440 planet-system barycenters via Astropy solar_system_ephemeris"
+source      = "Local JPL DE440 SPK kernel from SIDERUST_BENCHES_CACHE/kernels/de440.bsp"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+exclusion_reason = ""
+
+[[candidate]]
+id          = "astropy:de440-local"
+library     = "astropy"
+display     = "astropy (JPL DE440 local BSP outer system barycenters)"
+description = "Astropy's local JPL DE440 BSP path maps Mars through Neptune names to planet-system barycenters."
+experiments = [
+  "mars_position", "jupiter_position", "saturn_position",
+  "uranus_position", "neptune_position",
+]
+api_surface = "public"
+api_method  = "with solar_system_ephemeris.set('<local BSP path>'): get_body_barycentric(body) - get_body_barycentric('earth')"
+model       = "Local JPL DE440 planet-system barycenters via Astropy solar_system_ephemeris"
+source      = "Local JPL DE440 SPK kernel from SIDERUST_BENCHES_CACHE/kernels/de440.bsp"
+lane        = "geometric_vector"
+parity      = "best-available"
+support     = "supported"
+exclusion_reason = ""
+
 # ---------------------------------------------------------------------------
 # libnova — analytic (VSOP87 / ELP2000)
 # ---------------------------------------------------------------------------
