@@ -1,4 +1,4 @@
-name: Siderust Lab CI
+name: Siderust Benches CI
 
 on:
   push:
