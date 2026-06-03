@@ -2940,7 +2940,10 @@ def _partial_accuracy_reason(accuracy: dict) -> str:
     )
 
 
-def _validate_publish_latest(scope: dict, metadata: dict) -> list[str]:
+def _validate_publish_latest(scope: dict, metadata: dict, *, perf_enabled: bool = True,
+                             perf_rounds: int = 10, perf_scalar_n: int = 5000,
+                             perf_batch_n: int = 100000, perf_batch_rounds: int = 5,
+                             perf_warmup: int = 100) -> list[str]:
     """Return human-readable blockers for copying a run to latest_results/."""
     blockers: list[str] = []
     git_dirty = metadata.get("git_dirty") or {}
@@ -2952,6 +2955,19 @@ def _validate_publish_latest(scope: dict, metadata: dict) -> list[str]:
             "run scope is partial"
             + (f" (missing: {', '.join(missing)})" if missing else "")
         )
+    if perf_enabled:
+        if perf_rounds < 10:
+            blockers.append(f"perf_rounds {perf_rounds} < 10 (publication standard)")
+        if perf_scalar_n < 5000:
+            blockers.append(f"perf_scalar_n {perf_scalar_n} < 5000 (publication standard)")
+        if perf_batch_n < 100000:
+            blockers.append(f"perf_batch_n {perf_batch_n} < 100000 (publication standard)")
+        if perf_batch_rounds < 5:
+            blockers.append(f"perf_batch_rounds {perf_batch_rounds} < 5 (publication standard)")
+        if perf_warmup < 100:
+            blockers.append(f"perf_warmup {perf_warmup} < 100 (publication standard)")
+    else:
+        blockers.append("performance measurement is disabled")
     return blockers
 
 
@@ -2965,7 +2981,9 @@ def _publish_overrides_satisfy(
     for msg in blockers:
         if "git_dirty" in msg and not allow_dirty:
             return False
-        if "partial" in msg.lower() and not allow_partial:
+        # Treat non-standard performance or disabled performance as "partial"
+        # for publication gate override purposes.
+        if ("partial" in msg.lower() or "perf" in msg.lower() or "performance" in msg.lower()) and not allow_partial:
             return False
     return True
 
@@ -4711,7 +4729,15 @@ def main():
         if run_tags:
             scope["run_tags"] = run_tags
 
-        pub_blockers = _validate_publish_latest(scope, run_metadata())
+        pub_blockers = _validate_publish_latest(
+            scope, run_metadata(),
+            perf_enabled=run_perf,
+            perf_rounds=args.perf_rounds,
+            perf_scalar_n=args.perf_scalar_n,
+            perf_batch_n=args.perf_batch_n,
+            perf_batch_rounds=args.perf_batch_rounds,
+            perf_warmup=args.perf_warmup,
+        )
         publication = {
             "grade": "publication" if not pub_blockers else "draft",
             "publish_blockers": pub_blockers,
