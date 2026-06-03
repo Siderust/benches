@@ -1,0 +1,18 @@
+suite = "all"
+n = 10
+seed = 42
+adapters = ["siderust", "astropy", "libnova", "anise"]
+siderust_profiles = ["iau2006a", "iau2000a", "iau2000b", "precession_only"]
+no_build = true
+
+[performance]
+enabled = true
+rounds = 1
+
+[horizons]
+use_cache = true
+allow_network = false
+
+[output]
+dir = "results"
+publish_latest = false

@@ -1,0 +1,25 @@
+# Phase B small CI baseline.
+# Offline and fast; intended for local validation of the Phase B artifact path.
+
+run_label = "phase-b-ci-seed42"
+phase = "phase-b"
+tags = ["phase-b", "ci", "small", "seed42"]
+
+suite = "ci"
+n = 50
+seed = 42
+adapters = ["siderust", "astropy", "libnova"]
+siderust_profiles = ["iau2006a"]
+no_build = true
+
+[performance]
+enabled = false
+rounds = 1
+
+[horizons]
+use_cache = true
+allow_network = false
+
+[output]
+dir = "results"
+publish_latest = false

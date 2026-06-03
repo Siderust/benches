@@ -1,0 +1,160 @@
+#!/usr/bin/env bash
+# =================================================================
+# Siderust Benchmark Laboratory - Build & Run Script
+#
+# Usage:
+#   ./run.sh              # Build all + run core config
+#   ./run.sh build        # Build only
+#   ./run.sh run          # Run core config only (assumes built)
+#   ./run.sh ci           # Build available adapters + run ci config
+#   ./run.sh full         # Build available adapters + run full config
+#   ./run.sh phase-b ci   # Build available adapters + run a Phase B matrix leg
+#   ./run.sh pipeline/configs/ci.toml
+#   ./run.sh run pipeline/configs/diagnostic.toml
+# =================================================================
+
+set -euo pipefail
+cd "$(dirname "$0")"
+
+LAB_ROOT="$(pwd)"
+
+# ---- Colours (safe for non-TTY) ----
+if [ -t 1 ]; then
+    BOLD="\033[1m"
+    GREEN="\033[32m"
+    YELLOW="\033[33m"
+    RESET="\033[0m"
+else
+    BOLD="" GREEN="" YELLOW="" RESET=""
+fi
+
+log()  { echo -e "${GREEN}>${RESET} $*"; }
+warn() { echo -e "${YELLOW}!${RESET} $*"; }
+
+# ---- Submodules ----
+init_submodules_if_needed() {
+    if [ "${FORCE_SUBMODULE_SYNC:-0}" = "1" ]; then
+        warn "FORCE_SUBMODULE_SYNC=1 set: syncing submodules to pinned commits."
+        git submodule update --init --recursive
+        return
+    fi
+
+    if git submodule status --recursive | grep -q '^-'; then
+        log "Initializing missing git submodules..."
+        git submodule update --init --recursive
+    else
+        warn "Submodules already initialized; skipping sync to preserve local checkouts."
+        warn "Set FORCE_SUBMODULE_SYNC=1 to reset submodules to pinned commits."
+    fi
+}
+
+# ---- Build ----
+build_all() {
+    init_submodules_if_needed
+
+    log "Building ERFA adapter (C)..."
+    if ! make -C pipeline/adapters/erfa_adapter -j"$(nproc)" 2>&1 | tail -3; then
+        warn "ERFA adapter build failed; experiments requiring it may be skipped."
+    fi
+
+    log "Building libnova adapter (C)..."
+    if ! make -C pipeline/adapters/libnova_adapter -j"$(nproc)" 2>&1 | tail -3; then
+        warn "libnova adapter build failed; libnova results may be skipped."
+    fi
+
+    log "Building Siderust adapter (Rust, release)..."
+    # Stable datasets dir ensures DE440 BSP is found without re-downloading.
+    SIDERUST_DATASETS_DIR="$(pwd)/pipeline/adapters/siderust_adapter/datasets"
+    mkdir -p "$SIDERUST_DATASETS_DIR/de440_dataset"
+    # If the BSP is not yet in the stable dir, copy it from any existing build cache.
+    if [ ! -f "$SIDERUST_DATASETS_DIR/de440_dataset/de440.bsp" ]; then
+        BSP_CACHE=$(find pipeline/adapters/siderust_adapter/target -name 'de440.bsp' -size +100M 2>/dev/null | head -1)
+        if [ -n "$BSP_CACHE" ]; then
+            cp "$BSP_CACHE" "$SIDERUST_DATASETS_DIR/de440_dataset/de440.bsp"
+            log "Copied DE440 BSP from build cache to stable dir."
+        fi
+    fi
+    export SIDERUST_DATASETS_DIR
+    if ! (cd pipeline/adapters/siderust_adapter && cargo build --release 2>&1 | tail -3); then
+        warn "Siderust adapter build failed; Siderust results may be skipped."
+    fi
+
+    log "Building ANISE adapter (Rust, release)..."
+    if ! (cd pipeline/adapters/anise_adapter && cargo build --release 2>&1 | tail -3); then
+        warn "ANISE adapter build failed; ANISE results may be skipped."
+    fi
+
+    log "Setting up Python virtual environment..."
+    if [ ! -d .venv ]; then
+        python3 -m venv .venv
+    fi
+    source .venv/bin/activate
+    pip install -q -r pipeline/requirements.txt
+
+    log "Build step finished"
+}
+
+# ---- Run ----
+resolve_config() {
+    case "${1:-core}" in
+        core|ci|diagnostic|full)
+            echo "pipeline/configs/${1}.toml"
+            ;;
+        *)
+            echo "$1"
+            ;;
+    esac
+}
+
+run_all() {
+    local CONFIG
+    CONFIG="$(resolve_config "${1:-core}")"
+    source .venv/bin/activate
+
+    log "Running pipeline config: $CONFIG"
+    python3 pipeline/run_pipeline.py --config "$CONFIG"
+
+    log "Done. Results in results/"
+}
+
+# ---- Static export ----
+export_static() {
+    source .venv/bin/activate 2>/dev/null || true
+    local OUT="${1:-static_export}"
+    log "Exporting static lab data to $OUT"
+    python3 -m pipeline.export_static --lab-root "$LAB_ROOT" --output "$OUT"
+}
+
+# ---- Main ----
+case "${1:-all}" in
+    build)
+        build_all
+        ;;
+    run)
+        run_all "${2:-pipeline/configs/core.toml}"
+        ;;
+    export)
+        export_static "${2:-static_export}"
+        ;;
+    phase-b|phase_b)
+        build_all
+        source .venv/bin/activate
+        python3 pipeline/run_phase_b.py --matrix "${2:-ci}"
+        ;;
+    all|"")
+        build_all
+        run_all "${2:-pipeline/configs/core.toml}"
+        export_static "static_export"
+        ;;
+    *)
+        CONFIG="$(resolve_config "${1:-core}")"
+        if [ -f "$CONFIG" ]; then
+            build_all
+            run_all "$CONFIG"
+            export_static "static_export"
+        else
+            echo "Usage: $0 [build|run|export|all|core|ci|diagnostic|full] [config.toml]"
+            exit 1
+        fi
+        ;;
+esac

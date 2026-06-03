@@ -1,0 +1,535 @@
+# Siderust Lab — Capability Catalog
+# ----------------------------------
+# This file is the single source of truth for what the lab publishes.
+# Every (candidate_id, experiment) tuple that ever appears in a scorecard
+# row MUST also appear here, with an explicit upstream API reference.
+#
+# Schema (per [[candidate]] entry):
+#   id              — stable identifier ("library[:variant]"); appears as
+#                     candidate_id in result JSON and as the row key in
+#                     scorecards. The same id may appear in multiple [[candidate]]
+#                     blocks only when experiments do not overlap; uniqueness is
+#                     enforced per (candidate_id, experiment) tuple.
+#   library         — the upstream library this candidate belongs to.
+#   display         — short human-readable name shown in the dashboard.
+#   description     — one-sentence description of what the candidate is.
+#   experiments     — list of experiment IDs this candidate participates in
+#                     (use the canonical experiment ID, e.g. solar_position).
+#   api_surface     — "public"     ⇒ exported library function on a stable
+#                                    public API,
+#                     "reference"  ⇒ wrapper of the SOFA / IAU reference
+#                                    implementation (ERFA), used as
+#                                    reference column only,
+#                     "diagnostic" ⇒ internal-only / opt-in profile, never
+#                                    in the public scoreboard.
+#   api_method      — exact upstream symbol(s) called.  This is the line
+#                     the paper cites when claiming "the lab measures the
+#                     library's published API and not a hand-rolled
+#                     reimplementation".
+#   model           — model identifier ("VSOP87", "ELP2000-82B", "JPL DE440",
+#                     "JPL DE430", "Astropy builtin (DE405-like)", etc.).
+#   source          — provenance (kernel file / table / textbook).
+#   lane            — "geometric_vector" | "apparent_observer".
+#   parity          — comparability tag against the JPL Horizons DE441
+#                     reference row.  Allowed values:
+#                       "exact-same-kernel" ⇒ candidate resolves the *identical*
+#                                             kernel/model as the reference
+#                                             (e.g. a true DE441 candidate),
+#                       "same-family-jpl"   ⇒ a JPL DE kernel of a different
+#                                             version than the reference
+#                                             (DE440 vs the DE441 reference):
+#                                             ranked in the broad view but never
+#                                             crowned in the strict exact-model
+#                                             view,
+#                       "best-available"    ⇒ different model, same observable,
+#                       "model-mismatch"    ⇒ not comparable,
+#                       "diagnostic-only"   ⇒ shown, never ranked,
+#                       "reference"         ⇒ the reference row itself.
+#   support         — "supported"        ⇒ ranked,
+#                     "runtime-blocked"  ⇒ candidate is intentionally not
+#                                          published because of an upstream
+#                                          bug or missing data,
+#                     "unsupported"      ⇒ no API path in this library.
+#   exclusion_reason — required when support != "supported"; recorded in
+#                      the result JSON and surfaced in the dashboard.
+#
+# IMPORTANT INVARIANTS (enforced by pipeline/tests/test_catalog_truth.py):
+#   1. No entry has api_surface = "public" with api_method that names a
+#      symbol not exported by the upstream library.
+#   2. No entry has support = "supported" if its api_method is a Newton /
+#      bisection iteration written inside the adapter.
+#   3. libnova never has parity = "jpl-spk".
+#   4. erfa entries are always api_surface = "reference" (never "public").
+#
+# Add new entries here only after auditing the upstream API and recording
+# the exact symbol invoked.  Do NOT add a row to make a tool "look good"
+# in the dashboard — fabricated rows fail the truth tests.
+
+# ---------------------------------------------------------------------------
+# siderust — VSOP87 / Meeus / IAU profiles (default geometric models)
+# ---------------------------------------------------------------------------
+
+[[candidate]]
+id          = "siderust"
+library     = "siderust"
+display     = "siderust (VSOP87 + Meeus, IAU 2006A)"
+description = "Default siderust build: VSOP87 planets, Meeus Ch. 47 lunar, IAU 2006/2000A precession-nutation."
+experiments = [
+  "gmst_era", "frame_rotation_bpn", "equ_ecl", "equ_horizontal",
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position", "mars_position",
+  "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
+  "mercury_barycenter_position", "venus_barycenter_position", "mars_barycenter_position",
+  "jupiter_barycenter_position", "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+  "kepler_solver",
+]
+api_surface  = "public"
+model        = "VSOP87 + Meeus Ch. 47 + IAU 2006/2000A"
+source       = "siderust crates: bodies::*, event::lunar::meeus_ch47"
+lane         = "geometric_vector"
+parity       = "best-available"
+support      = "supported"
+
+[candidate.api_methods]
+gmst_era                    = "siderust::astro::sidereal::gmst_iau2006 + earth_rotation_angle"
+frame_rotation_bpn          = "siderust::astro::frames::precession_nutation_matrix(Iau2006A)"
+equ_ecl                     = "DirectionAstroExt::to_ecliptic_of_date / to_icrs"
+equ_horizontal              = "DirectionAstroExt::to_horizontal_precise / to_equatorial"
+solar_position              = "EclipticMeanJ2000::<AU,Heliocentric>::CENTER.transform(jd)"
+lunar_position              = "siderust::event::lunar::meeus_ch47::moon_position_meeus_ch47"
+mercury_position            = "siderust::bodies::Mercury::vsop87a"
+venus_position              = "siderust::bodies::Venus::vsop87a"
+mars_position               = "siderust::bodies::Mars::vsop87a"
+jupiter_position            = "siderust::bodies::Jupiter::vsop87a"
+saturn_position             = "siderust::bodies::Saturn::vsop87a"
+uranus_position             = "siderust::bodies::Uranus::vsop87a"
+neptune_position            = "siderust::bodies::Neptune::vsop87a"
+mercury_barycenter_position = "siderust::bodies::Mercury::vsop87a (planet-center proxy for system barycenter)"
+venus_barycenter_position   = "siderust::bodies::Venus::vsop87a (planet-center proxy for system barycenter)"
+mars_barycenter_position    = "siderust::bodies::Mars::vsop87a (planet-center proxy for system barycenter)"
+jupiter_barycenter_position = "siderust::bodies::Jupiter::vsop87a (planet-center proxy for system barycenter)"
+saturn_barycenter_position  = "siderust::bodies::Saturn::vsop87a (planet-center proxy for system barycenter)"
+uranus_barycenter_position  = "siderust::bodies::Uranus::vsop87a (planet-center proxy for system barycenter)"
+neptune_barycenter_position = "siderust::bodies::Neptune::vsop87a (planet-center proxy for system barycenter)"
+kepler_solver               = "keplerian::anomaly::eccentric_from_mean"
+
+
+[[candidate]]
+id          = "siderust:elp2000"
+library     = "siderust"
+display     = "siderust (ELP2000-82B lunar)"
+description = "siderust with the ELP2000-82B high-accuracy lunar model selected via SIDERUST_LUNAR_MODEL=elp2000."
+experiments = ["lunar_position"]
+api_surface = "public"
+api_method  = "siderust::bodies::Moon::get_geo_position::<Kilometer>(jd) + EclipticMeanJ2000 → ICRS"
+model       = "ELP2000-82B"
+source      = "siderust crate: bodies::Moon (ELP2000 series)"
+lane        = "geometric_vector"
+parity      = "best-available"
+support     = "supported"
+
+
+[[candidate]]
+id          = "siderust:de440"
+library     = "siderust"
+display     = "siderust (JPL DE440)"
+description = "siderust with a runtime JPL DE440/DE441 BSP selected via SIDERUST_SOLAR_MODEL=de440 / SIDERUST_LUNAR_MODEL=de440."
+experiments = [
+  "solar_position",
+  # planet entries can be added once the de440 path covers them in siderust
+]
+api_surface = "public"
+api_method  = "siderust::ephemeris::RuntimeEphemeris::earth_heliocentric"
+model       = "JPL DE440/DE441 runtime BSP (Chebyshev)"
+source      = "JPL DE440/DE441 SPK kernel resolved from SIDERUST_PLANET_KERNELS / SIDERUST_DATASETS_DIR / SIDERUST_DATA_DIR"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+
+[[candidate]]
+id          = "siderust:de440"
+library     = "siderust"
+experiments = ["lunar_position"]
+api_surface = "public"
+api_method  = "siderust::ephemeris::RuntimeEphemeris::moon_geocentric"
+model       = "JPL DE440/DE441 runtime BSP"
+source      = "JPL DE440 SPK kernel"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+[[candidate]]
+id          = "astropy:jpl"
+library     = "astropy"
+display     = "astropy (JPL)"
+description = "Astropy JPL ephemeris: geocentric planet system barycenters via get_body_barycentric(body) − get_body_barycentric('earth') with the 'jpl' ephemeris backend."
+experiments = [
+  "mercury_barycenter_position", "venus_barycenter_position",
+  "mars_barycenter_position", "jupiter_barycenter_position",
+  "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+]
+api_surface = "public"
+api_method  = "solar_system_ephemeris.set('jpl'); get_body_barycentric(body) - get_body_barycentric('earth')"
+model       = "JPL DE440/DE441 via Astropy solar_system_ephemeris"
+source      = "Astropy default JPL ephemeris (de440 / de441)"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+[[candidate]]
+id          = "anise"
+library     = "anise"
+display     = "anise (JPL SPK barycenters)"
+description = "ANISE almanac: geocentric planet system barycenters via translate(BODY_BARYCENTER_J2000, EARTH_J2000, epoch, NONE)."
+experiments = [
+  "mercury_barycenter_position", "venus_barycenter_position",
+  "mars_barycenter_position", "jupiter_barycenter_position",
+  "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+]
+api_surface = "public"
+api_method  = "almanac.translate(<BODY_BARYCENTER>_J2000, EARTH_J2000, epoch, Aberration::NONE)"
+model       = "JPL DE440 (SPK)"
+source      = "anise/data/de440*.bsp"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+[[candidate]]
+id          = "siderust:de440_barycenter"
+library     = "siderust"
+display     = "siderust (runtime DE440 planet barycenters)"
+description = "siderust runtime DE440/DE441 major-planet system barycenters selected via SIDERUST_PLANET_MODEL=de440_barycenter."
+experiments = [
+  "mercury_barycenter_position", "venus_barycenter_position",
+  "mars_barycenter_position", "jupiter_barycenter_position",
+  "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+]
+api_surface = "public"
+api_method  = "siderust::formats::spice::SpkKernelSet::try_major_planet_geocentric(MajorPlanet, PlanetPoint::SystemBarycenter, jd)"
+model       = "JPL DE440/DE441 planet-system barycenters (runtime SPK Chebyshev)"
+source      = "JPL DE440/DE441 SPK kernel resolved from SIDERUST_PLANET_KERNELS / SIDERUST_DATASETS_DIR / SIDERUST_DATA_DIR"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+[[candidate]]
+id          = "siderust:spk_center"
+library     = "siderust"
+display     = "siderust (runtime SPK planet centers)"
+description = "siderust runtime SPK kernel stack for named planet-center states selected via SIDERUST_PLANET_MODEL=spk_center."
+experiments = [
+  "mercury_position", "venus_position", "mars_position",
+  "jupiter_position", "saturn_position", "uranus_position",
+  "neptune_position",
+]
+api_surface = "public"
+api_method  = "siderust::data::SpkKernelSet::try_major_planet_geocentric(MajorPlanet, PlanetPoint::Center, jd)"
+model       = "JPL runtime SPK planet centers"
+source      = "SIDERUST_PLANET_KERNELS: planetary DE SPK plus planet-center satellite SPKs where needed"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+[[candidate]]
+id          = "siderust:spk_barycenter"
+library     = "siderust"
+display     = "siderust (runtime SPK planet barycenters)"
+description = "siderust runtime SPK kernel stack for planet-system barycenter states selected via SIDERUST_PLANET_MODEL=spk_barycenter."
+experiments = [
+  "mercury_barycenter_position", "venus_barycenter_position",
+  "mars_barycenter_position", "jupiter_barycenter_position",
+  "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+]
+api_surface = "public"
+api_method  = "siderust::data::SpkKernelSet::try_major_planet_geocentric(MajorPlanet, PlanetPoint::SystemBarycenter, jd)"
+model       = "JPL runtime SPK planet-system barycenters"
+source      = "SIDERUST_PLANET_KERNELS: planetary DE SPK"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+
+
+# ---------------------------------------------------------------------------
+# anise — JPL DE440 SPK kernel (same-family-jpl vs the DE441 reference)
+# ---------------------------------------------------------------------------
+
+[[candidate]]
+id          = "anise"
+library     = "anise"
+display     = "anise (JPL SPK)"
+description = "Translate solar-system body states from a JPL DE440/DE441 SPK kernel via the anise almanac."
+experiments = [
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position", "mars_position",
+  "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
+]
+api_surface = "public"
+api_method  = "anise::almanac::Almanac::translate(<body>_J2000, EARTH_J2000, epoch, Aberration::NONE)"
+model       = "JPL DE440 / DE441 (SPK)"
+source      = "anise/data/de440*.bsp (or env-provided ANISE_BSP_PATH)"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+# Bodies not covered by the bundled SPK (e.g. some asteroids) are reported as
+# runtime-blocked at runtime by the adapter when the translate call errors.
+
+
+# ---------------------------------------------------------------------------
+# astropy — public client API
+# ---------------------------------------------------------------------------
+
+[[candidate]]
+id          = "astropy"
+library     = "astropy"
+display     = "astropy (builtin ephemeris + public transforms)"
+description = "Astropy's public coordinate / time / ephemeris API.  Geometric ephemerides go through solar_system_ephemeris('builtin') + get_body_barycentric; transforms use SkyCoord frames and Time methods."
+experiments = [
+  "gmst_era", "frame_rotation_bpn", "equ_ecl", "equ_horizontal",
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position", "mars_position",
+  "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
+]
+api_surface = "public"
+model       = "Astropy builtin (Meeus / DE405-like) + public coordinate/time transforms"
+source      = "astropy package (astropy.coordinates, astropy.time)"
+lane        = "geometric_vector"
+parity      = "best-available"
+support     = "supported"
+
+[candidate.api_methods]
+gmst_era            = "Time.sidereal_time('mean', model='IAU2006') + Time.earth_rotation_angle"
+frame_rotation_bpn  = "SkyCoord(GCRS).transform_to(TETE)"
+equ_ecl             = "SkyCoord(ICRS).transform_to(BarycentricMeanEcliptic)"
+equ_horizontal      = "SkyCoord(TETE).transform_to(AltAz)"
+solar_position      = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('sun') - get_body_barycentric('earth')"
+lunar_position      = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('moon') - get_body_barycentric('earth')"
+mercury_position    = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('mercury') - get_body_barycentric('earth')"
+venus_position      = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('venus') - get_body_barycentric('earth')"
+mars_position       = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('mars') - get_body_barycentric('earth')"
+jupiter_position    = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('jupiter') - get_body_barycentric('earth')"
+saturn_position     = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('saturn') - get_body_barycentric('earth')"
+uranus_position     = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('uranus') - get_body_barycentric('earth')"
+neptune_position    = "with solar_system_ephemeris.set('builtin'): get_body_barycentric('neptune') - get_body_barycentric('earth')"
+
+
+[[candidate]]
+id          = "astropy:jpl"
+library     = "astropy"
+display     = "astropy (JPL DE440)"
+description = "Astropy's public ephemeris API with solar_system_ephemeris.set('jpl'), which downloads the JPL DE440 SPK on first use."
+experiments = [
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position",
+]
+api_surface = "public"
+api_method  = "with solar_system_ephemeris.set('jpl'): get_body_barycentric(body) - get_body_barycentric('earth')"
+model       = "JPL DE440 via Astropy solar_system_ephemeris"
+source      = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440.bsp (downloaded by astropy on first use)"
+lane        = "geometric_vector"
+parity      = "same-family-jpl"
+support     = "supported"
+exclusion_reason = ""
+
+[[candidate]]
+id          = "astropy:jpl"
+library     = "astropy"
+display     = "astropy (JPL DE440 outer system barycenters)"
+description = "Astropy's JPL public API maps Mars through Neptune names to DE440 planet-system barycenters, so these are outer center-lane diagnostics against Horizons planet-center IDs."
+experiments = [
+  "mars_position", "jupiter_position", "saturn_position",
+  "uranus_position", "neptune_position",
+]
+api_surface = "public"
+api_method  = "with solar_system_ephemeris.set('jpl'): get_body_barycentric(body) - get_body_barycentric('earth')"
+model       = "JPL DE440 planet-system barycenters via Astropy solar_system_ephemeris"
+source      = "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de440.bsp (downloaded by astropy on first use)"
+lane        = "geometric_vector"
+parity      = "best-available"
+support     = "supported"
+exclusion_reason = ""
+
+
+# ---------------------------------------------------------------------------
+# libnova — analytic (VSOP87 / ELP2000)
+# ---------------------------------------------------------------------------
+
+[[candidate]]
+id          = "libnova"
+library     = "libnova"
+display     = "libnova (VSOP87 + ELP2000)"
+description = "Public libnova C API: VSOP87 planets, ELP2000 lunar, Meeus precession + IAU 1980 nutation."
+experiments = [
+  "gmst_era", "frame_rotation_bpn", "equ_ecl", "equ_horizontal",
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position", "mars_position",
+  "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
+  "mercury_barycenter_position", "venus_barycenter_position", "mars_barycenter_position",
+  "jupiter_barycenter_position", "saturn_barycenter_position", "uranus_barycenter_position",
+  "neptune_barycenter_position",
+  "kepler_solver",
+]
+api_surface = "public"
+model       = "VSOP87 + ELP2000-82B + Meeus precession + IAU 1980 nutation"
+source      = "libnova C library"
+lane        = "geometric_vector"
+parity      = "best-available"   # never jpl-spk by construction
+support     = "supported"
+
+[candidate.api_methods]
+gmst_era                    = "ln_get_mean_sidereal_time + ln_get_apparent_sidereal_time"
+frame_rotation_bpn          = "ln_get_equ_prec + ln_get_equ_nut + ln_get_equ_prec2"
+equ_ecl                     = "ln_get_ecl_from_equ + ln_get_equ_from_ecl"
+equ_horizontal              = "ln_get_hrz_from_equ + ln_get_equ_from_hrz"
+solar_position              = "ln_get_solar_geo_coords (geometric) / ln_get_solar_equ_coords (apparent)"
+lunar_position              = "ln_get_lunar_geo_posn (geometric) / ln_get_lunar_equ_coords (apparent)"
+mercury_position            = "ln_get_mercury_rect_helio - ln_get_earth_rect_helio (geometric)"
+venus_position              = "ln_get_venus_rect_helio - ln_get_earth_rect_helio (geometric)"
+mars_position               = "ln_get_mars_rect_helio - ln_get_earth_rect_helio (geometric)"
+jupiter_position            = "ln_get_jupiter_rect_helio - ln_get_earth_rect_helio (geometric)"
+saturn_position             = "ln_get_saturn_rect_helio - ln_get_earth_rect_helio (geometric)"
+uranus_position             = "ln_get_uranus_rect_helio - ln_get_earth_rect_helio (geometric)"
+neptune_position            = "ln_get_neptune_rect_helio - ln_get_earth_rect_helio (geometric)"
+mercury_barycenter_position = "ln_get_mercury_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+venus_barycenter_position   = "ln_get_venus_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+mars_barycenter_position    = "ln_get_mars_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+jupiter_barycenter_position = "ln_get_jupiter_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+saturn_barycenter_position  = "ln_get_saturn_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+uranus_barycenter_position  = "ln_get_uranus_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+neptune_barycenter_position = "ln_get_neptune_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
+kepler_solver               = "ln_solve_kepler"
+
+
+# ---------------------------------------------------------------------------
+# ERFA — SOFA reference (NEVER a public candidate row).
+# ---------------------------------------------------------------------------
+
+[[candidate]]
+id          = "erfa"
+library     = "erfa"
+display     = "ERFA (SOFA reference)"
+description = "ERFA C bindings to the SOFA-equivalent IAU reference implementation. ERFA is the reference column for transforms, NOT a candidate library — its rows never appear in the public scoreboard."
+experiments = [
+  "gmst_era", "frame_rotation_bpn", "equ_ecl", "equ_horizontal",
+  "solar_position", "lunar_position",
+  "mercury_position", "venus_position", "mars_position",
+  "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
+]
+api_surface = "reference"
+model       = "ERFA / SOFA IAU 2006-2000A (transforms); EPV00 / Moon98 / Plan94 (ephemerides)"
+source      = "ERFA C library (https://github.com/liberfa/erfa)"
+lane        = "geometric_vector"
+parity      = "reference"
+support     = "supported"
+
+[candidate.api_methods]
+gmst_era            = "eraGmst06 + eraEra00 + eraGst06a"
+frame_rotation_bpn  = "eraPnm06a"
+equ_ecl             = "eraEqec06 / eraEceq06"
+equ_horizontal      = "eraGst06a + eraHd2ae / eraAe2hd"
+solar_position      = "eraEpv00 (Sun = -Earth heliocentric)"
+lunar_position      = "eraMoon98"
+mercury_position    = "eraPlan94 + eraEpv00"
+venus_position      = "eraPlan94 + eraEpv00"
+mars_position       = "eraPlan94 + eraEpv00"
+jupiter_position    = "eraPlan94 + eraEpv00"
+saturn_position     = "eraPlan94 + eraEpv00"
+uranus_position     = "eraPlan94 + eraEpv00"
+neptune_position    = "eraPlan94 + eraEpv00"
+
+
+# ---------------------------------------------------------------------------
+# Unsupported / removed candidates (kept here as documentation of why they
+# are NOT published).  Tests assert these IDs never appear in the scoreboard.
+# ---------------------------------------------------------------------------
+
+[[candidate]]
+id          = "astropy"
+library     = "astropy"
+experiments = ["kepler_solver"]
+api_surface = "public"
+api_method  = "(none — Astropy does not export a Kepler-equation solver)"
+model       = "n/a"
+source      = "n/a"
+lane        = "geometric_vector"
+parity      = "model-mismatch"
+support     = "unsupported"
+exclusion_reason = "Astropy has no public Kepler-equation solver. The previous astropy/kepler_solver row was a hand-rolled Newton iteration written inside the adapter — it measured neither Astropy's accuracy nor its performance, and is removed from the scoreboard."
+
+
+[[candidate]]
+id          = "erfa"
+library     = "erfa"
+experiments = ["kepler_solver"]
+api_surface = "reference"
+api_method  = "(none — ERFA / SOFA do not export a Kepler-equation solver)"
+model       = "n/a"
+source      = "n/a"
+lane        = "geometric_vector"
+parity      = "reference"
+support     = "unsupported"
+exclusion_reason = "ERFA / SOFA do not provide a Kepler-equation solver.  The previous erfa/kepler_solver row was a hand-rolled Newton iteration written inside the adapter and is removed."
+
+
+# ---------------------------------------------------------------------------
+# siderust — diagnostic frame-transform experiments
+# ---------------------------------------------------------------------------
+# These entries unlock the diagnostic suite for siderust (api_surface =
+# "diagnostic" → is_published() returns true for diagnostic runs only).
+# They are NOT part of the public scorecard (api_surface ≠ "public").
+
+[[candidate]]
+id          = "siderust"
+library     = "siderust"
+description = "Siderust IAU 2006/2000A frame-transform primitives (diagnostic tier)."
+experiments = [
+  "frame_bias",
+  "precession",
+  "nutation",
+  "bias_precession",
+  "precession_nutation",
+  "inv_frame_bias",
+  "inv_precession",
+  "inv_nutation",
+  "inv_bpn",
+  "inv_bias_precession",
+  "inv_precession_nutation",
+  "icrs_ecl_j2000",
+  "inv_icrs_ecl_j2000",
+  "obliquity",
+  "inv_obliquity",
+  "inv_icrs_ecl_tod",
+  "inv_equ_ecl",
+  "horiz_to_equ",
+]
+api_surface = "diagnostic"
+model       = "IAU 2006/2000A (NullEop)"
+source      = "siderust crates: coordinates::transform, coordinates::frames"
+lane        = "geometric_vector"
+parity      = "diagnostic-only"
+support     = "supported"
+
+[candidate.api_methods]
+frame_bias            = "siderust::coordinates::transform::frame_rotation_as::<ICRS, EquatorialMeanJ2000, Iau2006A>"
+precession            = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanJ2000, EquatorialMeanOfDate, Iau2006A>"
+nutation              = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanOfDate, EquatorialTrueOfDate, Iau2006A>"
+bias_precession       = "siderust::coordinates::transform::frame_rotation_as::<ICRS, EquatorialMeanOfDate, Iau2006A>"
+precession_nutation   = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanJ2000, EquatorialTrueOfDate, Iau2006A>"
+inv_frame_bias        = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanJ2000, ICRS, Iau2006A>"
+inv_precession        = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanOfDate, EquatorialMeanJ2000, Iau2006A>"
+inv_nutation          = "siderust::coordinates::transform::frame_rotation_as::<EquatorialTrueOfDate, EquatorialMeanOfDate, Iau2006A>"
+inv_bpn               = "siderust::astro::precession::precession_nutation_matrix(jd, ..).transpose()"
+inv_bias_precession   = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanOfDate, ICRS, Iau2006A>"
+inv_precession_nutation = "siderust::coordinates::transform::frame_rotation_as::<EquatorialTrueOfDate, EquatorialMeanJ2000, Iau2006A>"
+icrs_ecl_j2000        = "siderust::coordinates::cartesian::Direction::<ICRS>::to_frame::<EclipticMeanJ2000>"
+inv_icrs_ecl_j2000    = "siderust::coordinates::transform::frame_rotation_as::<EclipticMeanJ2000, ICRS, Iau2006A>"
+obliquity             = "siderust::coordinates::transform::frame_rotation_as::<EclipticMeanJ2000, EquatorialMeanJ2000, Iau2006A>"
+inv_obliquity         = "siderust::coordinates::transform::frame_rotation_as::<EquatorialMeanJ2000, EclipticMeanJ2000, Iau2006A>"
+inv_icrs_ecl_tod      = "siderust::coordinates::transform::DirectionAstroExt::to_icrs (from EclipticTrueOfDate)"
+inv_equ_ecl           = "siderust::coordinates::transform::DirectionAstroExt::to_equatorial_mean_of_date (from EclipticTrueOfDate)"
+horiz_to_equ          = "siderust::coordinates::transform::horizontal::FromHorizontal::to_equatorial"

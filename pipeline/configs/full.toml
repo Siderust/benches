@@ -1,0 +1,23 @@
+# Comprehensive benchmark preset:
+# - Runs the complete public + diagnostic experiment set (suite = "all")
+# - Enables all supported adapters and Siderust profiles
+# - Keeps performance timing on for full scorecards
+
+suite = "all"
+n = 1000
+seed = 42
+adapters = ["siderust", "astropy", "libnova", "anise"]
+siderust_profiles = ["iau2006a", "iau2000a", "iau2000b", "precession_only"]
+no_build = false
+
+[performance]
+enabled = true
+rounds = 10
+
+[horizons]
+use_cache = true
+allow_network = true
+
+[output]
+dir = "results"
+publish_latest = true

@@ -1,0 +1,30 @@
+[package]
+name = "siderust-adapter"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "siderust-adapter"
+path = "src/main.rs"
+
+[[bin]]
+name = "siderust_adapter"
+path = "src/main.rs"
+
+[features]
+# Enable JPL DE440 embedded ephemeris. On by default; disable with --no-default-features.
+de440 = ["siderust/de440"]
+default = ["de440"]
+
+[dependencies]
+siderust = { path = "vendor/siderust" }
+qtty_crate = { package = "qtty", version = "0.8", features = ["astro"] }
+affn_crate = { package = "affn", version = "0.7", features = ["astro"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+nalgebra = "0.34.1"
+keplerian = "0.2"
+
+[profile.release]
+opt-level = 3
+lto = true

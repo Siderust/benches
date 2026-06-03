@@ -1,0 +1,18 @@
+suite = "ci"
+n = 50
+seed = 42
+adapters = ["siderust", "astropy", "libnova"]
+siderust_profiles = ["iau2006a"]
+no_build = true
+
+[performance]
+enabled = false
+rounds = 1
+
+[horizons]
+use_cache = true
+allow_network = false
+
+[output]
+dir = "results"
+publish_latest = false

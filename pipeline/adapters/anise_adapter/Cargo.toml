@@ -1,0 +1,11 @@
+[package]
+name = "anise-adapter"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anise = { path = "vendor/anise/anise", default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = true

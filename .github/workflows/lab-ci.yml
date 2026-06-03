@@ -1,0 +1,46 @@
+name: Siderust Lab CI
+
+on:
+  push:
+    branches: [main, master, update]
+  pull_request:
+    branches: [main, master, update]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python dependencies
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Check dependencies
+        run: python3 scripts/check_dependencies.py
+
+      - name: Build C adapters
+        run: |
+          make -C pipeline/adapters/erfa_adapter -j$(nproc)
+          make -C pipeline/adapters/libnova_adapter -j$(nproc)
+
+      - name: Build Rust adapters
+        run: |
+          (cd pipeline/adapters/siderust_adapter && cargo build --release)
+          (cd pipeline/adapters/anise_adapter && cargo build --release)
+
+      - name: Pytest
+        run: python -m pytest pipeline/tests -q
+
+      - name: CI pipeline config (offline Horizons)
+        env:
+          HORIZONS_OFFLINE: "1"
+        run: python3 pipeline/run_pipeline.py --config pipeline/configs/ci.toml
+
+      - name: Static export smoke
+        run: python3 -m pipeline.export_static --lab-root . --output /tmp/siderust-lab-static

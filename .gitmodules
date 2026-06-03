@@ -1,0 +1,15 @@
+[submodule "pipeline/adapters/anise_adapter/vendor/anise"]
+	path = pipeline/adapters/anise_adapter/vendor/anise
+	url = https://github.com/nyx-space/anise.git
+[submodule "pipeline/adapters/astropy_adapter/vendor/astropy"]
+	path = pipeline/adapters/astropy_adapter/vendor/astropy
+	url = https://github.com/astropy/astropy.git
+[submodule "pipeline/adapters/erfa_adapter/vendor/erfa"]
+	path = pipeline/adapters/erfa_adapter/vendor/erfa
+	url = https://github.com/liberfa/erfa.git
+[submodule "pipeline/adapters/libnova_adapter/vendor/libnova"]
+	path = pipeline/adapters/libnova_adapter/vendor/libnova
+	url = https://gitlab.com/libnova/libnova.git
+[submodule "pipeline/adapters/siderust_adapter/vendor/siderust"]
+	path = pipeline/adapters/siderust_adapter/vendor/siderust
+	url = git@github.com:Siderust/siderust.git
