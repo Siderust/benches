@@ -1,0 +1,33 @@
+run_label = "phase-b-public-seed271828"
+run_phase = "phase-b"
+run_tags = ["phase-b", "public", "seed271828"]
+suite = "core"
+n = 1000
+seed = 271828
+adapters = ["siderust", "astropy", "libnova", "anise"]
+siderust_profiles = ["iau2006a"]
+no_build = true
+
+[cache]
+root = ".benches_cache"
+auto_download = false
+
+[kernels.de440]
+enabled = false
+
+[performance]
+enabled = true
+rounds = 10
+scalar_n = 5000
+batch_n = 100000
+batch_rounds = 5
+warmup = 100
+timeout_s = 120
+
+[horizons]
+use_cache = true
+allow_network = false
+
+[output]
+dir = "results"
+publish_latest = false

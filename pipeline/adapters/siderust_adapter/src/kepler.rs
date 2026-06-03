@@ -20,11 +20,11 @@ pub(crate) fn run_kepler_solver(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"kepler_solver\",\"library\":\"siderust\",\
          \"model\":\"Newton_Raphson_bisection\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -32,7 +32,6 @@ pub(crate) fn run_kepler_solver(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -50,7 +49,7 @@ pub(crate) fn run_kepler_solver(lines: &mut impl Iterator<Item = String>) {
         let residual = (e_rad - e * e_rad.sin() - m_rad).abs();
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -78,7 +77,6 @@ pub(crate) fn run_kepler_solver_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();

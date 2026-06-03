@@ -85,15 +85,28 @@ def test_explicit_bsp_path_passes_through(tmp_path):
     geometric.assert_called_once_with(2451545.0, "sun", str(bsp))
 
 
+def _isolated_adapter_env(**overrides: str) -> dict[str, str]:
+    """Subprocess env without benchmark cache paths (CI has no local DE440)."""
+    drop = {
+        "SIDERUST_BENCHES_CACHE",
+        "ASTROPY_JPL_BSP_PATH",
+        "SIDERUST_DATASETS_DIR",
+        "SIDERUST_KERNEL_DE440_ENABLED",
+    }
+    env = {k: v for k, v in os.environ.items() if k not in drop}
+    env.update(overrides)
+    return env
+
+
 def test_missing_de440_local_bsp_emits_skipped_json():
-    env = {"ASTROPY_EPHEMERIS": "de440-local"}
+    env = _isolated_adapter_env(ASTROPY_EPHEMERIS="de440-local")
     result = subprocess.run(
         [sys.executable, str(ASTROPY_ADAPTER), "solar_position"],
         input="1\n2451545.0\n",
         text=True,
         capture_output=True,
         check=True,
-        env={**os.environ, **env},
+        env=env,
         cwd=LAB_ROOT,
     )
     data = json.loads(result.stdout)

@@ -22,9 +22,9 @@ fn run_solar_position(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
-        "{{\"experiment\":\"solar_position\",\"library\":\"anise\",\"model\":\"SPK_geometric_translation(SUN_J2000->EARTH_J2000)\",\"count\":{},\"cases\":[\n",
+        "{{\"experiment\":\"solar_position\",\"library\":\"anise\",\"model\":\"SPK_geometric_translation(SUN_J2000->EARTH_J2000)\",\"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -37,7 +37,7 @@ fn run_solar_position(lines: &mut impl Iterator<Item = String>) {
             Ok(s) => s,
             Err(_) => {
                 if i > 0 {
-                    write!(out, ",\n").unwrap();
+                    writeln!(out, ",").unwrap();
                 }
                 write!(
                     out,
@@ -58,7 +58,7 @@ fn run_solar_position(lines: &mut impl Iterator<Item = String>) {
         let dist_au = dist_km / KM_PER_AU;
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -78,9 +78,9 @@ fn run_lunar_position(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
-        "{{\"experiment\":\"lunar_position\",\"library\":\"anise\",\"model\":\"SPK_geometric_translation(MOON_J2000->EARTH_J2000)\",\"count\":{},\"cases\":[\n",
+        "{{\"experiment\":\"lunar_position\",\"library\":\"anise\",\"model\":\"SPK_geometric_translation(MOON_J2000->EARTH_J2000)\",\"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -93,7 +93,7 @@ fn run_lunar_position(lines: &mut impl Iterator<Item = String>) {
             Ok(s) => s,
             Err(_) => {
                 if i > 0 {
-                    write!(out, ",\n").unwrap();
+                    writeln!(out, ",").unwrap();
                 }
                 write!(
                     out,
@@ -113,7 +113,7 @@ fn run_lunar_position(lines: &mut impl Iterator<Item = String>) {
         let dec = (z / dist_km).asin();
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -158,9 +158,9 @@ fn run_planet_position(
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
-        "{{\"experiment\":\"{}\",\"library\":\"anise\",\"model\":\"SPK_geometric_translation({}->EARTH_J2000)\",\"count\":{},\"cases\":[\n",
+        "{{\"experiment\":\"{}\",\"library\":\"anise\",\"model\":\"SPK_geometric_translation({}->EARTH_J2000)\",\"count\":{},\"cases\":[",
         experiment, planet_name, n
     )
     .unwrap();
@@ -172,7 +172,7 @@ fn run_planet_position(
             Ok(s) => s,
             Err(_) => {
                 if i > 0 {
-                    write!(out, ",\n").unwrap();
+                    writeln!(out, ",").unwrap();
                 }
                 write!(
                     out,
@@ -193,7 +193,7 @@ fn run_planet_position(
         let dist_au = dist_km / KM_PER_AU;
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -227,12 +227,7 @@ fn emit_anise_perf_skip(experiment: &str, count_requested: usize, reason: &str) 
     );
 }
 
-fn emit_anise_valid_perf(
-    experiment: &str,
-    count_requested: usize,
-    total_ns: f64,
-    sink: f64,
-) {
+fn emit_anise_valid_perf(experiment: &str, count_requested: usize, total_ns: f64, sink: f64) {
     let per_op_ns = total_ns / count_requested as f64;
     println!(
         "{{\"experiment\":\"{experiment}_perf\",\"library\":\"anise\",\
@@ -258,9 +253,7 @@ fn run_translate_ephemeris_perf(
         let epoch = epoch_from_jd_tt(*jd);
         if let Err(err) = almanac.translate(from, to, epoch, Aberration::NONE) {
             let reason = match planet_label {
-                Some(name) => format!(
-                    "ANISE {name} frame unavailable in the loaded SPK: {err}"
-                ),
+                Some(name) => format!("ANISE {name} frame unavailable in the loaded SPK: {err}"),
                 None => format!("ANISE translate failed: {err}"),
             };
             emit_anise_perf_skip(experiment, n, &reason);
@@ -298,7 +291,14 @@ fn run_solar_position_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         jds.push(lines.next().unwrap().trim().parse::<f64>().unwrap());
     }
-    run_translate_ephemeris_perf("solar_position", &jds, &almanac, SUN_J2000, EARTH_J2000, None);
+    run_translate_ephemeris_perf(
+        "solar_position",
+        &jds,
+        &almanac,
+        SUN_J2000,
+        EARTH_J2000,
+        None,
+    );
 }
 
 fn run_lunar_position_perf(lines: &mut impl Iterator<Item = String>) {
@@ -308,7 +308,14 @@ fn run_lunar_position_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         jds.push(lines.next().unwrap().trim().parse::<f64>().unwrap());
     }
-    run_translate_ephemeris_perf("lunar_position", &jds, &almanac, MOON_J2000, EARTH_J2000, None);
+    run_translate_ephemeris_perf(
+        "lunar_position",
+        &jds,
+        &almanac,
+        MOON_J2000,
+        EARTH_J2000,
+        None,
+    );
 }
 
 fn run_planet_position_perf(

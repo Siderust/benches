@@ -34,6 +34,18 @@ jobs:
           (cd pipeline/adapters/siderust_adapter && cargo build --release)
           (cd pipeline/adapters/anise_adapter && cargo build --release)
 
+      - name: Rust fmt check (Siderust adapter)
+        run: (cd pipeline/adapters/siderust_adapter && cargo fmt --check)
+
+      - name: Rust clippy (Siderust adapter)
+        run: (cd pipeline/adapters/siderust_adapter && cargo clippy --all-targets --all-features -- -D warnings)
+
+      - name: Rust fmt check (ANISE adapter)
+        run: (cd pipeline/adapters/anise_adapter && cargo fmt --check)
+
+      - name: Rust clippy (ANISE adapter)
+        run: (cd pipeline/adapters/anise_adapter && cargo clippy --all-targets --all-features -- -D warnings)
+
       - name: Pytest
         run: python -m pytest pipeline/tests -q
 

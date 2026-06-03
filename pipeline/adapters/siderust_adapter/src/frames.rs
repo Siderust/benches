@@ -39,7 +39,6 @@ macro_rules! dir_experiment {
             for i in 0..n {
                 let line = lines.next().unwrap();
                 let p: Vec<f64> = line
-                    .trim()
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
@@ -75,7 +74,6 @@ macro_rules! dir_experiment {
             for _ in 0..n {
                 let line = lines.next().unwrap();
                 let p: Vec<f64> = line
-                    .trim()
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
@@ -135,7 +133,6 @@ macro_rules! inv_ecl_tod_experiment {
             for i in 0..n {
                 let line = lines.next().unwrap();
                 let p: Vec<f64> = line
-                    .trim()
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
@@ -167,7 +164,6 @@ macro_rules! inv_ecl_tod_experiment {
             for _ in 0..n {
                 let line = lines.next().unwrap();
                 let p: Vec<f64> = line
-                    .trim()
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
@@ -211,11 +207,11 @@ pub(crate) fn run_equ_ecl(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"equ_ecl\",\"library\":\"siderust\",\
          \"model\":\"IAU_2006_ecliptic\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -223,7 +219,6 @@ pub(crate) fn run_equ_ecl(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -265,7 +260,7 @@ pub(crate) fn run_equ_ecl(lines: &mut impl Iterator<Item = String>) {
         let closure_rad = ang_sep(&v_in, &v_back);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -293,7 +288,6 @@ pub(crate) fn run_equ_ecl_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -342,11 +336,11 @@ pub fn run_icrs_ecl_j2000(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"icrs_ecl_j2000\",\"library\":\"siderust\",\
          \"model\":\"ICRS_to_EclipticMeanJ2000\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -354,7 +348,6 @@ pub fn run_icrs_ecl_j2000(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -374,7 +367,7 @@ pub fn run_icrs_ecl_j2000(lines: &mut impl Iterator<Item = String>) {
         let closure_rad = dir_icrs.angle_to(&dir_back);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -398,7 +391,6 @@ pub fn run_icrs_ecl_j2000_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -442,11 +434,11 @@ pub fn run_icrs_ecl_tod(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"icrs_ecl_tod\",\"library\":\"siderust\",\
          \"model\":\"IAU_2006_ecliptic_of_date\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -454,7 +446,6 @@ pub fn run_icrs_ecl_tod(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -492,7 +483,7 @@ pub fn run_icrs_ecl_tod(lines: &mut impl Iterator<Item = String>) {
         let closure_rad = ang_sep(&v_in, &v_back);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -521,7 +512,6 @@ pub fn run_icrs_ecl_tod_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();

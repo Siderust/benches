@@ -1,6 +1,6 @@
 pub mod qtty {
     pub use qtty_crate::unit::{AstronomicalUnit, Degree, Kilometer, Meter, Radian};
-    pub use qtty_crate::{Quantity, RAD};
+    pub use qtty_crate::Quantity;
 
     pub type Degrees<S = f64> = Quantity<Degree, S>;
     pub type Meters<S = f64> = Quantity<Meter, S>;

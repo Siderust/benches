@@ -1,5 +1,8 @@
+run_label = "phase-b-performance"
+run_phase = "phase-b"
+run_tags = ["phase-b", "performance", "timing"]
 suite = "ci"
-n = 50
+n = 200
 seed = 42
 adapters = ["siderust", "astropy", "libnova"]
 siderust_profiles = ["iau2006a"]
@@ -13,8 +16,13 @@ auto_download = false
 enabled = false
 
 [performance]
-enabled = false
-rounds = 1
+enabled = true
+rounds = 20
+scalar_n = 5000
+batch_n = 100000
+batch_rounds = 5
+warmup = 100
+timeout_s = 120
 
 [horizons]
 use_cache = true

@@ -270,7 +270,13 @@ fn emit_perf_skip(experiment: &str, count_requested: usize, reason: impl Into<St
     );
 }
 
-fn emit_siderust_valid_perf(experiment: &str, library: &str, count: usize, total_ns: f64, sink: f64) {
+fn emit_siderust_valid_perf(
+    experiment: &str,
+    library: &str,
+    count: usize,
+    total_ns: f64,
+    sink: f64,
+) {
     let per_op_ns = total_ns / count as f64;
     println!(
         "{}",
@@ -315,10 +321,10 @@ fn write_planet_cases(
 
     let stdout = io::stdout();
     let mut out = stdout.lock();
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"{}\",\"library\":\"siderust\",\
-         \"model\":\"{}\",\"count\":{},\"cases\":[\n",
+         \"model\":\"{}\",\"count\":{},\"cases\":[",
         experiment,
         model,
         jds.len()
@@ -327,7 +333,7 @@ fn write_planet_cases(
 
     for (i, jd_tt) in jds.iter().enumerate() {
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         match compute(JulianDate::new(*jd_tt)) {
             Ok((ra_rad, dec_rad, dist_au)) => write!(
@@ -472,11 +478,11 @@ pub(crate) fn run_solar_position(lines: &mut impl Iterator<Item = String>) {
     let mut out = stdout.lock();
 
     let (library, model) = solar_library_and_model();
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"solar_position\",\"library\":\"{library}\",\
          \"model\":\"{model}\",\
-         \"count\":{n},\"cases\":[\n",
+         \"count\":{n},\"cases\":[",
     )
     .unwrap();
 
@@ -487,7 +493,7 @@ pub(crate) fn run_solar_position(lines: &mut impl Iterator<Item = String>) {
         let (ra_rad, dec_rad, dist_au) = compute_solar_ra_dec_dist(jd);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -505,11 +511,11 @@ pub(crate) fn run_lunar_position(lines: &mut impl Iterator<Item = String>) {
     let mut out = stdout.lock();
 
     let (library, model) = lunar_library_and_model();
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"lunar_position\",\"library\":\"{library}\",\
          \"model\":\"{model}\",\
-         \"count\":{n},\"cases\":[\n",
+         \"count\":{n},\"cases\":[",
     )
     .unwrap();
 
@@ -519,7 +525,7 @@ pub(crate) fn run_lunar_position(lines: &mut impl Iterator<Item = String>) {
         let (ra_rad, dec_rad, dist_km) = compute_lunar_ra_dec_dist(JulianDate::new(jd_tt));
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -541,10 +547,10 @@ pub(crate) fn run_planet_position(
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"{}\",\"library\":\"siderust\",\
-         \"model\":\"{}\",\"count\":{},\"cases\":[\n",
+         \"model\":\"{}\",\"count\":{},\"cases\":[",
         experiment, model, n
     )
     .unwrap();
@@ -555,7 +561,7 @@ pub(crate) fn run_planet_position(
         let (ra_rad, dec_rad, dist_au) = planet_ra_dec_dist(planet_vsop87a, JulianDate::new(jd_tt));
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -669,16 +675,16 @@ pub(crate) fn run_solar_position_perf(lines: &mut impl Iterator<Item = String>) 
 
     // Warm-up
     let warmup = crate::perf_warmup();
-    for i in 0..n.min(warmup) {
-        let (ra, dec, dist) = compute_solar_ra_dec_dist(JulianDate::new(jds[i]));
+    for &jd in jds.iter().take(n.min(warmup)) {
+        let (ra, dec, dist) = compute_solar_ra_dec_dist(JulianDate::new(jd));
         std::hint::black_box((ra, dec, dist));
     }
 
     // Timed run — perf contract: compute RA + Dec + distance
     let start = Instant::now();
     let mut sink: f64 = 0.0;
-    for i in 0..n {
-        let (ra_rad, dec_rad, dist_au) = compute_solar_ra_dec_dist(JulianDate::new(jds[i]));
+    for &jd in &jds {
+        let (ra_rad, dec_rad, dist_au) = compute_solar_ra_dec_dist(JulianDate::new(jd));
         sink += ra_rad + dec_rad + dist_au;
     }
     let elapsed = start.elapsed();
@@ -700,16 +706,16 @@ pub(crate) fn run_lunar_position_perf(lines: &mut impl Iterator<Item = String>) 
 
     // Warm-up
     let warmup = crate::perf_warmup();
-    for i in 0..n.min(warmup) {
-        let (ra, dec, dist) = compute_lunar_ra_dec_dist(JulianDate::new(jds[i]));
+    for &jd in jds.iter().take(n.min(warmup)) {
+        let (ra, dec, dist) = compute_lunar_ra_dec_dist(JulianDate::new(jd));
         std::hint::black_box((ra, dec, dist));
     }
 
     // Timed run — perf contract: compute RA + Dec + distance
     let start = Instant::now();
     let mut sink: f64 = 0.0;
-    for i in 0..n {
-        let (ra, dec, dist_km) = compute_lunar_ra_dec_dist(JulianDate::new(jds[i]));
+    for &jd in &jds {
+        let (ra, dec, dist_km) = compute_lunar_ra_dec_dist(JulianDate::new(jd));
         sink += ra + dec + dist_km;
     }
     let elapsed = start.elapsed();
@@ -767,7 +773,8 @@ fn run_major_planet_position_perf(
     let n = jds.len();
 
     #[cfg(feature = "de440")]
-    let de440_compute = |jd_tt: f64| de440_planet_ra_dec_dist(planet, point, JulianDate::new(jd_tt));
+    let de440_compute =
+        |jd_tt: f64| de440_planet_ra_dec_dist(planet, point, JulianDate::new(jd_tt));
 
     match model.as_str() {
         "de440_barycenter" if point == PlanetPoint::SystemBarycenter => {

@@ -20,14 +20,15 @@ import cache_manager as cm
 from run_pipeline import build_orchestrator_command, prepare_run_environment
 
 
-def _fake_bsp(path: Path, *, size: int = cm.DE440_MIN_BYTES + 1) -> None:
+def _fake_bsp(path: Path, *, size: int | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_bytes(b"\0" * size)
+    min_bytes = size if size is not None else cm.DE440_MIN_BYTES + 1
+    path.write_bytes(b"\0" * min_bytes)
 
 
-def test_export_cache_env_sets_expected_variables(tmp_path):
+def test_export_cache_env_sets_expected_variables(tmp_path, small_de440_min_bytes):
     cache_root = tmp_path / "cache"
-    _fake_bsp(cache_root / "kernels" / "de440.bsp")
+    _fake_bsp(cache_root / "kernels" / "de440.bsp", size=32)
 
     env = cm.export_cache_env(cache_root)
 
@@ -39,7 +40,7 @@ def test_export_cache_env_sets_expected_variables(tmp_path):
     assert link.resolve() == (cache_root / "kernels" / "de440.bsp").resolve()
 
 
-def test_resolve_de440_from_cache_root(tmp_path):
+def test_resolve_de440_from_cache_root(tmp_path, small_de440_min_bytes):
     cache_root = tmp_path / "bench_cache"
     bsp = cache_root / "kernels" / "de440.bsp"
     _fake_bsp(bsp)
@@ -61,10 +62,10 @@ def test_ensure_de440_offline_reports_missing(tmp_path):
     assert result.reason
 
 
-def test_ensure_de440_download_writes_manifest(tmp_path):
+def test_ensure_de440_download_writes_manifest(tmp_path, small_de440_min_bytes):
     cache_root = tmp_path / "download_cache"
     bsp = cache_root / "kernels" / "de440.bsp"
-    payload = b"\0" * (cm.DE440_MIN_BYTES + 1024)
+    payload = b"\0" * 32
 
     def fake_download(url: str, dest: Path) -> None:
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -83,7 +84,7 @@ def test_ensure_de440_download_writes_manifest(tmp_path):
     assert manifest["downloaded_at"]
 
 
-def test_astropy_de440_local_uses_benches_cache_path(tmp_path, capsys):
+def test_astropy_de440_local_uses_benches_cache_path(tmp_path, capsys, small_de440_min_bytes):
     from pipeline.adapters.astropy_adapter import adapter
     from pipeline.adapters.astropy_adapter import common
 
@@ -109,9 +110,9 @@ def test_astropy_de440_local_uses_benches_cache_path(tmp_path, capsys):
     assert json.loads(capsys.readouterr().out)["measured"] is True
 
 
-def test_prepare_run_environment_exports_cache(tmp_path):
+def test_prepare_run_environment_exports_cache(tmp_path, small_de440_min_bytes):
     cache_root = tmp_path / "bench_cache"
-    _fake_bsp(cache_root / "kernels" / "de440.bsp")
+    _fake_bsp(cache_root / "kernels" / "de440.bsp", size=32)
     config = tmp_path / "ephem.toml"
     config.write_text(
         f"""

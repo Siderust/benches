@@ -11,8 +11,8 @@ mod pointing;
 mod time_earth_rotation;
 
 pub(crate) use common::{
-    affn, ang_sep, frame_rotation_selected, normalize3, pure_bpn_matrix, qtty,
-    perf_warmup, selected_nutation_profile, CartesianDirectionCompat,
+    affn, ang_sep, frame_rotation_selected, normalize3, perf_warmup, pure_bpn_matrix, qtty,
+    selected_nutation_profile, CartesianDirectionCompat,
 };
 
 use std::io::{self, BufRead};

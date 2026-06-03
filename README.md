@@ -394,7 +394,14 @@ execution endpoint.
 Run the pipeline tests:
 
 ```bash
-python3 -m pytest pipeline/tests/ -v
+python3 -m pytest pipeline/tests -v
+```
+
+Rust adapter gates (match GitHub Actions):
+
+```bash
+cd pipeline/adapters/siderust_adapter && cargo fmt --check && cargo clippy --all-targets --all-features -- -D warnings
+cd pipeline/adapters/anise_adapter && cargo fmt --check && cargo clippy --all-targets --all-features -- -D warnings
 ```
 
 Run a small CI suite:
@@ -402,6 +409,8 @@ Run a small CI suite:
 ```bash
 python3 pipeline/run_pipeline.py --config pipeline/configs/ci.toml
 ```
+
+See `CONTRIBUTING.md` for the full local CI checklist.
 
 Run the Phase B CI leg and refresh static data:
 
@@ -442,9 +451,4 @@ the family scorecards and experiment detail pages to understand:
 ## Related Documentation
 
 - `USER_MANUAL.md` - result artifacts, fairness rules, and dashboard behavior
-
-
-cd lab
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
+- `CONTRIBUTING.md` - pytest, Rust fmt/clippy, and CI-equivalent commands

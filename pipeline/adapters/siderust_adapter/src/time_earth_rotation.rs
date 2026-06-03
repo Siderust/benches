@@ -37,7 +37,6 @@ macro_rules! dir_experiment {
             for i in 0..n {
                 let line = lines.next().unwrap();
                 let p: Vec<f64> = line
-                    .trim()
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
@@ -73,7 +72,6 @@ macro_rules! dir_experiment {
             for _ in 0..n {
                 let line = lines.next().unwrap();
                 let p: Vec<f64> = line
-                    .trim()
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
@@ -149,11 +147,11 @@ pub(crate) fn run_frame_rotation_bpn(lines: &mut impl Iterator<Item = String>) {
     let mut out = stdout.lock();
 
     let profile = selected_nutation_profile();
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"frame_rotation_bpn\",\"library\":\"siderust\",\
          \"model\":\"IAU2006_precession+{}_nutation+IERS2003_bias+NullEop\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         profile, n
     )
     .unwrap();
@@ -161,7 +159,6 @@ pub(crate) fn run_frame_rotation_bpn(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -181,7 +178,7 @@ pub(crate) fn run_frame_rotation_bpn(lines: &mut impl Iterator<Item = String>) {
         let mat = *rot.as_matrix();
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -208,11 +205,11 @@ pub(crate) fn run_gmst_era(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"gmst_era\",\"library\":\"siderust\",\
          \"model\":\"IAU_2006_GMST\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -220,7 +217,6 @@ pub(crate) fn run_gmst_era(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -237,7 +233,7 @@ pub(crate) fn run_gmst_era(lines: &mut impl Iterator<Item = String>) {
         let era_rad = siderust::astro::era::earth_rotation_angle(jd_ut1_q).value();
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -260,7 +256,6 @@ pub(crate) fn run_frame_rotation_bpn_perf(lines: &mut impl Iterator<Item = Strin
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -313,7 +308,6 @@ pub(crate) fn run_gmst_era_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -386,17 +380,16 @@ pub fn run_inv_bpn(lines: &mut impl Iterator<Item = String>) {
     let n: usize = lines.next().unwrap().trim().parse().unwrap();
     let stdout = io::stdout();
     let mut out = stdout.lock();
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"inv_bpn\",\"library\":\"siderust\",\
-         \"model\":\"IAU2006_inv_bpn+NullEop\",\"count\":{},\"cases\":[\n",
+         \"model\":\"IAU2006_inv_bpn+NullEop\",\"count\":{},\"cases\":[",
         n
     )
     .unwrap();
     for i in 0..n {
         let line = lines.next().unwrap();
         let p: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -410,7 +403,7 @@ pub fn run_inv_bpn(lines: &mut impl Iterator<Item = String>) {
         let vback = normalize3(fwd_rot.apply_array(vout));
         let cl = ang_sep(&vin, &vback);
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -430,7 +423,6 @@ pub fn run_inv_bpn_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let p: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();

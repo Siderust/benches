@@ -18,11 +18,11 @@ pub(crate) fn run_equ_horizontal(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"equ_horizontal\",\"library\":\"siderust\",\
          \"model\":\"siderust_horizontal\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -30,7 +30,6 @@ pub(crate) fn run_equ_horizontal(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -89,7 +88,7 @@ pub(crate) fn run_equ_horizontal(lines: &mut impl Iterator<Item = String>) {
         let closure_rad = ang_sep(&v_in, &v_back);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -121,7 +120,6 @@ pub(crate) fn run_equ_horizontal_perf(lines: &mut impl Iterator<Item = String>) 
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -130,8 +128,7 @@ pub(crate) fn run_equ_horizontal_perf(lines: &mut impl Iterator<Item = String>) 
 
     // Warm-up
     let warmup = crate::perf_warmup();
-    for i in 0..n.min(warmup) {
-        let (jd_ut1, jd_tt, ra, dec, lon, lat) = params[i];
+    for &(jd_ut1, jd_tt, ra, dec, lon, lat) in params.iter().take(n.min(warmup)) {
         let jd_ut1_q = JulianDate::new(jd_ut1);
         let jd_tt_q = JulianDate::new(jd_tt);
 
@@ -152,8 +149,7 @@ pub(crate) fn run_equ_horizontal_perf(lines: &mut impl Iterator<Item = String>) 
     // Timed run
     let start = Instant::now();
     let mut sink: (f64, f64) = (0.0, 0.0);
-    for i in 0..n {
-        let (jd_ut1, jd_tt, ra, dec, lon, lat) = params[i];
+    for &(jd_ut1, jd_tt, ra, dec, lon, lat) in &params {
         let jd_ut1_q = JulianDate::new(jd_ut1);
         let jd_tt_q = JulianDate::new(jd_tt);
 
@@ -195,11 +191,11 @@ pub fn run_horiz_to_equ(lines: &mut impl Iterator<Item = String>) {
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
         "{{\"experiment\":\"horiz_to_equ\",\"library\":\"siderust\",\
          \"model\":\"siderust_horizontal_inverse\",\
-         \"count\":{},\"cases\":[\n",
+         \"count\":{},\"cases\":[",
         n
     )
     .unwrap();
@@ -207,7 +203,6 @@ pub fn run_horiz_to_equ(lines: &mut impl Iterator<Item = String>) {
     for i in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -258,7 +253,7 @@ pub fn run_horiz_to_equ(lines: &mut impl Iterator<Item = String>) {
         let closure_rad = ang_sep(&v_in, &v_back);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,
@@ -289,7 +284,6 @@ pub fn run_horiz_to_equ_perf(lines: &mut impl Iterator<Item = String>) {
     for _ in 0..n {
         let line = lines.next().unwrap();
         let parts: Vec<f64> = line
-            .trim()
             .split_whitespace()
             .map(|s| s.parse().unwrap())
             .collect();
@@ -297,8 +291,7 @@ pub fn run_horiz_to_equ_perf(lines: &mut impl Iterator<Item = String>) {
     }
 
     let warmup = crate::perf_warmup();
-    for i in 0..n.min(warmup) {
-        let (jd_ut1_v, jd_tt_v, az, alt, lon, lat) = params[i];
+    for &(jd_ut1_v, jd_tt_v, az, alt, lon, lat) in params.iter().take(n.min(warmup)) {
         let jd_ut1 = JulianDate::new(jd_ut1_v);
         let jd_tt = JulianDate::new(jd_tt_v);
         let site = Geodetic::<ECEF>::new(
@@ -318,8 +311,7 @@ pub fn run_horiz_to_equ_perf(lines: &mut impl Iterator<Item = String>) {
 
     let start = Instant::now();
     let mut sink: f64 = 0.0;
-    for i in 0..n {
-        let (jd_ut1_v, jd_tt_v, az, alt, lon, lat) = params[i];
+    for &(jd_ut1_v, jd_tt_v, az, alt, lon, lat) in &params {
         let jd_ut1 = JulianDate::new(jd_ut1_v);
         let jd_tt = JulianDate::new(jd_tt_v);
         let site = Geodetic::<ECEF>::new(

@@ -19,9 +19,9 @@ fn run_direction_rotation(
     let stdout = io::stdout();
     let mut out = stdout.lock();
 
-    write!(
+    writeln!(
         out,
-        "{{\"experiment\":\"{}\",\"library\":\"anise\",\"model\":\"{}\",\"count\":{},\"cases\":[\n",
+        "{{\"experiment\":\"{}\",\"library\":\"anise\",\"model\":\"{}\",\"count\":{},\"cases\":[",
         exp_name, model, n
     )
     .unwrap();
@@ -42,7 +42,7 @@ fn run_direction_rotation(
         let closure = ang_sep(vin, vback);
 
         if i > 0 {
-            write!(out, ",\n").unwrap();
+            writeln!(out, ",").unwrap();
         }
         write!(
             out,

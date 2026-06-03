@@ -6,8 +6,7 @@ use std::path::Path;
 pub(crate) const KM_PER_AU: f64 = 149_597_870.7;
 
 pub(crate) fn parse_numbers(line: &str) -> Vec<f64> {
-    line.trim()
-        .split_whitespace()
+    line.split_whitespace()
         .map(|s| s.parse::<f64>().unwrap())
         .collect()
 }
