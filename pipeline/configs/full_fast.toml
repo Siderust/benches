@@ -65,4 +65,4 @@ allow_network = false
 
 [output]
 dir = "results"
-publish_latest = true
+publish_latest = false
