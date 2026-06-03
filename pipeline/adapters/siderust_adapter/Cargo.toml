@@ -12,8 +12,8 @@ name = "siderust_adapter"
 path = "src/main.rs"
 
 [features]
-# Enable JPL DE440 embedded ephemeris. On by default; disable with --no-default-features.
-de440 = ["siderust/de440"]
+# Enable JPL DE440 adapter paths. On by default; disable with --no-default-features.
+de440 = []
 default = ["de440"]
 
 [dependencies]

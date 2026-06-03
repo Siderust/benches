@@ -8,8 +8,8 @@ no_build = false
 [performance]
 enabled = true
 rounds = 1
-scalar_n = 500
-batch_n = 5000
+scalar_n = 50
+batch_n = 50
 batch_rounds = 1
 warmup = 20
 timeout_s = 30

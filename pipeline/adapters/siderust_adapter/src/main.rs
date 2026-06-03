@@ -12,7 +12,7 @@ mod time_earth_rotation;
 
 pub(crate) use common::{
     affn, ang_sep, frame_rotation_selected, normalize3, pure_bpn_matrix, qtty,
-    selected_nutation_profile, CartesianDirectionCompat,
+    perf_warmup, selected_nutation_profile, CartesianDirectionCompat,
 };
 
 use std::io::{self, BufRead};

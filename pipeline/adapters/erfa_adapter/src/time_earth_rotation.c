@@ -173,8 +173,8 @@ void run_gmst_era_perf(void) {
     }
 
     /* Warm-up */
-    warmup = 100;
-    w = getenv("LAB_PERF_WARMUP");
+    int warmup = 100;
+    char *w = getenv("LAB_PERF_WARMUP");
     if (w) warmup = atoi(w);
     if (warmup < 0) warmup = 0;
     for (int i = 0; i < n && i < warmup; i++) {
@@ -697,4 +697,3 @@ void run_inv_icrs_ecl_tod(void)      { _run_dir_accuracy("inv_icrs_ecl_tod",    
 void run_inv_icrs_ecl_tod_perf(void) { _run_dir_perf("inv_icrs_ecl_tod",      mat_inv_icrs_ecl_tod); }
 void run_inv_equ_ecl(void)           { _run_dir_accuracy("inv_equ_ecl",           "IAU_2006_inv_equ_ecl",    mat_inv_equ_ecl); }
 void run_inv_equ_ecl_perf(void)      { _run_dir_perf("inv_equ_ecl",           mat_inv_equ_ecl); }
-

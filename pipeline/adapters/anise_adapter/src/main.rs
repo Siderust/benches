@@ -9,6 +9,8 @@ mod frames;
 mod pointing;
 mod time_earth_rotation;
 
+pub(crate) use common::perf_warmup;
+
 use std::io::{self, BufRead};
 
 fn main() {
