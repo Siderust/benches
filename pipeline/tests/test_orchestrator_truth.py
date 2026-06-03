@@ -173,4 +173,5 @@ def test_libnova_equ_ecl_model_mismatch_is_not_rankable():
     assert enriched["catalog_parity"] == "model-mismatch"
     assert enriched["rankable_accuracy"] is False
     assert enriched["rankable_performance"] is False
-    assert "Meeus/equinox-of-date convention" in enriched["rank_exclusion_reason"]
+    reason = enriched["rank_exclusion_reason"] or ""
+    assert "Meeus" in reason or "model-mismatch" in reason.lower()

@@ -2216,15 +2216,18 @@ def alignment_checklist(
             "erfa": "IAU 2006 obliquity-based transform (eraEqec06 / eraEceq06)",
             "siderust": "IAU 2006 ecliptic-of-date via precession matrix + mean obliquity",
             "astropy": "Public SkyCoord ICRS→BarycentricMeanEcliptic transform",
-            "libnova": "Meeus obliquity (Eq 22.2) via ln_get_ecl_from_equ / ln_get_equ_from_ecl",
+            "libnova": (
+                "ln_get_equ_prec (J2000→date) + ln_get_ecl_from_equ + "
+                "ln_get_equ_from_ecl + ln_get_equ_prec2 (date→J2000)"
+            ),
         }
         base["model_parity_class"] = "model-mismatch"
-        base["accuracy_interpretation"] = "agreement with ERFA baseline (libnova Meeus obliquity differs)"
+        base["accuracy_interpretation"] = "agreement with ERFA baseline (libnova Meeus precession/obliquity differs from IAU 2006 Eqec06)"
         base["note"] = (
             "Astropy is measured through its public BarycentricMeanEcliptic orientation, "
             "which matches SOFA's mean ecliptic-of-date rotation for direction-only inputs. "
             "Siderust uses an explicit IAU 2006 equatorial/ecliptic-of-date transform path. "
-            "libnova uses Meeus obliquity polynomial — expect ~arcsec-level differences."
+            "libnova precesses ICRS/J2000 input to mean equator of date before Meeus ecliptic transform."
         )
 
     elif experiment == "equ_horizontal":
@@ -2467,14 +2470,16 @@ def alignment_checklist(
             "erfa": "IAU 2006 equatorial → ecliptic of date via eraEqec06",
             "siderust": "ICRS → ecliptic of date via DirectionAstroExt::to_ecliptic_of_date",
             "astropy": "Public SkyCoord ICRS→BarycentricMeanEcliptic transform",
-            "libnova": "Meeus obliquity (Eq 22.2) via ln_get_ecl_from_equ",
+            "libnova": (
+                "ln_get_equ_prec (J2000→date) + ln_get_ecl_from_equ + "
+                "ln_get_equ_from_ecl + ln_get_equ_prec2 (date→J2000)"
+            ),
         }
         base["model_parity_class"] = "model-mismatch"
-        base["accuracy_interpretation"] = "agreement with ERFA baseline (libnova Meeus obliquity differs)"
+        base["accuracy_interpretation"] = "agreement with ERFA baseline (libnova Meeus precession/obliquity differs from IAU 2006 Eqec06)"
         base["note"] = (
-            "Similar to equ_ecl but explicitly identified as ICRS → ecliptic-of-date transform. "
-            "Astropy is measured through its public BarycentricMeanEcliptic orientation. "
-            "ERFA and Siderust use explicit IAU 2006 transform paths; libnova uses Meeus."
+            "Same composite libnova path as equ_ecl: ICRS/J2000 RA/Dec precessed to mean equator of date "
+            "before Meeus ecliptic transform. ERFA/Siderust use IAU 2006 Eqec06."
         )
 
     elif experiment == "horiz_to_equ":

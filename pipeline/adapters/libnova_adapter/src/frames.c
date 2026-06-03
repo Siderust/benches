@@ -1,5 +1,30 @@
 #include "common.h"
 
+/* ICRS/J2000 equatorial (input RA/Dec) → mean equator of date → ecliptic of date. */
+static void libnova_icrs_to_ecl_of_date(
+    double jd_tt,
+    double ra_j2000_deg,
+    double dec_j2000_deg,
+    struct ln_lnlat_posn *ecl_out)
+{
+    struct ln_equ_posn equ_j2000 = { .ra = ra_j2000_deg, .dec = dec_j2000_deg };
+    struct ln_equ_posn equ_date;
+    ln_get_equ_prec(&equ_j2000, jd_tt, &equ_date);
+    ln_get_ecl_from_equ(&equ_date, jd_tt, ecl_out);
+}
+
+/* Ecliptic of date → mean equator of date → ICRS/J2000 equatorial. */
+static void libnova_ecl_of_date_to_icrs(
+    double jd_tt,
+    const struct ln_lnlat_posn *ecl,
+    struct ln_equ_posn *equ_j2000_out)
+{
+    struct ln_equ_posn equ_date;
+    struct ln_lnlat_posn ecl_mut = { .lng = ecl->lng, .lat = ecl->lat };
+    ln_get_equ_from_ecl(&ecl_mut, jd_tt, &equ_date);
+    ln_get_equ_prec2(&equ_date, jd_tt, JD2000, equ_j2000_out);
+}
+
 /* ------------------------------------------------------------------ */
 /* Experiment: equ_ecl                                                 */
 /* Equatorial ↔ Ecliptic via libnova transform API                     */
@@ -12,7 +37,7 @@ void run_equ_ecl(void) {
     if (scanf("%d", &n) != 1) { fprintf(stderr, "bad N\n"); exit(1); }
 
     printf("{\"experiment\":\"equ_ecl\",\"library\":\"libnova\",");
-    printf("\"model\":\"libnova_transform\",");
+    printf("\"model\":\"libnova_icrs_to_ecl_of_date\",");
     printf("\"count\":%d,\"cases\":[\n", n);
 
     for (int i = 0; i < n; i++) {
@@ -21,25 +46,22 @@ void run_equ_ecl(void) {
             fprintf(stderr, "bad input line %d\n", i); exit(1);
         }
 
-        /* Convert input radians → libnova degrees */
-        /* libnova equ_posn.ra is in degrees (0..360), dec in degrees */
+        /* Input is ICRS/J2000 RA/Dec (radians); libnova uses degrees. */
         double ra_deg  = ra_rad  * (180.0 / M_PI);
         double dec_deg = dec_rad * (180.0 / M_PI);
 
-        struct ln_equ_posn equ = { .ra = ra_deg, .dec = dec_deg };
         struct ln_lnlat_posn ecl;
-        ln_get_ecl_from_equ(&equ, jd_tt, &ecl);
+        libnova_icrs_to_ecl_of_date(jd_tt, ra_deg, dec_deg, &ecl);
 
         double ecl_lon = ecl.lng * (M_PI / 180.0);
         double ecl_lat = ecl.lat * (M_PI / 180.0);
 
-        /* Closure: ecliptic → equatorial */
-        struct ln_lnlat_posn ecl2 = { .lng = ecl.lng, .lat = ecl.lat };
-        struct ln_equ_posn equ_back;
-        ln_get_equ_from_ecl(&ecl2, jd_tt, &equ_back);
+        /* Closure: ecliptic of date → ICRS/J2000 equatorial */
+        struct ln_equ_posn equ_j2000_back;
+        libnova_ecl_of_date_to_icrs(jd_tt, &ecl, &equ_j2000_back);
 
-        double ra_back  = equ_back.ra  * (M_PI / 180.0);
-        double dec_back = equ_back.dec * (M_PI / 180.0);
+        double ra_back  = equ_j2000_back.ra  * (M_PI / 180.0);
+        double dec_back = equ_j2000_back.dec * (M_PI / 180.0);
 
         double v_in[3]  = { cos(dec_rad)*cos(ra_rad), cos(dec_rad)*sin(ra_rad), sin(dec_rad) };
         double v_bk[3]  = { cos(dec_back)*cos(ra_back), cos(dec_back)*sin(ra_back), sin(dec_back) };
@@ -78,9 +100,8 @@ void run_equ_ecl_perf(void) {
 
     /* Warm-up */
     for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
-        struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
-        ln_get_ecl_from_equ(&equ, jds[i], &ecl);
+        libnova_icrs_to_ecl_of_date(jds[i], ras_deg[i], decs_deg[i], &ecl);
     }
 
     /* Timed run */
@@ -89,9 +110,8 @@ void run_equ_ecl_perf(void) {
 
     double sink = 0.0;
     for (int i = 0; i < n; i++) {
-        struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
-        ln_get_ecl_from_equ(&equ, jds[i], &ecl);
+        libnova_icrs_to_ecl_of_date(jds[i], ras_deg[i], decs_deg[i], &ecl);
         sink += ecl.lng;
     }
 
@@ -216,7 +236,7 @@ void run_icrs_ecl_tod(void) {
     if (scanf("%d", &n) != 1) { fprintf(stderr, "bad N\n"); exit(1); }
 
     printf("{\"experiment\":\"icrs_ecl_tod\",\"library\":\"libnova\",");
-    printf("\"model\":\"libnova_transform_of_date\",");
+    printf("\"model\":\"libnova_icrs_to_ecl_of_date\",");
     printf("\"count\":%d,\"cases\":[\n", n);
 
     for (int i = 0; i < n; i++) {
@@ -227,18 +247,17 @@ void run_icrs_ecl_tod(void) {
         double ra_deg  = ra_rad  * (180.0 / M_PI);
         double dec_deg = dec_rad * (180.0 / M_PI);
 
-        struct ln_equ_posn equ = { .ra = ra_deg, .dec = dec_deg };
         struct ln_lnlat_posn ecl;
-        ln_get_ecl_from_equ(&equ, jd_tt, &ecl);
+        libnova_icrs_to_ecl_of_date(jd_tt, ra_deg, dec_deg, &ecl);
 
         double ecl_lon = ecl.lng * (M_PI / 180.0);
         double ecl_lat = ecl.lat * (M_PI / 180.0);
 
-        /* Closure */
-        struct ln_equ_posn equ_back;
-        ln_get_equ_from_ecl(&ecl, jd_tt, &equ_back);
-        double ra_back  = equ_back.ra  * (M_PI / 180.0);
-        double dec_back = equ_back.dec * (M_PI / 180.0);
+        /* Closure: ecliptic of date → ICRS/J2000 */
+        struct ln_equ_posn equ_j2000_back;
+        libnova_ecl_of_date_to_icrs(jd_tt, &ecl, &equ_j2000_back);
+        double ra_back  = equ_j2000_back.ra  * (M_PI / 180.0);
+        double dec_back = equ_j2000_back.dec * (M_PI / 180.0);
         double v_in[3]  = { cos(dec_rad)*cos(ra_rad), cos(dec_rad)*sin(ra_rad), sin(dec_rad) };
         double v_bk[3]  = { cos(dec_back)*cos(ra_back), cos(dec_back)*sin(ra_back), sin(dec_back) };
         double closure_rad = ang_sep(v_in, v_bk);
@@ -269,18 +288,16 @@ void run_icrs_ecl_tod_perf(void) {
     }
 
     for (int i = 0, warmup = get_perf_warmup(); i < n && i < warmup; i++) {
-        struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
-        ln_get_ecl_from_equ(&equ, jds[i], &ecl);
+        libnova_icrs_to_ecl_of_date(jds[i], ras_deg[i], decs_deg[i], &ecl);
     }
 
     struct timespec t0, t1;
     clock_gettime(CLOCK_MONOTONIC, &t0);
     double sink = 0.0;
     for (int i = 0; i < n; i++) {
-        struct ln_equ_posn equ = { ras_deg[i], decs_deg[i] };
         struct ln_lnlat_posn ecl;
-        ln_get_ecl_from_equ(&equ, jds[i], &ecl);
+        libnova_icrs_to_ecl_of_date(jds[i], ras_deg[i], decs_deg[i], &ecl);
         sink += ecl.lng + ecl.lat;
     }
     clock_gettime(CLOCK_MONOTONIC, &t1);
