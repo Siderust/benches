@@ -1,0 +1,2367 @@
+{
+  "run_id": "2026-06-03_20-11-15",
+  "config": {
+    "run_label": "full-fast-smoke",
+    "run_phase": "smoke",
+    "run_tags": [
+      "smoke",
+      "draft",
+      "full_fast"
+    ],
+    "experiments": [
+      "gmst_era",
+      "frame_rotation_bpn",
+      "equ_ecl",
+      "equ_horizontal",
+      "solar_position",
+      "lunar_position",
+      "mercury_barycenter_position",
+      "venus_barycenter_position",
+      "mars_barycenter_position",
+      "jupiter_barycenter_position",
+      "saturn_barycenter_position",
+      "uranus_barycenter_position",
+      "neptune_barycenter_position",
+      "kepler_solver",
+      "horiz_to_equ",
+      "frame_bias",
+      "precession",
+      "nutation",
+      "icrs_ecl_j2000",
+      "inv_frame_bias",
+      "inv_precession",
+      "inv_nutation",
+      "inv_bpn",
+      "inv_icrs_ecl_j2000",
+      "obliquity",
+      "inv_obliquity",
+      "bias_precession",
+      "inv_bias_precession",
+      "precession_nutation",
+      "inv_precession_nutation",
+      "inv_icrs_ecl_tod",
+      "inv_equ_ecl"
+    ],
+    "n": 10,
+    "seed": 42,
+    "perf_enabled": true,
+    "perf_rounds": 1,
+    "perf_scalar_n": 50,
+    "perf_batch_n": 50,
+    "perf_batch_rounds": 1,
+    "perf_warmup": 20,
+    "perf_timeout_s": 30,
+    "ci_mode": false,
+    "adapters": [
+      "siderust",
+      "astropy",
+      "libnova",
+      "anise"
+    ],
+    "siderust_profiles": [
+      "iau2006a",
+      "iau2000a",
+      "iau2000b",
+      "precession_only"
+    ],
+    "horizons_use_cache": true,
+    "horizons_allow_network": false
+  },
+  "scope": {
+    "suite_label": "core+extra",
+    "partial": false,
+    "core_complete": true,
+    "core_partial": false,
+    "core_experiments_total": 14,
+    "core_experiments_covered": 14,
+    "missing_core_experiments": [],
+    "missing_requested_experiments": [],
+    "extra_experiments": [
+      "bias_precession",
+      "frame_bias",
+      "horiz_to_equ",
+      "icrs_ecl_j2000",
+      "inv_bias_precession",
+      "inv_bpn",
+      "inv_equ_ecl",
+      "inv_frame_bias",
+      "inv_icrs_ecl_j2000",
+      "inv_icrs_ecl_tod",
+      "inv_nutation",
+      "inv_obliquity",
+      "inv_precession",
+      "inv_precession_nutation",
+      "nutation",
+      "obliquity",
+      "precession",
+      "precession_nutation"
+    ],
+    "run_label": "full-fast-smoke",
+    "run_phase": "smoke",
+    "run_tags": [
+      "smoke",
+      "draft",
+      "full_fast"
+    ]
+  },
+  "publication": {
+    "grade": "draft",
+    "publish_blockers": [
+      "perf_rounds 1 < 10 (publication standard)",
+      "perf_scalar_n 50 < 5000 (publication standard)",
+      "perf_batch_n 50 < 100000 (publication standard)",
+      "perf_batch_rounds 1 < 5 (publication standard)",
+      "perf_warmup 20 < 100 (publication standard)"
+    ],
+    "git_dirty": {
+      "lab": false,
+      "siderust": false,
+      "anise": false,
+      "erfa": false,
+      "libnova": false,
+      "astropy": false
+    },
+    "allow_dirty_override": true,
+    "allow_partial_override": true
+  },
+  "latest_results_merge": {
+    "is_merge": false
+  },
+  "labels": {
+    "run_label": "full-fast-smoke",
+    "run_phase": "smoke",
+    "run_tags": [
+      "smoke",
+      "draft",
+      "full_fast"
+    ]
+  },
+  "metadata": {
+    "date": "2026-06-03T20:12:06Z",
+    "git_shas": {
+      "lab": "8a6d32de6a11",
+      "siderust": "da582bedc1d1",
+      "anise": "43780d81d9fe",
+      "erfa": "9915ba38c936",
+      "libnova": "edbf65abe27e",
+      "astropy": "7dc44b6ec773"
+    },
+    "git_dirty": {
+      "lab": false,
+      "siderust": false,
+      "anise": false,
+      "erfa": false,
+      "libnova": false,
+      "astropy": false
+    },
+    "cargo_lock_sha256": {
+      "siderust_adapter": "584de238eb03b4bed3b5630cf095e837e2ca8f2c4ed52b4f1625a332db2d0dbb",
+      "anise_adapter": "8eb08977d37d0faa787fc2b68977bd53b5593aef480ba1883945db0275dee40e"
+    },
+    "git_branch": "main",
+    "cpu": "x86_64",
+    "cpu_count": 22,
+    "os": "Linux 6.17.0-35-generic",
+    "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+    "toolchain": {
+      "python": "3.12.3",
+      "numpy": "2.4.6",
+      "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+      "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+      "pyerfa": "2.0.1.5"
+    },
+    "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+    "adapter_binaries": {
+      "siderust_adapter": {
+        "present": true,
+        "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+        "sha256": "670af60dbe5be1056a18e5351c00d847e3f3b4e14aa2e7ce77bd20e3b5d204f0",
+        "size": 6307552,
+        "mtime": "2026-06-03T19:30:51Z"
+      },
+      "anise_adapter": {
+        "present": true,
+        "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+        "sha256": "3501a9e8a7fde34a2374edeaf899ad85d349b1b571a190c05e26e867566ee9e0",
+        "size": 957800,
+        "mtime": "2026-06-03T19:51:47Z"
+      },
+      "erfa_adapter": {
+        "present": true,
+        "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+        "sha256": "5efb942dd26e6d453b44ebc88edd6730465dc79fb62b9d02660e382b0c4161f6",
+        "size": 485008,
+        "mtime": "2026-06-03T18:12:05Z"
+      },
+      "libnova_adapter": {
+        "present": true,
+        "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+        "sha256": "500ff22801bc59b1496a5c9c1879fa73c1e236074be80629d0009bac83b2f115",
+        "size": 3734624,
+        "mtime": "2026-06-03T19:54:36Z"
+      }
+    },
+    "library_versions": {},
+    "anise_spk": {
+      "path": "/home/valles/workspace/siderust.github.io-new/benches/.benches_cache/kernels/de440.bsp",
+      "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+      "size": 119799808,
+      "source_tag": "de440"
+    },
+    "siderust_planet_spks": {
+      "kernels": [
+        {
+          "path": "/home/valles/workspace/siderust.github.io-new/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+          "filename": "de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808
+        },
+        {
+          "path": "/home/valles/workspace/siderust.github.io-new/benches/pipeline/adapters/siderust_adapter/datasets/de440_dataset/de440.bsp",
+          "filename": "de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808
+        }
+      ]
+    }
+  },
+  "completeness": {
+    "requested": 32,
+    "completed": 32,
+    "missing": [],
+    "completed_experiments": [
+      "bias_precession",
+      "equ_ecl",
+      "equ_horizontal",
+      "frame_bias",
+      "frame_rotation_bpn",
+      "gmst_era",
+      "horiz_to_equ",
+      "icrs_ecl_j2000",
+      "inv_bias_precession",
+      "inv_bpn",
+      "inv_equ_ecl",
+      "inv_frame_bias",
+      "inv_icrs_ecl_j2000",
+      "inv_icrs_ecl_tod",
+      "inv_nutation",
+      "inv_obliquity",
+      "inv_precession",
+      "inv_precession_nutation",
+      "jupiter_barycenter_position",
+      "kepler_solver",
+      "lunar_position",
+      "mars_barycenter_position",
+      "mercury_barycenter_position",
+      "neptune_barycenter_position",
+      "nutation",
+      "obliquity",
+      "precession",
+      "precession_nutation",
+      "saturn_barycenter_position",
+      "solar_position",
+      "uranus_barycenter_position",
+      "venus_barycenter_position"
+    ],
+    "libraries": [
+      "anise",
+      "astropy",
+      "astropy:de440-local",
+      "erfa",
+      "libnova",
+      "siderust",
+      "siderust:de440",
+      "siderust:de440_barycenter",
+      "siderust:elp2000",
+      "siderust:iau2000a",
+      "siderust:iau2000b",
+      "siderust:precession_only",
+      "siderust:spk_barycenter"
+    ],
+    "per_experiment": {
+      "gmst_era": {
+        "requested_adapters": [
+          "astropy",
+          "libnova",
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 6,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "astropy",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "frame_rotation_bpn": {
+        "requested_adapters": [
+          "astropy",
+          "libnova",
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 6,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "astropy",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "libnova uses a different physical model than the reference for this observable"
+          }
+        ]
+      },
+      "equ_ecl": {
+        "requested_adapters": [
+          "astropy",
+          "libnova",
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 6,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "astropy",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path."
+          }
+        ]
+      },
+      "equ_horizontal": {
+        "requested_adapters": [
+          "astropy",
+          "libnova",
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 6,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "astropy",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "solar_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy",
+          "astropy:de440-local",
+          "erfa",
+          "libnova",
+          "siderust",
+          "siderust:de440",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 10,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "erfa",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "reference adapter \u2014 never appears as a public candidate row"
+          },
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "lunar_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy",
+          "astropy:de440-local",
+          "erfa",
+          "libnova",
+          "siderust",
+          "siderust:de440",
+          "siderust:elp2000",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 11,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "erfa",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "reference adapter \u2014 never appears as a public candidate row"
+          },
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:elp2000",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:de440",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "mercury_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "venus_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "mars_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "jupiter_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "saturn_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "uranus_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "neptune_barycenter_position": {
+        "requested_adapters": [
+          "anise",
+          "astropy:de440-local",
+          "libnova",
+          "siderust",
+          "siderust:de440_barycenter",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only",
+          "siderust:spk_barycenter"
+        ],
+        "ok": 9,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": "geometric_vector",
+        "reference_lane": "geometric_vector",
+        "reference_source_tag": "DE441",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:de440_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:de440-local",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "anise",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "kepler_solver": {
+        "requested_adapters": [
+          "libnova",
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 5,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "Pipeline Newton-Raphson (machine epsilon)",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000a' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'iau2000b' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust profile 'precession_only' does not match the SOFA IAU 2006/2000A reference"
+          },
+          {
+            "library": "libnova",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          }
+        ]
+      },
+      "horiz_to_equ": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/horiz_to_equ: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/horiz_to_equ: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/horiz_to_equ: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/horiz_to_equ: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "frame_bias": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "precession": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "nutation": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/nutation: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "icrs_ecl_j2000": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_frame_bias": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_frame_bias: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_precession": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_nutation": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_bpn": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bpn: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bpn: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bpn: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bpn: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_icrs_ecl_j2000": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_j2000: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "obliquity": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_obliquity": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_obliquity: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "bias_precession": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_bias_precession": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_bias_precession: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "precession_nutation": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_precession_nutation": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_precession_nutation: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_icrs_ecl_tod": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_tod: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_tod: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_tod: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_icrs_ecl_tod: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      },
+      "inv_equ_ecl": {
+        "requested_adapters": [
+          "siderust",
+          "siderust:iau2000a",
+          "siderust:iau2000b",
+          "siderust:precession_only"
+        ],
+        "ok": 4,
+        "partial": 0,
+        "skipped": 0,
+        "failed": 0,
+        "lane": null,
+        "reference_lane": null,
+        "reference_source_tag": "ERFA/SOFA",
+        "rows": [
+          {
+            "library": "siderust",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_equ_ecl: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000a",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_equ_ecl: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:iau2000b",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_equ_ecl: api_surface=diagnostic (not a public ranked candidate)"
+          },
+          {
+            "library": "siderust:precession_only",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": false,
+            "rankability_reason": "siderust/inv_equ_ecl: api_surface=diagnostic (not a public ranked candidate)"
+          }
+        ]
+      }
+    }
+  },
+  "experiment_count": 32,
+  "total_results": 185
+}
