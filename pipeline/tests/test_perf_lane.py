@@ -16,7 +16,7 @@ from pipeline import orchestrator
 def test_run_multi_sample_perf_propagates_lab_lane() -> None:
     captured = []
 
-    def fake_run_adapter(cmd, input_text, label, *, extra_env=None):
+    def fake_run_adapter(cmd, input_text, label, *, extra_env=None, timeout=120):
         captured.append({"label": label, "extra_env": extra_env})
         return {"per_op_ns": 100.0, "total_ns": 1000, "count": 10}
 
@@ -37,7 +37,7 @@ def test_run_multi_sample_perf_without_env_is_none_default() -> None:
     """Back-compat: callers that don't pass extra_env see None forwarded."""
     captured = []
 
-    def fake_run_adapter(cmd, input_text, label, *, extra_env=None):
+    def fake_run_adapter(cmd, input_text, label, *, extra_env=None, timeout=120):
         captured.append(extra_env)
         return {"per_op_ns": 1.0, "total_ns": 1, "count": 1}
 

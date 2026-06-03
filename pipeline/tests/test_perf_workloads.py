@@ -22,7 +22,7 @@ def test_run_perf_workloads_shape_and_values() -> None:
     def fmt(values):
         return "stub_perf\n" + str(len(values)) + "\n"
 
-    def fake_multi(cmd, input_text, label, rounds=10, *, extra_env=None):
+    def fake_multi(cmd, input_text, label, rounds=10, *, extra_env=None, timeout=120):
         calls.append((label, rounds, input_text.splitlines()[1]))
         count = int(input_text.splitlines()[1])
         per_op = 200.0 if "scalar" in label else 100.0

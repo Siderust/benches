@@ -76,7 +76,7 @@ def test_run_multi_sample_perf_rejects_hidden_partial_counts():
         {"per_op_ns": 100.0, "total_ns": 1000.0, "count": 100, "count_requested": 100, "count_valid": 50, "error_count": 50},
     ]
 
-    def fake_run(cmd, input_text, label, extra_env=None):
+    def fake_run(cmd, input_text, label, extra_env=None, timeout=120):
         return rounds.pop(0)
 
     with pytest.MonkeyPatch.context() as mp:
