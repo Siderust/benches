@@ -80,8 +80,8 @@ pip install -r pipeline/requirements.txt
 ```
 
 `./run.sh ci` builds available adapters, runs `pipeline/configs/ci.toml`, and
-refreshes `static_export/`. The CI config disables Horizons network access and
-DE440 auto-downloads.
+refreshes `static_export/` and `latest_results/`. The CI config disables
+Horizons network access and DE440 auto-downloads.
 
 ## Suites
 

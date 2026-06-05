@@ -74,12 +74,7 @@ void run_equ_ecl_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"equ_ecl_perf\",\"library\":\"erfa\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("equ_ecl_perf", n, elapsed_ns, sink);
 
     free(jds);
     free(ras);
@@ -171,10 +166,7 @@ void run_icrs_ecl_j2000_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"icrs_ecl_j2000_perf\",\"library\":\"erfa\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), vout[0]);
+    emit_valid_perf_json("icrs_ecl_j2000_perf", n, elapsed_ns, vout[0]);
     free(jds); free(vecs);
 }
 
@@ -246,9 +238,6 @@ void run_icrs_ecl_tod_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"icrs_ecl_tod_perf\",\"library\":\"erfa\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("icrs_ecl_tod_perf", n, elapsed_ns, sink);
     free(jds); free(ras); free(decs);
 }

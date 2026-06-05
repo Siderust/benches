@@ -1,0 +1,837 @@
+{
+  "experiment": "equ_horizontal",
+  "run_id": "2026-06-05_12-14-12",
+  "rows": [
+    {
+      "experiment": "equ_horizontal",
+      "candidate_library": "astropy",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Equatorial to Horizontal (Alt-Az) Transform",
+        "what": "Converts celestial RA/Dec to local azimuth/altitude for a ground observer, using sidereal time and spherical trigonometry.",
+        "why": "This is the 'where do I point my telescope?' calculation. Accuracy depends on the GAST (sidereal time) model used.",
+        "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
+        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is not rankable for accuracy in this experiment.",
+        "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "Spherical trig via eraHd2ae / eraAe2hd; GAST via eraGst06a; no refraction",
+          "siderust": "Spherical trig matching ERFA formulas; GAST IAU 2006 via siderust astro path",
+          "astropy": "Public SkyCoord TETE\u2192AltAz transform with pressure=0",
+          "libnova": "ln_get_hrz_from_equ / ln_get_equ_from_hrz; convention fix: az_erfa = (360 - az_ln + 180) % 360",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "accuracy vs ERFA reference (Astropy high-level AltAz path, no direct ERFA trig call)",
+        "note": "Azimuth convention: ERFA 0\u00b0=North CW; libnova 0\u00b0=South. Astropy is measured through public TETE/AltAz transforms with atmospheric refraction disabled.",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "dd6b9a7ef1f9c2d0"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "astropy",
+        "angular_sep_arcsec": {
+          "p50": 0.28881560318024185,
+          "p90": 0.44249580976571584,
+          "p99": 0.5201328535299711,
+          "max": 0.5553245325555966,
+          "mean": 0.291760392943299,
+          "rms": 0.3125246174187619
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.2380389305461429,
+          "p90": 0.5410011604014597,
+          "p99": 1.478259006054116,
+          "max": 5.111310424275183,
+          "mean": 0.02212476122424448,
+          "rms": 0.4566836957499923
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 0.17401253343593776,
+          "p90": 0.34918250715267585,
+          "p99": 0.4529772337803493,
+          "max": 0.5192238661236379,
+          "mean": 0.0032836267563856993,
+          "rms": 0.21409128666983085
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 4455210.6153,
+          "cv": 13.267761390503768,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": null,
+          "items_per_sec": null,
+          "cv": null,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": null,
+          "count_valid": null,
+          "error_count": null,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "adapter returned no result",
+            "performance workload marked invalid"
+          ],
+          "skipped": false,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 48050.45,
+          "cv": 6.889535762685897,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 41867.7,
+          "items_per_sec": 23884.76080606291,
+          "cv": 7.717909536044683,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:27:19Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "pointing",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "astropy",
+      "api_surface": "public",
+      "api_method": "SkyCoord(TETE).transform_to(AltAz)",
+      "support_status": "supported",
+      "catalog_model": "Astropy builtin (Meeus / DE405-like) + public coordinate/time transforms",
+      "catalog_source": "astropy package (astropy.coordinates, astropy.time)",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA/IERS GAST + spherical trigonometry, no refraction",
+      "selected_model": null,
+      "model_source": "ASTROPY",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA/IERS GAST + spherical trigonometry, no refraction"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "equ_horizontal",
+      "candidate_library": "libnova",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Equatorial to Horizontal (Alt-Az) Transform",
+        "what": "Converts celestial RA/Dec to local azimuth/altitude for a ground observer, using sidereal time and spherical trigonometry.",
+        "why": "This is the 'where do I point my telescope?' calculation. Accuracy depends on the GAST (sidereal time) model used.",
+        "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
+        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is not rankable for accuracy in this experiment.",
+        "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "Spherical trig via eraHd2ae / eraAe2hd; GAST via eraGst06a; no refraction",
+          "siderust": "Spherical trig matching ERFA formulas; GAST IAU 2006 via siderust astro path",
+          "astropy": "Public SkyCoord TETE\u2192AltAz transform with pressure=0",
+          "libnova": "ln_get_hrz_from_equ / ln_get_equ_from_hrz; convention fix: az_erfa = (360 - az_ln + 180) % 360",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "accuracy vs ERFA reference (Astropy high-level AltAz path, no direct ERFA trig call)",
+        "note": "Azimuth convention: ERFA 0\u00b0=North CW; libnova 0\u00b0=South. Astropy is measured through public TETE/AltAz transforms with atmospheric refraction disabled.",
+        "candidate_parity": "model-mismatch",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "dd6b9a7ef1f9c2d0"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "libnova",
+        "angular_sep_arcsec": {
+          "p50": 8.04907788693546,
+          "p90": 14.209574336145451,
+          "p99": 16.362085473020436,
+          "max": 16.734869307445052,
+          "mean": 8.121903037503879,
+          "rms": 9.304570307551506
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 5.345621923555612,
+          "p90": 16.186431396405528,
+          "p99": 48.62782571444831,
+          "max": 181.61440063733312,
+          "mean": 0.6853498990631394,
+          "rms": 14.93118902827788
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 4.4980571712748425,
+          "p90": 11.709017724575027,
+          "p99": 15.016066129157744,
+          "max": 16.60446184989794,
+          "mean": 0.1547148944904528,
+          "rms": 6.748811222280747
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 128.4,
+          "cv": 26.48807355916701,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (26.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 130.5,
+          "items_per_sec": 7662835.249042146,
+          "cv": 2.9804540752945896,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 48050.45,
+          "cv": 6.889535762685897,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 41867.7,
+          "items_per_sec": 23884.76080606291,
+          "cv": 7.717909536044683,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:27:19Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "best-available",
+      "family": "pointing",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "libnova",
+      "api_surface": "public",
+      "api_method": "ln_get_hrz_from_equ + ln_get_equ_from_hrz",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + ELP2000-82B + Meeus precession + IAU 1980 nutation",
+      "catalog_source": "libnova C library",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA/IERS GAST + spherical trigonometry, no refraction",
+      "selected_model": null,
+      "model_source": "LIBNOVA",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA/IERS GAST + spherical trigonometry, no refraction"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "equ_horizontal",
+      "candidate_library": "siderust",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Equatorial to Horizontal (Alt-Az) Transform",
+        "what": "Converts celestial RA/Dec to local azimuth/altitude for a ground observer, using sidereal time and spherical trigonometry.",
+        "why": "This is the 'where do I point my telescope?' calculation. Accuracy depends on the GAST (sidereal time) model used.",
+        "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
+        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is not rankable for accuracy in this experiment.",
+        "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "Spherical trig via eraHd2ae / eraAe2hd; GAST via eraGst06a; no refraction",
+          "siderust": "Spherical trig matching ERFA formulas; GAST IAU 2006 via siderust astro path",
+          "astropy": "Public SkyCoord TETE\u2192AltAz transform with pressure=0",
+          "libnova": "ln_get_hrz_from_equ / ln_get_equ_from_hrz; convention fix: az_erfa = (360 - az_ln + 180) % 360",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "accuracy vs ERFA reference (Astropy high-level AltAz path, no direct ERFA trig call)",
+        "note": "Azimuth convention: ERFA 0\u00b0=North CW; libnova 0\u00b0=South. Astropy is measured through public TETE/AltAz transforms with atmospheric refraction disabled.",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "dd6b9a7ef1f9c2d0"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "siderust",
+        "angular_sep_arcsec": {
+          "p50": 1.6154571517712865e-07,
+          "p90": 2.0785268063673773e-07,
+          "p99": 2.552316372981209e-07,
+          "max": 2.759298554115852e-07,
+          "mean": 1.5223890296189353e-07,
+          "rms": 1.6002812750633652e-07
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 1.1723651778061781e-07,
+          "p90": 2.652987170896056e-07,
+          "p99": 7.746164466169848e-07,
+          "max": 6.963063686384564e-06,
+          "mean": 6.463163622206485e-09,
+          "rms": 3.2424823787203484e-07
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 1.0027907244092692e-07,
+          "p90": 1.775104462159094e-07,
+          "p99": 2.3180770529373173e-07,
+          "max": 2.7285342501339217e-07,
+          "mean": 3.6097004914645836e-09,
+          "rms": 1.1530333052470111e-07
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 43248.2,
+          "cv": 13.23097074033949,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 42690.4,
+          "items_per_sec": 23424.470138485467,
+          "cv": 11.264591802665961,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 48050.45,
+          "cv": 6.889535762685897,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 41867.7,
+          "items_per_sec": 23884.76080606291,
+          "cv": 7.717909536044683,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:27:19Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "pointing",
+      "tier": "public",
+      "candidate_profile": "iau2006a",
+      "candidate_id": "siderust",
+      "api_surface": "public",
+      "api_method": "DirectionAstroExt::to_horizontal_precise / to_equatorial",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + Meeus Ch. 47 + IAU 2006/2000A",
+      "catalog_source": "siderust crates: bodies::*, event::lunar::meeus_ch47",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA/IERS GAST + spherical trigonometry, no refraction",
+      "selected_model": null,
+      "model_source": "SIDERUST",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA/IERS GAST + spherical trigonometry, no refraction"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    }
+  ]
+}

@@ -118,13 +118,7 @@ void run_frame_rotation_bpn_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"frame_rotation_bpn_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,", (double)n / (elapsed_ns * 1e-9));
-    /* Dummy use of vout to prevent optimization */
-    printf("\"_sink\":%.17e}\n", vout[0]);
+    emit_valid_perf_json("frame_rotation_bpn_perf", n, elapsed_ns, vout[0]);
 
     free(jds);
     free(vecs);
@@ -162,12 +156,7 @@ void run_gmst_era_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"gmst_era_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("gmst_era_perf", n, elapsed_ns, sink);
 
     free(jd_ut1_arr);
     free(jd_tt_arr);
@@ -290,10 +279,7 @@ void run_precession_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"precession_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("precession_perf", n, elapsed_ns, sink);
     free(jds); free(ras_deg); free(decs_deg);
 }
 
@@ -393,10 +379,7 @@ void run_nutation_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"nutation_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("nutation_perf", n, elapsed_ns, sink);
     free(jds); free(ras_deg); free(decs_deg);
 }
 
@@ -482,9 +465,7 @@ void run_inv_precession_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_precession_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_precession_perf", n, ns, sink);
     free(jds); free(ras); free(decs);
 }
 
@@ -547,9 +528,7 @@ void run_inv_nutation_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_nutation_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_nutation_perf", n, ns, sink);
     free(jds); free(ras); free(decs);
 }
 
@@ -612,9 +591,7 @@ void run_precession_nutation_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"precession_nutation_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("precession_nutation_perf", n, ns, sink);
     free(jds); free(ras); free(decs);
 }
 
@@ -682,8 +659,6 @@ void run_inv_precession_nutation_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_precession_nutation_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_precession_nutation_perf", n, ns, sink);
     free(jds); free(ras); free(decs);
 }

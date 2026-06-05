@@ -71,6 +71,24 @@ def test_adapter_perf_round_issues_skipped():
     assert issues
 
 
+def test_run_multi_sample_perf_accepts_legacy_count_only():
+    rounds = [
+        {"per_op_ns": 100.0, "total_ns": 100000.0, "count": 1000, "error_count": 0},
+    ]
+
+    def fake_run(cmd, input_text, label, extra_env=None, timeout=120):
+        return rounds.pop(0)
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(orch, "run_adapter", fake_run)
+        out = orch.run_multi_sample_perf(["x"], "in", "lbl", rounds=1)
+    assert out is not None
+    assert out["valid"] is True
+    assert out["count_valid"] == 1000
+    assert out["count_requested"] == 1000
+    assert not any("Incomplete perf coverage" in w for w in out["warnings"])
+
+
 def test_run_multi_sample_perf_rejects_hidden_partial_counts():
     rounds = [
         {"per_op_ns": 100.0, "total_ns": 1000.0, "count": 100, "count_requested": 100, "count_valid": 50, "error_count": 50},
@@ -113,6 +131,83 @@ def test_scalar_warm_summary_invalid_when_error_count():
     }
     block = orch._scalar_warm_summary(perf, rounds=3, n_per_round=1000)
     assert block["valid"] is False
+
+
+def test_legacy_ephemeris_perf_becomes_scorecard_valid():
+    rows = [
+        {
+            "candidate_library": "astropy",
+            "candidate_profile": None,
+            "tier": "public",
+            "family": "solar_system_ephemerides",
+            "status": "ok",
+            "support_status": "supported",
+            "api_surface": "public",
+            "rankable_accuracy": True,
+            "comparability_class": "best-available",
+            "accuracy": {"angular_sep_arcsec": {"p99": 0.01}},
+            "performance": {
+                "scalar_warm": {
+                    "ns_per_op": 314147.0,
+                    "cv": 3.8,
+                    "valid": True,
+                    "n_per_round": 5000,
+                    "count_requested": 5000,
+                    "count_valid": 5000,
+                    "error_count": 0,
+                },
+                "batch_throughput": {
+                    "ns_per_op": 310950.0,
+                    "items_per_sec": 3215.0,
+                    "valid": True,
+                    "n": 100000,
+                    "count_requested": 100000,
+                    "count_valid": 100000,
+                    "error_count": 0,
+                },
+                "setup_metrics": None,
+            },
+        },
+        {
+            "candidate_library": "libnova",
+            "candidate_profile": None,
+            "tier": "public",
+            "family": "solar_system_ephemerides",
+            "status": "ok",
+            "support_status": "supported",
+            "api_surface": "public",
+            "rankable_accuracy": True,
+            "comparability_class": "best-available",
+            "accuracy": {"angular_sep_arcsec": {"p99": 0.02}},
+            "performance": {
+                "scalar_warm": {
+                    "ns_per_op": 37748.0,
+                    "cv": 6.4,
+                    "valid": True,
+                    "n_per_round": 5000,
+                    "count_requested": 5000,
+                    "count_valid": 5000,
+                    "error_count": 0,
+                },
+                "batch_throughput": {
+                    "ns_per_op": 33078.0,
+                    "items_per_sec": 30230.0,
+                    "valid": True,
+                    "n": 100000,
+                    "count_requested": 100000,
+                    "count_valid": 100000,
+                    "error_count": 0,
+                },
+                "setup_metrics": None,
+            },
+        },
+    ]
+    sc = scorecard.compute_scorecard("t", {"solar_position": rows})
+    exp = sc["families"][0]["experiments"][0]
+    by_lib = {row["library"]: row for row in exp["rows"]}
+    assert by_lib["astropy"]["perf_valid"] is True
+    assert by_lib["libnova"]["perf_valid"] is True
+    assert by_lib["astropy"]["performance"]["scalar_warm"]["count_valid"] == 5000
 
 
 def test_partial_perf_cannot_win_scorecard():

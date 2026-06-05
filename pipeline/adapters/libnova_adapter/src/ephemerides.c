@@ -237,11 +237,7 @@ void run_solar_position_geometric_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-    printf("{\"experiment\":\"solar_position_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("solar_position_perf", n, elapsed_ns, sink);
     free(jds);
 }
 
@@ -267,11 +263,7 @@ void run_lunar_position_geometric_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-    printf("{\"experiment\":\"lunar_position_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("lunar_position_perf", n, elapsed_ns, sink);
     free(jds);
 }
 
@@ -300,11 +292,9 @@ void run_planet_position_geometric_perf(const char *experiment,
     }
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-    printf("{\"experiment\":\"%s_perf\",\"library\":\"libnova\",", experiment);
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    char exp_name[128];
+    snprintf(exp_name, sizeof(exp_name), "%s_perf", experiment);
+    emit_valid_perf_json(exp_name, n, elapsed_ns, sink);
     free(jds);
 }
 
@@ -354,12 +344,7 @@ void run_solar_position_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"solar_position_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("solar_position_perf", n, elapsed_ns, sink);
 
     free(jds);
 }
@@ -398,12 +383,7 @@ void run_lunar_position_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"lunar_position_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("lunar_position_perf", n, elapsed_ns, sink);
 
     free(jds);
 }
@@ -442,12 +422,9 @@ void run_planet_position_perf(const char *experiment,
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"%s_perf\",\"library\":\"libnova\",", experiment);
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    char exp_name[128];
+    snprintf(exp_name, sizeof(exp_name), "%s_perf", experiment);
+    emit_valid_perf_json(exp_name, n, elapsed_ns, sink);
 
     free(jds);
 }

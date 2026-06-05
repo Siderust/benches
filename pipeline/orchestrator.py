@@ -1340,6 +1340,27 @@ def format_gmst_input(jd_ut1, jd_tt):
     return "\n".join(lines) + "\n"
 
 
+def _normalize_perf_coverage(result: dict) -> tuple[int | None, int | None, int]:
+    """Resolve count_requested / count_valid / error_count from adapter perf JSON.
+
+    Legacy adapters (astropy, libnova, erfa) emit only ``count`` and omit
+    ``count_valid``.  When a round completes without errors or an explicit
+    invalid/skipped flag, treat the timed batch as fully covered.
+    """
+    count_requested = result.get("count_requested", result.get("count"))
+    count_valid = result.get("count_valid")
+    error_count = int(result.get("error_count") or 0)
+    if (
+        count_valid is None
+        and count_requested is not None
+        and error_count == 0
+        and not result.get("skipped")
+        and result.get("valid") is not False
+    ):
+        count_valid = count_requested
+    return count_requested, count_valid, error_count
+
+
 def _adapter_perf_round_issues(result: dict | None) -> list[str]:
     """Reasons a single adapter perf JSON round must not contribute to ranking."""
     if result is None:
@@ -1472,9 +1493,7 @@ def run_multi_sample_perf(cmd, input_text: str, label: str,
             "Consider increasing sample count or reducing system load."
         )
 
-    count_requested = last_result.get("count_requested", last_result.get("count"))
-    count_valid = last_result.get("count_valid")
-    error_count = last_result.get("error_count", 0)
+    count_requested, count_valid, error_count = _normalize_perf_coverage(last_result)
     coverage_ok = (
         count_requested is None
         or (

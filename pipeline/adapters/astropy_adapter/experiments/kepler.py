@@ -1,6 +1,11 @@
 import json
 import sys
 
+try:
+    from .adapter_perf import astropy_perf_skipped_result
+except ImportError:
+    from experiments.adapter_perf import astropy_perf_skipped_result
+
 
 def run_kepler_solver(lines_iter):
     """Removed — Astropy has no public Kepler-equation solver.
@@ -41,16 +46,7 @@ def run_kepler_solver_perf(lines_iter):
     n = int(next(lines_iter).strip())
     for _ in range(n):
         next(lines_iter)
-    result = {
-        "experiment": "kepler_solver_perf",
-        "library": "astropy",
-        "count": 0,
-        "status": "unsupported",
-        "reason": "Astropy does not expose a public Kepler-equation solver.",
-        "total_ns": 0,
-        "per_op_ns": 0,
-        "throughput_ops_s": 0,
-        "_sink": 0.0,
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    astropy_perf_skipped_result(
+        "kepler_solver_perf",
+        "Astropy does not expose a public Kepler-equation solver.",
+    )

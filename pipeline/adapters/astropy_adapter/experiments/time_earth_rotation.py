@@ -8,8 +8,10 @@ import numpy as np
 
 try:
     from ..common import ang_sep, normalize3
+    from .adapter_perf import emit_astropy_perf_result
 except ImportError:
     from common import ang_sep, normalize3
+    from experiments.adapter_perf import emit_astropy_perf_result
 
 
 UNSUPPORTED_COMPONENT_REASON = (
@@ -168,19 +170,9 @@ def run_frame_rotation_bpn_perf(lines_iter):
     sink = np.zeros(3)
     for i in range(n):
         sink = _gcrs_to_tete_vector(jds[i], vecs[i])
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "frame_rotation_bpn_perf",
-        "library": "astropy",
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink[0]),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result(
+        "frame_rotation_bpn_perf", "astropy", n, time.perf_counter_ns() - t0, float(sink[0])
+    )
 
 
 def run_gmst_era_perf(lines_iter):
@@ -204,19 +196,7 @@ def run_gmst_era_perf(lines_iter):
     for jd_ut1, jd_tt in params:
         t = _time_from_tt_ut1(jd_tt, jd_ut1)
         sink += t.sidereal_time("mean", longitude=0 * u.deg, model="IAU2006").rad
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "gmst_era_perf",
-        "library": "astropy",
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result("gmst_era_perf", "astropy", n, time.perf_counter_ns() - t0, sink)
 
 
 def run_inv_bpn(lines_iter):
@@ -269,19 +249,9 @@ def run_inv_bpn_perf(lines_iter):
     sink = np.zeros(3)
     for i in range(n):
         sink = _tete_to_gcrs_vector(jds[i], vecs[i])
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "inv_bpn_perf",
-        "library": "astropy",
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink[0]),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result(
+        "inv_bpn_perf", "astropy", n, time.perf_counter_ns() - t0, float(sink[0])
+    )
 
 
 def run_frame_bias(lines_iter): _unsupported("frame_bias")

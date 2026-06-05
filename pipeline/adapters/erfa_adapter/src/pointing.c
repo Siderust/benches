@@ -101,12 +101,7 @@ void run_equ_horizontal_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"equ_horizontal_perf\",\"library\":\"erfa\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("equ_horizontal_perf", n, elapsed_ns, sink);
 
     free(params);
 }
@@ -203,9 +198,6 @@ void run_horiz_to_equ_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"horiz_to_equ_perf\",\"library\":\"erfa\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("horiz_to_equ_perf", n, elapsed_ns, sink);
     free(params);
 }

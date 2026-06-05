@@ -8,8 +8,10 @@ import numpy as np
 
 try:
     from ..common import ang_sep
+    from .adapter_perf import emit_astropy_perf_result
 except ImportError:
     from common import ang_sep
+    from experiments.adapter_perf import emit_astropy_perf_result
 
 
 UNSUPPORTED_FRAME_DIAGNOSTIC_REASON = (
@@ -122,19 +124,7 @@ def _run_mean_ecliptic_perf(exp_name, lines_iter):
             jd_tt, ra_rad, dec_rad
         )
         sink += ecl_lon + ecl_lat
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": f"{exp_name}_perf",
-        "library": "astropy",
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result(f"{exp_name}_perf", "astropy", n, time.perf_counter_ns() - t0, sink)
 
 
 def run_equ_ecl(lines_iter):

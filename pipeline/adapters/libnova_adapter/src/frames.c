@@ -117,12 +117,7 @@ void run_equ_ecl_perf(void) {
 
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
-    double per_op_ns = elapsed_ns / n;
-
-    printf("{\"experiment\":\"equ_ecl_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, per_op_ns);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("equ_ecl_perf", n, elapsed_ns, sink);
 
     free(jds);
     free(ras);
@@ -218,10 +213,7 @@ void run_icrs_ecl_j2000_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"icrs_ecl_j2000_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("icrs_ecl_j2000_perf", n, elapsed_ns, sink);
     free(ras_deg); free(decs_deg);
 }
 
@@ -303,10 +295,7 @@ void run_icrs_ecl_tod_perf(void) {
     clock_gettime(CLOCK_MONOTONIC, &t1);
     double elapsed_ns = (t1.tv_sec - t0.tv_sec) * 1e9 + (t1.tv_nsec - t0.tv_nsec);
 
-    printf("{\"experiment\":\"icrs_ecl_tod_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,", n, elapsed_ns, elapsed_ns / n);
-    printf("\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           (double)n / (elapsed_ns * 1e-9), sink);
+    emit_valid_perf_json("icrs_ecl_tod_perf", n, elapsed_ns, sink);
     free(jds); free(ras_deg); free(decs_deg);
 }
 
@@ -361,9 +350,7 @@ void run_inv_icrs_ecl_j2000_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_icrs_ecl_j2000_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_icrs_ecl_j2000_perf", n, ns, sink);
     free(lons); free(lats);
 }
 
@@ -415,9 +402,7 @@ void run_obliquity_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"obliquity_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("obliquity_perf", n, ns, sink);
     free(lons); free(lats);
 }
 
@@ -473,9 +458,7 @@ void run_inv_obliquity_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_obliquity_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_obliquity_perf", n, ns, sink);
     free(ras); free(decs);
 }
 
@@ -536,9 +519,7 @@ void run_inv_icrs_ecl_tod_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_icrs_ecl_tod_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_icrs_ecl_tod_perf", n, ns, sink);
     free(jds); free(lons); free(lats);
 }
 
@@ -594,8 +575,6 @@ void run_inv_equ_ecl_perf(void) {
     }
     clock_gettime(CLOCK_MONOTONIC,&t1);
     double ns = (t1.tv_sec-t0.tv_sec)*1e9 + (t1.tv_nsec-t0.tv_nsec);
-    printf("{\"experiment\":\"inv_equ_ecl_perf\",\"library\":\"libnova\",");
-    printf("\"count\":%d,\"total_ns\":%.0f,\"per_op_ns\":%.1f,\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
-           n, ns, ns/n, (double)n/(ns*1e-9), sink);
+    emit_valid_perf_json("inv_equ_ecl_perf", n, ns, sink);
     free(jds); free(lons); free(lats);
 }

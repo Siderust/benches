@@ -1,0 +1,844 @@
+{
+  "experiment": "gmst_era",
+  "run_id": "2026-06-05_12-14-12",
+  "rows": [
+    {
+      "experiment": "gmst_era",
+      "candidate_library": "astropy",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Greenwich Mean Sidereal Time & Earth Rotation Angle",
+        "what": "Computes GMST (how far the Earth has rotated relative to the stars) and ERA (the raw rotation angle) at given epochs.",
+        "why": "Time-scale conversions underpin all ground-based astronomical observations. Small errors here compound in coordinate transforms.",
+        "units": "GMST error in arcseconds; ERA error in radians.",
+        "interpret": "Lower error = better agreement with ERFA's IAU 2006 polynomial. Libnova uses Meeus formula which differs at the arcsecond level.",
+        "performance_contract": "Timed scope: GMST/ERA evaluation per epoch pair (JD_UT1, JD_TT). Input parsing and output serialisation are outside the timed loop. Astropy adapter uses public astropy.time APIs with an explicit UT1 override derived from the benchmark input pair."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "GMST=IAU2006 (eraGmst06), ERA=IAU2000 (eraEra00)",
+          "siderust": "GST polynomial (IAU 2006 coefficients), ERA from IERS definition",
+          "astropy": "Public Time.sidereal_time and Time.earth_rotation_angle APIs",
+          "libnova": "GMST=Meeus Formula 11.4, GAST=MST+nutation correction (no ERA)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "agreement with ERFA baseline (libnova uses Meeus, no ERA)",
+        "mode": "common_denominator",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "85a1b233696656ec"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "astropy",
+        "gmst_error_rad": {
+          "p50": 9.72792082998275e-10,
+          "p90": 1.1390245191478244e-09,
+          "p99": 1.3949013188963021e-09,
+          "max": 1.3957470734737853e-09,
+          "mean": 7.317231359820202e-10,
+          "rms": 8.415594310043505e-10
+        },
+        "gmst_error_arcsec": {
+          "p50": 0.00020065277051834848,
+          "p90": 0.0002349406717527181,
+          "p99": 0.00028771905027596495,
+          "max": 0.0002878934996800221,
+          "mean": 0.00015092873086984914,
+          "rms": 0.000173584092981529
+        },
+        "era_error_rad": {
+          "p50": 9.72792082998275e-10,
+          "p90": 1.1390245191478244e-09,
+          "p99": 1.3949013188963021e-09,
+          "max": 1.3957470734737853e-09,
+          "mean": 7.317231596388508e-10,
+          "rms": 8.415594510923397e-10
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 583858.6140000001,
+          "cv": 6.31199625888828,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 534770.21555,
+          "items_per_sec": 1869.9620340140316,
+          "cv": 3.5321126173402093,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 127.5,
+          "cv": 50.45455258396972,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (50.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 34.2,
+          "items_per_sec": 29239766.081871342,
+          "cv": 2.2596888752868827,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:14:13Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "time_earth_rotation",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "astropy",
+      "api_surface": "public",
+      "api_method": "Time.sidereal_time('mean', model='IAU2006') + Time.earth_rotation_angle",
+      "support_status": "supported",
+      "catalog_model": "Astropy builtin (Meeus / DE405-like) + public coordinate/time transforms",
+      "catalog_source": "astropy package (astropy.coordinates, astropy.time)",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA IAU 2006 GMST / IAU 2000 ERA",
+      "selected_model": null,
+      "model_source": "ASTROPY",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA IAU 2006 GMST / IAU 2000 ERA"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "gmst_era",
+      "candidate_library": "libnova",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Greenwich Mean Sidereal Time & Earth Rotation Angle",
+        "what": "Computes GMST (how far the Earth has rotated relative to the stars) and ERA (the raw rotation angle) at given epochs.",
+        "why": "Time-scale conversions underpin all ground-based astronomical observations. Small errors here compound in coordinate transforms.",
+        "units": "GMST error in arcseconds; ERA error in radians.",
+        "interpret": "Lower error = better agreement with ERFA's IAU 2006 polynomial. Libnova uses Meeus formula which differs at the arcsecond level.",
+        "performance_contract": "Timed scope: GMST/ERA evaluation per epoch pair (JD_UT1, JD_TT). Input parsing and output serialisation are outside the timed loop. Astropy adapter uses public astropy.time APIs with an explicit UT1 override derived from the benchmark input pair."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "GMST=IAU2006 (eraGmst06), ERA=IAU2000 (eraEra00)",
+          "siderust": "GST polynomial (IAU 2006 coefficients), ERA from IERS definition",
+          "astropy": "Public Time.sidereal_time and Time.earth_rotation_angle APIs",
+          "libnova": "GMST=Meeus Formula 11.4, GAST=MST+nutation correction (no ERA)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "agreement with ERFA baseline (libnova uses Meeus, no ERA)",
+        "mode": "common_denominator",
+        "candidate_parity": "model-mismatch",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "85a1b233696656ec"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "libnova",
+        "gmst_error_rad": {
+          "p50": 1.2903010165876694e-07,
+          "p90": 2.914714065660462e-07,
+          "p99": 3.297765744747494e-07,
+          "max": 1.3857215659385247e-06,
+          "mean": 1.4490833742627187e-07,
+          "rms": 1.8473725206628621e-07
+        },
+        "gmst_error_arcsec": {
+          "p50": 0.026614368918688708,
+          "p90": 0.06012029320191417,
+          "p99": 0.06802130123886534,
+          "max": 0.28582559031073274,
+          "mean": 0.029889490142818827,
+          "rms": 0.038104793504073524
+        },
+        "era_error_rad": {
+          "p50": null,
+          "p90": null,
+          "p99": null,
+          "max": null
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 13.1,
+          "cv": 24.69035096604419,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (24.7%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 4.7,
+          "items_per_sec": 212765957.44680852,
+          "cv": 1.1555328217408527,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "Per-op time (4.7 ns) is below measurable threshold (10.0 ns). Results may be dominated by measurement overhead.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 127.5,
+          "cv": 50.45455258396972,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (50.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 34.2,
+          "items_per_sec": 29239766.081871342,
+          "cv": 2.2596888752868827,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:14:13Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "best-available",
+      "family": "time_earth_rotation",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "libnova",
+      "api_surface": "public",
+      "api_method": "ln_get_mean_sidereal_time + ln_get_apparent_sidereal_time",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + ELP2000-82B + Meeus precession + IAU 1980 nutation",
+      "catalog_source": "libnova C library",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA IAU 2006 GMST / IAU 2000 ERA",
+      "selected_model": null,
+      "model_source": "LIBNOVA",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA IAU 2006 GMST / IAU 2000 ERA"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "gmst_era",
+      "candidate_library": "siderust",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Greenwich Mean Sidereal Time & Earth Rotation Angle",
+        "what": "Computes GMST (how far the Earth has rotated relative to the stars) and ERA (the raw rotation angle) at given epochs.",
+        "why": "Time-scale conversions underpin all ground-based astronomical observations. Small errors here compound in coordinate transforms.",
+        "units": "GMST error in arcseconds; ERA error in radians.",
+        "interpret": "Lower error = better agreement with ERFA's IAU 2006 polynomial. Libnova uses Meeus formula which differs at the arcsecond level.",
+        "performance_contract": "Timed scope: GMST/ERA evaluation per epoch pair (JD_UT1, JD_TT). Input parsing and output serialisation are outside the timed loop. Astropy adapter uses public astropy.time APIs with an explicit UT1 override derived from the benchmark input pair."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "GMST=IAU2006 (eraGmst06), ERA=IAU2000 (eraEra00)",
+          "siderust": "GST polynomial (IAU 2006 coefficients), ERA from IERS definition",
+          "astropy": "Public Time.sidereal_time and Time.earth_rotation_angle APIs",
+          "libnova": "GMST=Meeus Formula 11.4, GAST=MST+nutation correction (no ERA)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "agreement with ERFA baseline (libnova uses Meeus, no ERA)",
+        "mode": "common_denominator",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "85a1b233696656ec"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "siderust",
+        "gmst_error_rad": {
+          "p50": 3.1086244689504383e-15,
+          "p90": 1.021405182655144e-14,
+          "p99": 1.3767320616864253e-14,
+          "max": 2.042810365310288e-14,
+          "mean": 4.200439475410267e-15,
+          "rms": 5.626788779771446e-15
+        },
+        "gmst_error_arcsec": {
+          "p50": 6.41199823783045e-10,
+          "p90": 2.1067994210014333e-09,
+          "p99": 2.8397137195791602e-09,
+          "max": 4.213598842002867e-09,
+          "mean": 8.664028345481538e-10,
+          "rms": 1.160608497452893e-09
+        },
+        "era_error_rad": {
+          "p50": 3.1086244689504383e-15,
+          "p90": 1.021405182655144e-14,
+          "p99": 1.3767320616864253e-14,
+          "max": 2.042810365310288e-14,
+          "mean": 4.200137199844578e-15,
+          "rms": 5.626376347853852e-15
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 66.94999999999999,
+          "cv": 31.75741094650919,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (31.8%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 40.2,
+          "items_per_sec": 24875621.89054726,
+          "cv": 8.840088608111065,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 127.5,
+          "cv": 50.45455258396972,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (50.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 34.2,
+          "items_per_sec": 29239766.081871342,
+          "cv": 2.2596888752868827,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:14:13Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "time_earth_rotation",
+      "tier": "public",
+      "candidate_profile": "iau2006a",
+      "candidate_id": "siderust",
+      "api_surface": "public",
+      "api_method": "siderust::astro::sidereal::gmst_iau2006 + earth_rotation_angle",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + Meeus Ch. 47 + IAU 2006/2000A",
+      "catalog_source": "siderust crates: bodies::*, event::lunar::meeus_ch47",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA IAU 2006 GMST / IAU 2000 ERA",
+      "selected_model": null,
+      "model_source": "SIDERUST",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA IAU 2006 GMST / IAU 2000 ERA"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    }
+  ]
+}

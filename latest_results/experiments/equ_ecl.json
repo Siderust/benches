@@ -1,0 +1,848 @@
+{
+  "experiment": "equ_ecl",
+  "run_id": "2026-06-05_12-14-12",
+  "rows": [
+    {
+      "experiment": "equ_ecl",
+      "candidate_library": "astropy",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Equatorial to Ecliptic Coordinate Transform",
+        "what": "Converts sky positions from RA/Dec (equatorial) to ecliptic longitude/latitude, using the obliquity of the ecliptic.",
+        "why": "Ecliptic coordinates are natural for solar system objects. The transform depends on the obliquity model used.",
+        "units": "Angular separation in arcseconds between reference and candidate ecliptic positions.",
+        "interpret": "Lower separation = better agreement with ERFA's IAU 2006 obliquity model.",
+        "performance_contract": "Timed scope: obliquity evaluation + rotation per epoch. Input parsing is outside the timed loop."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "IAU 2006 obliquity-based transform (eraEqec06 / eraEceq06)",
+          "siderust": "IAU 2006 ecliptic-of-date via precession matrix + mean obliquity",
+          "astropy": "Public SkyCoord ICRS\u2192BarycentricMeanEcliptic transform",
+          "libnova": "ln_get_equ_prec (J2000\u2192date) + ln_get_ecl_from_equ + ln_get_equ_from_ecl + ln_get_equ_prec2 (date\u2192J2000)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "agreement with ERFA baseline (libnova Meeus precession/obliquity differs from IAU 2006 Eqec06)",
+        "note": "Astropy is measured through its public BarycentricMeanEcliptic orientation, which matches SOFA's mean ecliptic-of-date rotation for direction-only inputs. Siderust uses an explicit IAU 2006 equatorial/ecliptic-of-date transform path. libnova precesses ICRS/J2000 input to mean equator of date before Meeus ecliptic transform.",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "3ad99c5329c9e0c6"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "astropy",
+        "angular_sep_arcsec": {
+          "p50": 0.0,
+          "p90": 3.434999055980598e-11,
+          "p99": 1.7169281482020553e-10,
+          "max": 1.8315275109975602e-10,
+          "mean": 1.1813614149727555e-11,
+          "rms": 3.513040169117737e-11
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.0,
+          "p90": 2.289999370653732e-11,
+          "p99": 1.8319994965229857e-10,
+          "max": 1.8319994965229857e-10,
+          "mean": 1.216562165659795e-11,
+          "rms": 4.130438575484351e-11
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 0.0,
+          "p90": 1.144999685326866e-11,
+          "p99": 4.579998741307464e-11,
+          "max": 4.579998741307464e-11,
+          "mean": -3.2882994655598283e-13,
+          "rms": 7.761090387579287e-12
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 1212658.6205,
+          "cv": 7.087869591098609,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": null,
+          "items_per_sec": null,
+          "cv": null,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": null,
+          "count_valid": null,
+          "error_count": null,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "adapter returned no result",
+            "performance workload marked invalid"
+          ],
+          "skipped": false,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 249.75,
+          "cv": 26.33542663032956,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (26.3%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 146.2,
+          "items_per_sec": 6839945.280437757,
+          "cv": 0.8019795195027826,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:24:03Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "frame_transformations",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "astropy",
+      "api_surface": "public",
+      "api_method": "SkyCoord(ICRS).transform_to(BarycentricMeanEcliptic)",
+      "support_status": "supported",
+      "catalog_model": "Astropy builtin (Meeus / DE405-like) + public coordinate/time transforms",
+      "catalog_source": "astropy package (astropy.coordinates, astropy.time)",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA IAU 2006 ecliptic of date",
+      "selected_model": null,
+      "model_source": "ASTROPY",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA IAU 2006 ecliptic of date"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "equ_ecl",
+      "candidate_library": "libnova",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Equatorial to Ecliptic Coordinate Transform",
+        "what": "Converts sky positions from RA/Dec (equatorial) to ecliptic longitude/latitude, using the obliquity of the ecliptic.",
+        "why": "Ecliptic coordinates are natural for solar system objects. The transform depends on the obliquity model used.",
+        "units": "Angular separation in arcseconds between reference and candidate ecliptic positions.",
+        "interpret": "Lower separation = better agreement with ERFA's IAU 2006 obliquity model.",
+        "performance_contract": "Timed scope: obliquity evaluation + rotation per epoch. Input parsing is outside the timed loop."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "IAU 2006 obliquity-based transform (eraEqec06 / eraEceq06)",
+          "siderust": "IAU 2006 ecliptic-of-date via precession matrix + mean obliquity",
+          "astropy": "Public SkyCoord ICRS\u2192BarycentricMeanEcliptic transform",
+          "libnova": "ln_get_equ_prec (J2000\u2192date) + ln_get_ecl_from_equ + ln_get_equ_from_ecl + ln_get_equ_prec2 (date\u2192J2000)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "agreement with ERFA baseline (libnova Meeus precession/obliquity differs from IAU 2006 Eqec06)",
+        "note": "Astropy is measured through its public BarycentricMeanEcliptic orientation, which matches SOFA's mean ecliptic-of-date rotation for direction-only inputs. Siderust uses an explicit IAU 2006 equatorial/ecliptic-of-date transform path. libnova precesses ICRS/J2000 input to mean equator of date before Meeus ecliptic transform.",
+        "candidate_parity": "model-mismatch",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "3ad99c5329c9e0c6"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "libnova",
+        "angular_sep_arcsec": {
+          "p50": 0.2143166414993472,
+          "p90": 0.8605648324861815,
+          "p99": 1.2009196219836142,
+          "max": 1.5576076082368293,
+          "mean": 0.3342764382086193,
+          "rms": 0.46644336772068123
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.14093987372337208,
+          "p90": 0.7979448253487124,
+          "p99": 2.220262344794856,
+          "max": 7.121171362866216,
+          "mean": -0.21862466039287554,
+          "rms": 0.5919295492408106
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 0.12860604635673545,
+          "p90": 0.606547854442375,
+          "p99": 0.9227845817266922,
+          "max": 0.9971358131537733,
+          "mean": 0.010539002249829305,
+          "rms": 0.3330937845996749
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 2987.7,
+          "cv": 13.094691821530741,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 2087.8,
+          "items_per_sec": 478973.0817128077,
+          "cv": 0.2727314163073003,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 249.75,
+          "cv": 26.33542663032956,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (26.3%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 146.2,
+          "items_per_sec": 6839945.280437757,
+          "cv": 0.8019795195027826,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:24:03Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "not-comparable",
+      "family": "frame_transformations",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "libnova",
+      "api_surface": "public",
+      "api_method": "ln_get_equ_prec + ln_get_ecl_from_equ + ln_get_equ_from_ecl + ln_get_equ_prec2",
+      "support_status": "supported",
+      "catalog_model": "Meeus precession + mean obliquity ecliptic of date",
+      "catalog_source": "libnova C library",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "model-mismatch",
+      "catalog_exclusion_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path.",
+      "reference_model": "SOFA IAU 2006 ecliptic of date",
+      "selected_model": null,
+      "model_source": "LIBNOVA",
+      "rankable_accuracy": false,
+      "rank_exclusion_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path.",
+      "rankable_performance": false,
+      "exclusion_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path.",
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA IAU 2006 ecliptic of date"
+      },
+      "rankable": false,
+      "rankability_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path."
+    },
+    {
+      "experiment": "equ_ecl",
+      "candidate_library": "siderust",
+      "reference_library": "erfa",
+      "reference_lane": null,
+      "reference_source_tag": "ERFA/SOFA",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Equatorial to Ecliptic Coordinate Transform",
+        "what": "Converts sky positions from RA/Dec (equatorial) to ecliptic longitude/latitude, using the obliquity of the ecliptic.",
+        "why": "Ecliptic coordinates are natural for solar system objects. The transform depends on the obliquity model used.",
+        "units": "Angular separation in arcseconds between reference and candidate ecliptic positions.",
+        "interpret": "Lower separation = better agreement with ERFA's IAU 2006 obliquity model.",
+        "performance_contract": "Timed scope: obliquity evaluation + rotation per epoch. Input parsing is outside the timed loop."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "IAU 2006 obliquity-based transform (eraEqec06 / eraEceq06)",
+          "siderust": "IAU 2006 ecliptic-of-date via precession matrix + mean obliquity",
+          "astropy": "Public SkyCoord ICRS\u2192BarycentricMeanEcliptic transform",
+          "libnova": "ln_get_equ_prec (J2000\u2192date) + ln_get_ecl_from_equ + ln_get_equ_from_ecl + ln_get_equ_prec2 (date\u2192J2000)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-mismatch",
+        "accuracy_interpretation": "agreement with ERFA baseline (libnova Meeus precession/obliquity differs from IAU 2006 Eqec06)",
+        "note": "Astropy is measured through its public BarycentricMeanEcliptic orientation, which matches SOFA's mean ecliptic-of-date rotation for direction-only inputs. Siderust uses an explicit IAU 2006 equatorial/ecliptic-of-date transform path. libnova precesses ICRS/J2000 input to mean equator of date before Meeus ecliptic transform.",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-mismatch"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "3ad99c5329c9e0c6"
+      },
+      "accuracy": {
+        "reference": "erfa",
+        "candidate": "siderust",
+        "angular_sep_arcsec": {
+          "p50": 4.1085155514678316e-11,
+          "p90": 1.768455395399479e-10,
+          "p99": 3.5999491862779366e-10,
+          "max": 6.87833025648587e-10,
+          "mean": 6.776678398178009e-11,
+          "rms": 1.0416487095846804e-10
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.0,
+          "p90": 1.8319994965229857e-10,
+          "p99": 3.6639989930459713e-10,
+          "max": 1.8319994965229857e-09,
+          "mean": 1.4130906272741014e-12,
+          "rms": 1.2212006669341417e-10
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 2.289999370653732e-11,
+          "p90": 7.499747938890986e-11,
+          "p99": 2.2899993706537321e-10,
+          "max": 6.869998111961196e-10,
+          "mean": -2.48509658266138e-12,
+          "rms": 6.32240686201307e-11
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 285.4,
+          "cv": 26.394142127437608,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (26.4%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 175.7,
+          "items_per_sec": 5691519.6357427435,
+          "cv": 9.052748872450207,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": {
+          "ns_per_op": 249.75,
+          "cv": 26.33542663032956,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (26.3%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 146.2,
+          "items_per_sec": 6839945.280437757,
+          "cv": 0.8019795195027826,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T12:24:03Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "frame_transformations",
+      "tier": "public",
+      "candidate_profile": "iau2006a",
+      "candidate_id": "siderust",
+      "api_surface": "public",
+      "api_method": "DirectionAstroExt::to_ecliptic_of_date / to_icrs",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + Meeus Ch. 47 + IAU 2006/2000A",
+      "catalog_source": "siderust crates: bodies::*, event::lunar::meeus_ch47",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "SOFA IAU 2006 ecliptic of date",
+      "selected_model": null,
+      "model_source": "SIDERUST",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "erfa",
+        "model": "SOFA IAU 2006 ecliptic of date"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    }
+  ]
+}

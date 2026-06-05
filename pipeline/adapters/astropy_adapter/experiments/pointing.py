@@ -8,8 +8,10 @@ import numpy as np
 
 try:
     from ..common import ang_sep
+    from .adapter_perf import emit_astropy_perf_result
 except ImportError:
     from common import ang_sep
+    from experiments.adapter_perf import emit_astropy_perf_result
 
 
 def _configure_astropy():
@@ -146,19 +148,7 @@ def run_equ_horizontal_perf(lines_iter):
     for params_i in params:
         az, alt, _ra_back, _dec_back = _equ_to_horizontal(*params_i)
         sink += az + alt
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "equ_horizontal_perf",
-        "library": "astropy",
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result("equ_horizontal_perf", "astropy", n, time.perf_counter_ns() - t0, sink)
 
 
 def run_horiz_to_equ(lines_iter):
@@ -232,16 +222,4 @@ def run_horiz_to_equ_perf(lines_iter):
     for params_i in params:
         ra, dec, _ra_back, _dec_back = _horizontal_to_equ(*params_i)
         sink += ra + dec
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "horiz_to_equ_perf",
-        "library": "astropy",
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result("horiz_to_equ_perf", "astropy", n, time.perf_counter_ns() - t0, sink)

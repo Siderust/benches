@@ -79,5 +79,6 @@ void run_kepler_solver(void);
 void run_kepler_solver_perf(void);
 
 int get_perf_warmup(void);
+void emit_valid_perf_json(const char *experiment, int count, double elapsed_ns, double sink);
 
 #endif

@@ -1,0 +1,496 @@
+{
+  "experiment": "kepler_solver",
+  "run_id": "2026-06-05_12-14-12",
+  "rows": [
+    {
+      "experiment": "kepler_solver",
+      "candidate_library": "libnova",
+      "reference_library": "pipeline_python",
+      "reference_lane": null,
+      "reference_source_tag": "Pipeline Newton-Raphson (machine epsilon)",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Kepler Equation Solver (M \u2192 E \u2192 \u03bd)",
+        "what": "Solves Kepler's equation M = E - e\u00b7sin(E) for the eccentric anomaly E, then computes the true anomaly \u03bd. Tests convergence across eccentricities.",
+        "why": "Kepler's equation is fundamental to orbital mechanics. Different solvers (Newton-Raphson vs bisection) have different convergence properties.",
+        "units": "E and \u03bd errors in radians. Self-consistency residual in radians.",
+        "interpret": "Lower residual = better convergence. Libnova's bisection method converges to ~1e-6 deg, while Newton-Raphson methods reach ~1e-15 rad.",
+        "performance_contract": "Timed scope: iterative solver per (M, e) pair. Input parsing is outside the timed loop. This is a numerical convergence benchmark, not an ephemeris accuracy claim."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "Newton-Raphson iteration (100 iters, tol 1e-15)",
+          "siderust": "solve_keplers_equation (internal algorithm)",
+          "astropy": "Newton-Raphson iteration in Python (100 iters, tol 1e-15)",
+          "libnova": "Sinnott bisection via ln_solve_kepler (internal convergence ~1e-6 deg)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-parity",
+        "accuracy_interpretation": "accuracy vs ERFA reference (same equation, different solvers)",
+        "note": "Kepler's equation M = E - e*sin(E) is solved for E given (M, e). Self-consistency M_reconstructed = E - e*sin(E) is the primary metric. libnova uses a bisection method with lower convergence tolerance.",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-parity"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "8fb3fd953d3dcaa5"
+      },
+      "accuracy": {
+        "reference": "pipeline_python",
+        "candidate": "libnova",
+        "E_error_rad": {
+          "p50": 0.0,
+          "p90": 4.440892098500626e-16,
+          "p99": 1.7763568394002505e-15,
+          "max": 9.769962616701378e-15,
+          "mean": 1.0258460747536447e-16,
+          "rms": 5.17702127240017e-16
+        },
+        "nu_error_rad": {
+          "p50": 0.0,
+          "p90": 4.440892098500626e-16,
+          "p99": 1.7852386235972436e-15,
+          "max": 3.108624468950438e-14,
+          "mean": 1.6653345369377348e-16,
+          "rms": 1.4557051922178278e-15
+        },
+        "consistency_error_rad": {
+          "p50": 0.0,
+          "p90": 8.881784197001252e-16,
+          "p99": 8.881784197001252e-16,
+          "max": 1.7763568394002505e-15,
+          "mean": 1.8769580591586595e-16,
+          "rms": 3.5620691901044503e-16
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 1354.5,
+          "cv": 16.37099557503736,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 844.6,
+          "items_per_sec": 1183992.4224484963,
+          "cv": 2.7964280510816297,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": null,
+        "batch_throughput": null,
+        "setup_metrics": null
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:47:38Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "orbital_primitives",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "libnova",
+      "api_surface": "public",
+      "api_method": "ln_solve_kepler",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + ELP2000-82B + Meeus precession + IAU 1980 nutation",
+      "catalog_source": "libnova C library",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "Kepler equation numerical invariant",
+      "selected_model": null,
+      "model_source": "LIBNOVA",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "pipeline_python",
+        "model": "Kepler equation numerical invariant"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "kepler_solver",
+      "candidate_library": "siderust",
+      "reference_library": "pipeline_python",
+      "reference_lane": null,
+      "reference_source_tag": "Pipeline Newton-Raphson (machine epsilon)",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Kepler Equation Solver (M \u2192 E \u2192 \u03bd)",
+        "what": "Solves Kepler's equation M = E - e\u00b7sin(E) for the eccentric anomaly E, then computes the true anomaly \u03bd. Tests convergence across eccentricities.",
+        "why": "Kepler's equation is fundamental to orbital mechanics. Different solvers (Newton-Raphson vs bisection) have different convergence properties.",
+        "units": "E and \u03bd errors in radians. Self-consistency residual in radians.",
+        "interpret": "Lower residual = better convergence. Libnova's bisection method converges to ~1e-6 deg, while Newton-Raphson methods reach ~1e-15 rad.",
+        "performance_contract": "Timed scope: iterative solver per (M, e) pair. Input parsing is outside the timed loop. This is a numerical convergence benchmark, not an ephemeris accuracy claim."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "not applicable (no aberration/parallax)",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "erfa": "Newton-Raphson iteration (100 iters, tol 1e-15)",
+          "siderust": "solve_keplers_equation (internal algorithm)",
+          "astropy": "Newton-Raphson iteration in Python (100 iters, tol 1e-15)",
+          "libnova": "Sinnott bisection via ln_solve_kepler (internal convergence ~1e-6 deg)",
+          "anise": "Not available in ANISE adapter for this experiment"
+        },
+        "model_parity_class": "model-parity",
+        "accuracy_interpretation": "accuracy vs ERFA reference (same equation, different solvers)",
+        "note": "Kepler's equation M = E - e*sin(E) is solved for E given (M, e). Self-consistency M_reconstructed = E - e*sin(E) is the primary metric. libnova uses a bisection method with lower convergence tolerance.",
+        "candidate_parity": "model-parity",
+        "default_model_parity_class": "model-parity"
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "8fb3fd953d3dcaa5"
+      },
+      "accuracy": {
+        "reference": "pipeline_python",
+        "candidate": "siderust",
+        "E_error_rad": {
+          "p50": 0.0,
+          "p90": 4.88498130835079e-16,
+          "p99": 8.881784197001252e-16,
+          "max": 7.993605777301127e-15,
+          "mean": -3.996802888650563e-18,
+          "rms": 4.655529333056264e-16
+        },
+        "nu_error_rad": {
+          "p50": 0.0,
+          "p90": 4.440892098500626e-16,
+          "p99": 1.7763568394002505e-15,
+          "max": 4.085620730620576e-14,
+          "mean": 3.68594044175552e-17,
+          "rms": 1.3646623692329556e-15
+        },
+        "consistency_error_rad": {
+          "p50": 0.0,
+          "p90": 4.440892098500626e-16,
+          "p99": 8.881784197001252e-16,
+          "max": 9.992007221626409e-16,
+          "mean": 1.578025904391822e-16,
+          "rms": 3.2032677249641015e-16
+        },
+        "nan_count": 0,
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 208.2,
+          "cv": 14.502769781542032,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 124.8,
+          "items_per_sec": 8012820.512820513,
+          "cv": 10.478267622787714,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {
+        "scalar_warm": null,
+        "batch_throughput": null,
+        "setup_metrics": null
+      },
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:47:38Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "exact-model",
+      "family": "orbital_primitives",
+      "tier": "public",
+      "candidate_profile": "iau2006a",
+      "candidate_id": "siderust",
+      "api_surface": "public",
+      "api_method": "keplerian::anomaly::eccentric_from_mean",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + Meeus Ch. 47 + IAU 2006/2000A",
+      "catalog_source": "siderust crates: bodies::*, event::lunar::meeus_ch47",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "Kepler equation numerical invariant",
+      "selected_model": null,
+      "model_source": "SIDERUST",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "SOFA",
+        "adapter": "pipeline_python",
+        "model": "Kepler equation numerical invariant"
+      },
+      "rankable": true,
+      "rankability_reason": null
+    }
+  ]
+}

@@ -17,6 +17,17 @@ int get_perf_warmup(void) {
     return v;
 }
 
+void emit_valid_perf_json(const char *experiment, int count, double elapsed_ns, double sink) {
+    double per_op_ns = elapsed_ns / count;
+    printf("{\"experiment\":\"%s\",\"library\":\"erfa\","
+           "\"count_requested\":%d,\"count_valid\":%d,\"error_count\":0,"
+           "\"count\":%d,\"valid\":true,\"skipped\":false,"
+           "\"total_ns\":%.0f,\"per_op_ns\":%.1f,"
+           "\"throughput_ops_s\":%.0f,\"_sink\":%.17e}\n",
+           experiment, count, count, count, elapsed_ns, per_op_ns,
+           (double)count / (elapsed_ns * 1e-9), sink);
+}
+
 /* Multiply 3x3 matrix by 3-vector: out = m * v */
 void mv3(double m[3][3], const double v[3], double out[3]) {
     for (int i = 0; i < 3; i++) {

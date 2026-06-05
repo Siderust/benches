@@ -1,0 +1,1758 @@
+{
+  "experiment": "neptune_barycenter_position",
+  "run_id": "2026-06-05_12-14-12",
+  "rows": [
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "anise",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "jpl-spk",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "anise",
+        "angular_sep_arcsec": {
+          "p50": 6.146785561848757e-10,
+          "p90": 2.9346581499222993e-09,
+          "p99": 5.39276536649194e-09,
+          "max": 3.011724122702817e-08,
+          "mean": 1.1918786364216183e-09,
+          "rms": 2.379279988327729e-09
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 5.495998489568957e-10,
+          "p90": 3.0227991692629264e-09,
+          "p99": 5.132346589509142e-09,
+          "max": 3.2426391088456846e-08,
+          "mean": -5.6175786709995845e-11,
+          "rms": 2.4274214834827867e-09
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 1.6029995594576126e-10,
+          "p90": 6.297498269297764e-10,
+          "p99": 2.159183156605137e-09,
+          "max": 8.790735084097013e-09,
+          "mean": 3.012780422016318e-12,
+          "rms": 6.03966826498755e-10
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 9.059419880941277e-14,
+          "p90": 4.263256414560601e-13,
+          "p99": 7.888445452408631e-13,
+          "max": 8.79651906871004e-12,
+          "mean": -1.0349054946345859e-14,
+          "rms": 5.004659349679867e-13
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 3425.5,
+          "cv": 1.6052059206223963,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 3284.6,
+          "items_per_sec": 304451.07471229375,
+          "cv": 1.3807369366527227,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 141.240453,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "SPK_geometric_translation(Neptune Barycenter->EARTH_J2000)",
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:42:39Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "same-family-jpl",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "anise",
+      "api_surface": "public",
+      "api_method": "almanac.translate(<BODY_BARYCENTER>_J2000, EARTH_J2000, epoch, Aberration::NONE)",
+      "support_status": "supported",
+      "catalog_model": "JPL DE440 (SPK)",
+      "catalog_source": "anise/data/de440*.bsp",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "same-family-jpl",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "SPK_geometric_translation(Neptune Barycenter->EARTH_J2000)",
+      "model_source": "ANISE",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "astropy",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "jpl-spk",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "astropy:de440-local",
+        "angular_sep_arcsec": {
+          "p50": 1.0346256729168684e-08,
+          "p90": 2.793514757152766e-08,
+          "p99": 4.4431927179659715e-08,
+          "max": 5.617240069539468e-08,
+          "mean": 1.2769507719172389e-08,
+          "rms": 1.6604188316203227e-08
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 1.0075997230876422e-08,
+          "p90": 2.7853262345261345e-08,
+          "p99": 4.461147773970535e-08,
+          "max": 5.450198502155882e-08,
+          "mean": -8.298404899088555e-10,
+          "rms": 1.6650534900054333e-08
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 2.0774588040649326e-09,
+          "p90": 7.728747875956346e-09,
+          "p99": 1.3960179663410746e-08,
+          "max": 2.09792567344015e-08,
+          "mean": 3.5976601265118443e-10,
+          "rms": 4.6286584297517675e-09
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 1.5276668818842154e-12,
+          "p90": 4.127542752030423e-12,
+          "p99": 5.933777913469384e-12,
+          "max": 1.127986593019159e-11,
+          "mean": -4.270361841918202e-15,
+          "rms": 2.432306957850147e-12
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 316992.45440000005,
+          "cv": 10.044183144455321,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 326981.51824,
+          "items_per_sec": 3058.2768267227066,
+          "cv": 4.110884267667273,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 210.894799,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "Astropy solar_system_ephemeris(local DE440: /home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp) + get_body_barycentric (neptune system barycenter)",
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:42:39Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "same-family-jpl",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": "de440-local",
+      "candidate_id": "astropy:de440-local",
+      "api_surface": "public",
+      "api_method": "with solar_system_ephemeris.set('<local BSP path>'): get_body_barycentric(body) - get_body_barycentric('earth')",
+      "support_status": "supported",
+      "catalog_model": "Local JPL DE440 planet-system barycenters via Astropy solar_system_ephemeris",
+      "catalog_source": "Local JPL DE440 SPK kernel from SIDERUST_BENCHES_CACHE/kernels/de440.bsp",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "same-family-jpl",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "Astropy solar_system_ephemeris(local DE440: /home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp) + get_body_barycentric (neptune system barycenter)",
+      "model_source": "JPL DE440",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "libnova",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "analytic",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "libnova",
+        "angular_sep_arcsec": {
+          "p50": 0.6466894982421353,
+          "p90": 2.2338197098328036,
+          "p99": 2.3474323583558943,
+          "max": 2.3614030794264718,
+          "mean": 0.9830291099974595,
+          "rms": 1.3243653431831692
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.6613023447319943,
+          "p90": 2.3301035625457067,
+          "p99": 2.489830100994761,
+          "max": 2.51132753814189,
+          "mean": 0.9431978191572493,
+          "rms": 1.330389779288604
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 0.12201781517245362,
+          "p90": 0.6789090034263778,
+          "p99": 0.8677814994611727,
+          "max": 0.9120968440421537,
+          "mean": 0.047652792991347157,
+          "rms": 0.3804128778675306
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 2.4036938834015587e-05,
+          "p90": 5.696949740041646e-05,
+          "p99": 6.55429129803764e-05,
+          "max": 6.699919926234088e-05,
+          "mean": -2.801361103005462e-05,
+          "rms": 3.403513904693144e-05
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 71141.75,
+          "cv": 8.973166096320542,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 64791.9,
+          "items_per_sec": 15434.028018934465,
+          "cv": 4.761666016636967,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "libnova_VSOP87_neptune_geometric",
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:42:39Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "best-available",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": null,
+      "candidate_id": "libnova",
+      "api_surface": "public",
+      "api_method": "ln_get_neptune_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + ELP2000-82B + Meeus precession + IAU 1980 nutation",
+      "catalog_source": "libnova C library",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "libnova_VSOP87_neptune_geometric",
+      "model_source": "VSOP87",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "siderust",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "analytic",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "siderust",
+        "angular_sep_arcsec": {
+          "p50": 0.730147906540949,
+          "p90": 2.319570783493152,
+          "p99": 2.432699865515508,
+          "max": 2.443973183247636,
+          "mean": 1.0462778719131538,
+          "rms": 1.3856288567518988
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.7501307869974266,
+          "p90": 2.4183530072555617,
+          "p99": 2.578395552474543,
+          "max": 2.6001772154340865,
+          "mean": 1.0308715815612193,
+          "rms": 1.394110935546888
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 0.13820390653459969,
+          "p90": 0.6944217984044087,
+          "p99": 0.8839930709250234,
+          "max": 0.9281255391174622,
+          "mean": 0.04607767462124599,
+          "rms": 0.3896638957509104
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 2.4156729294233514e-05,
+          "p90": 5.681577483116484e-05,
+          "p99": 6.525571846843547e-05,
+          "max": 6.692799463081656e-05,
+          "mean": -2.8022972203832098e-05,
+          "rms": 3.401337889227052e-05
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 124489.8989,
+          "cv": 9.914043417369847,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 106550.23027,
+          "items_per_sec": 9385.244850865023,
+          "cv": 8.005054609548582,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "siderust_vsop87a_geometric_neptune",
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:42:39Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "best-available",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": "iau2006a",
+      "candidate_id": "siderust",
+      "api_surface": "public",
+      "api_method": "siderust::bodies::Neptune::vsop87a (planet-center proxy for system barycenter)",
+      "support_status": "supported",
+      "catalog_model": "VSOP87 + Meeus Ch. 47 + IAU 2006/2000A",
+      "catalog_source": "siderust crates: bodies::*, event::lunar::meeus_ch47",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "best-available",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "siderust_vsop87a_geometric_neptune",
+      "model_source": "VSOP87",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "siderust",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "jpl-spk",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "siderust/de440_barycenter",
+        "angular_sep_arcsec": {
+          "p50": 5.912682833878345e-10,
+          "p90": 2.909423316894462e-09,
+          "p99": 5.303903182564549e-09,
+          "max": 3.0287124748151094e-08,
+          "mean": 1.184951914470873e-09,
+          "rms": 2.388224971681415e-09
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 5.495998489568957e-10,
+          "p90": 3.0227991692629264e-09,
+          "p99": 4.9463986406120615e-09,
+          "max": 3.260959103810915e-08,
+          "mean": -4.839435095789436e-11,
+          "rms": 2.43541318994782e-09
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 1.6530932956906629e-10,
+          "p90": 6.41199823783045e-10,
+          "p99": 2.2441993832406574e-09,
+          "max": 8.985385030602582e-09,
+          "mean": 1.677513992104279e-12,
+          "rms": 6.085427621483786e-10
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 8.704148513061227e-14,
+          "p90": 4.2312819914513974e-13,
+          "p99": 7.675637903048481e-13,
+          "max": 8.79651906871004e-12,
+          "mean": -1.170974428532645e-14,
+          "rms": 4.974860790878349e-13
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 436.069,
+          "cv": 10.04111715839731,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 282.92747,
+          "items_per_sec": 3534474.7542541553,
+          "cv": 7.106027902723734,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "JPL_DE440_embedded_system_barycenter",
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:42:39Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "same-family-jpl",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": "de440_barycenter",
+      "candidate_id": "siderust:de440_barycenter",
+      "api_surface": "public",
+      "api_method": "siderust::formats::spice::SpkKernelSet::try_major_planet_geocentric(MajorPlanet, PlanetPoint::SystemBarycenter, jd)",
+      "support_status": "supported",
+      "catalog_model": "JPL DE440/DE441 planet-system barycenters (runtime SPK Chebyshev)",
+      "catalog_source": "JPL DE440/DE441 SPK kernel resolved from SIDERUST_PLANET_KERNELS / SIDERUST_DATASETS_DIR / SIDERUST_DATA_DIR",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "same-family-jpl",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "JPL_DE440_embedded_system_barycenter",
+      "model_source": "JPL DE440",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null
+    },
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "siderust",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "jpl-spk",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "siderust/spk_barycenter",
+        "angular_sep_arcsec": {
+          "p50": 5.912682833878345e-10,
+          "p90": 2.909423316894462e-09,
+          "p99": 5.303903182564549e-09,
+          "max": 3.0287124748151094e-08,
+          "mean": 1.184951914470873e-09,
+          "rms": 2.388224971681415e-09
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 5.495998489568957e-10,
+          "p90": 3.0227991692629264e-09,
+          "p99": 4.9463986406120615e-09,
+          "max": 3.260959103810915e-08,
+          "mean": -4.839435095789436e-11,
+          "rms": 2.43541318994782e-09
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 1.6530932956906629e-10,
+          "p90": 6.41199823783045e-10,
+          "p99": 2.2441993832406574e-09,
+          "max": 8.985385030602582e-09,
+          "mean": 1.677513992104279e-12,
+          "rms": 6.085427621483786e-10
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 8.704148513061227e-14,
+          "p90": 4.2312819914513974e-13,
+          "p99": 7.675637903048481e-13,
+          "max": 8.79651906871004e-12,
+          "mean": -1.170974428532645e-14,
+          "rms": 4.974860790878349e-13
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 429.1944,
+          "cv": 12.867578840549232,
+          "rounds": 10,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 304.6524,
+          "items_per_sec": 3282429.417920226,
+          "cv": 6.199669262328253,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 0.0,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "SPK_runtime_system_barycenter",
+      "benchmark_config": {
+        "perf_rounds": 10,
+        "perf_warmup": 100,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 120
+      },
+      "run_metadata": {
+        "date": "2026-06-05T13:42:39Z",
+        "git_shas": {
+          "lab": "56c27d320ef3",
+          "siderust": "da582bedc1d1",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": true,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.4.6",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
+            "size": 6307552,
+            "mtime": "2026-06-05T08:32:14Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-05T12:12:32Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-05T12:12:32Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "same-family-jpl",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": "spk_barycenter",
+      "candidate_id": "siderust:spk_barycenter",
+      "api_surface": "public",
+      "api_method": "siderust::data::SpkKernelSet::try_major_planet_geocentric(MajorPlanet, PlanetPoint::SystemBarycenter, jd)",
+      "support_status": "supported",
+      "catalog_model": "JPL runtime SPK planet-system barycenters",
+      "catalog_source": "SIDERUST_PLANET_KERNELS: planetary DE SPK",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "same-family-jpl",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "SPK_runtime_system_barycenter",
+      "model_source": "SIDERUST",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null
+    }
+  ]
+}

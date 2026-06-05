@@ -132,6 +132,20 @@ export_static() {
     python3 -m pipeline.export_static --lab-root "$LAB_ROOT" --output "$OUT"
 }
 
+refresh_latest_results() {
+    local SRC="${1:-static_export/latest}"
+    local DST="$LAB_ROOT/latest_results"
+
+    if [ ! -d "$SRC" ]; then
+        warn "Skipping latest_results refresh: missing $SRC"
+        return 0
+    fi
+
+    log "Refreshing latest_results from $SRC"
+    rm -rf "$DST"
+    cp -R "$SRC" "$DST"
+}
+
 # ---- Main ----
 case "${1:-all}" in
     build)
@@ -146,6 +160,7 @@ case "${1:-all}" in
         ;;
     export)
         export_static "${2:-static_export}"
+        refresh_latest_results "${2:-static_export}/latest"
         ;;
     phase-b|phase_b)
         build_all
@@ -156,6 +171,7 @@ case "${1:-all}" in
         build_all
         run_all "${2:-pipeline/configs/core.toml}"
         export_static "static_export"
+        refresh_latest_results "static_export/latest"
         ;;
     *)
         CONFIG="$(resolve_config "${1:-core}")"
@@ -163,6 +179,7 @@ case "${1:-all}" in
             build_all
             run_all "$CONFIG" "${@:2}"
             export_static "static_export"
+            refresh_latest_results "static_export/latest"
         else
             echo "Usage: $0 [build|run|export|all|core|ci|diagnostic|full] [config.toml]"
             exit 1

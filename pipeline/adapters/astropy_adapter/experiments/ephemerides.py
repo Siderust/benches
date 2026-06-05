@@ -11,6 +11,7 @@ try:
         _astropy_geometric_geocentric,
         _astropy_ephemeris_spec,
     )
+    from .adapter_perf import astropy_perf_skipped_result, emit_astropy_perf_result
 except ImportError:
     from common import (
         PLANET_EXPERIMENTS,
@@ -18,6 +19,7 @@ except ImportError:
         _astropy_geometric_geocentric,
         _astropy_ephemeris_spec,
     )
+    from experiments.adapter_perf import astropy_perf_skipped_result, emit_astropy_perf_result
 
 
 def _astropy_ephemeris_config():
@@ -193,7 +195,7 @@ def run_solar_position_perf(lines_iter):
     """Performance measurement for solar position computation."""
     ephemeris, reason = _astropy_ephemeris_config()
     if reason is not None:
-        return _astropy_skipped_result("solar_position_perf", reason)
+        return astropy_perf_skipped_result("solar_position_perf", reason)
 
     library, _model = _astropy_ephemeris_display(ephemeris)
     n = int(next(lines_iter).strip())
@@ -204,7 +206,9 @@ def run_solar_position_perf(lines_iter):
         try:
             _astropy_geometric_geocentric(jds[i], "sun", ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result("solar_position_perf", f"Astropy failed to load BSP {ephemeris}: {exc}")
+            return astropy_perf_skipped_result(
+                "solar_position_perf", f"Astropy failed to load BSP {ephemeris}: {exc}", library=library
+            )
 
     t0 = time.perf_counter_ns()
     sink = 0.0
@@ -212,28 +216,20 @@ def run_solar_position_perf(lines_iter):
         try:
             ra, dec, dist = _astropy_geometric_geocentric(jd, "sun", ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result("solar_position_perf", f"Astropy failed during performance evaluation: {exc}")
+            return astropy_perf_skipped_result(
+                "solar_position_perf",
+                f"Astropy failed during performance evaluation: {exc}",
+                library=library,
+            )
         sink += ra + dec + dist
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "solar_position_perf",
-        "library": library,
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result("solar_position_perf", library, n, time.perf_counter_ns() - t0, sink)
 
 
 def run_lunar_position_perf(lines_iter):
     """Performance measurement for lunar position computation."""
     ephemeris, reason = _astropy_ephemeris_config()
     if reason is not None:
-        return _astropy_skipped_result("lunar_position_perf", reason)
+        return astropy_perf_skipped_result("lunar_position_perf", reason)
 
     library, _model = _astropy_ephemeris_display(ephemeris)
     n = int(next(lines_iter).strip())
@@ -244,7 +240,9 @@ def run_lunar_position_perf(lines_iter):
         try:
             _astropy_geometric_geocentric(jds[i], "moon", ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result("lunar_position_perf", f"Astropy failed to load BSP {ephemeris}: {exc}")
+            return astropy_perf_skipped_result(
+                "lunar_position_perf", f"Astropy failed to load BSP {ephemeris}: {exc}", library=library
+            )
 
     t0 = time.perf_counter_ns()
     sink = 0.0
@@ -252,28 +250,20 @@ def run_lunar_position_perf(lines_iter):
         try:
             ra, dec, dist_au = _astropy_geometric_geocentric(jd, "moon", ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result("lunar_position_perf", f"Astropy failed during performance evaluation: {exc}")
+            return astropy_perf_skipped_result(
+                "lunar_position_perf",
+                f"Astropy failed during performance evaluation: {exc}",
+                library=library,
+            )
         sink += ra + dec + dist_au
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": "lunar_position_perf",
-        "library": library,
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result("lunar_position_perf", library, n, time.perf_counter_ns() - t0, sink)
 
 
 def run_planet_position_perf(lines_iter, experiment, planet_np):
     """Performance measurement for planetary position computation."""
     ephemeris, reason = _astropy_ephemeris_config()
     if reason is not None:
-        return _astropy_skipped_result(f"{experiment}_perf", reason)
+        return astropy_perf_skipped_result(f"{experiment}_perf", reason)
     planet_name = experiment.replace("_position", "").lower()
 
     library, _model = _astropy_ephemeris_display(ephemeris)
@@ -285,7 +275,9 @@ def run_planet_position_perf(lines_iter, experiment, planet_np):
         try:
             _astropy_geometric_geocentric(jds[i], planet_name, ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result(f"{experiment}_perf", f"Astropy failed to load BSP {ephemeris}: {exc}")
+            return astropy_perf_skipped_result(
+                f"{experiment}_perf", f"Astropy failed to load BSP {ephemeris}: {exc}", library=library
+            )
 
     t0 = time.perf_counter_ns()
     sink = 0.0
@@ -293,27 +285,19 @@ def run_planet_position_perf(lines_iter, experiment, planet_np):
         try:
             ra, dec, dist_au = _astropy_geometric_geocentric(jd, planet_name, ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result(f"{experiment}_perf", f"Astropy failed during performance evaluation: {exc}")
+            return astropy_perf_skipped_result(
+                f"{experiment}_perf",
+                f"Astropy failed during performance evaluation: {exc}",
+                library=library,
+            )
         sink += ra + dec + dist_au
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": f"{experiment}_perf",
-        "library": library,
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result(f"{experiment}_perf", library, n, time.perf_counter_ns() - t0, sink)
 
 
 def run_planet_barycenter_position_perf(lines_iter, experiment, planet_name):
     ephemeris, reason = _astropy_ephemeris_config()
     if reason is not None:
-        return _astropy_skipped_result(f"{experiment}_perf", reason)
+        return astropy_perf_skipped_result(f"{experiment}_perf", reason)
 
     library, _model = _astropy_ephemeris_display(ephemeris)
     n = int(next(lines_iter).strip())
@@ -324,7 +308,9 @@ def run_planet_barycenter_position_perf(lines_iter, experiment, planet_name):
         try:
             _astropy_geometric_geocentric(jds[i], planet_name.lower(), ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result(f"{experiment}_perf", f"Astropy failed to load BSP {ephemeris}: {exc}")
+            return astropy_perf_skipped_result(
+                f"{experiment}_perf", f"Astropy failed to load BSP {ephemeris}: {exc}", library=library
+            )
 
     t0 = time.perf_counter_ns()
     sink = 0.0
@@ -332,18 +318,10 @@ def run_planet_barycenter_position_perf(lines_iter, experiment, planet_name):
         try:
             ra, dec, dist = _astropy_geometric_geocentric(jd, planet_name.lower(), ephemeris)
         except Exception as exc:
-            return _astropy_skipped_result(f"{experiment}_perf", f"Astropy failed during performance evaluation: {exc}")
+            return astropy_perf_skipped_result(
+                f"{experiment}_perf",
+                f"Astropy failed during performance evaluation: {exc}",
+                library=library,
+            )
         sink += ra + dec + dist
-    elapsed_ns = time.perf_counter_ns() - t0
-
-    result = {
-        "experiment": f"{experiment}_perf",
-        "library": library,
-        "count": n,
-        "total_ns": elapsed_ns,
-        "per_op_ns": elapsed_ns / n,
-        "throughput_ops_s": n / (elapsed_ns * 1e-9),
-        "_sink": float(sink),
-    }
-    json.dump(result, sys.stdout, indent=None)
-    print()
+    emit_astropy_perf_result(f"{experiment}_perf", library, n, time.perf_counter_ns() - t0, sink)

@@ -14,6 +14,8 @@ python3 -m pipeline.export_static --lab-root . --output static_export
 
 The standalone frontend build copies `../../static_export` into
 `webapp/frontend/dist/data/benches/` through `scripts/copy-data.mjs`.
+When run through `./run.sh export`, the same export also refreshes
+`benches/latest_results/` so the public Astro benchmark page stays current.
 
 ## Commands
 
