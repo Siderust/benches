@@ -113,6 +113,13 @@ export interface ExperimentResult {
   status?: "ok" | "skipped" | "failed" | string | null;
   skip_reason?: string | null;
   failure_reason?: string | null;
+  execution_origin?: "fresh" | "baseline" | string | null;
+  baseline_key?: string | null;
+  baseline_run_id?: string | null;
+  baseline_created_at?: string | null;
+  baseline_reuse_kind?: "accuracy" | "performance" | "combined" | string | null;
+  baseline_validation?: { valid?: boolean; reason?: string | null } | null;
+  stratification?: Record<string, unknown> | null;
 }
 
 export interface RunSummary {
@@ -191,6 +198,12 @@ export interface ScorecardRow {
   placeholder?: boolean;
   source_provenance: Record<string, unknown>;
   reference_source_tag?: string | null;
+  execution_origin?: "fresh" | "baseline" | string | null;
+  baseline_key?: string | null;
+  baseline_run_id?: string | null;
+  baseline_created_at?: string | null;
+  baseline_reuse_kind?: "accuracy" | "performance" | "combined" | string | null;
+  baseline_validation?: { valid?: boolean; reason?: string | null } | null;
 }
 
 export interface ScorecardExperiment {
@@ -263,6 +276,18 @@ export interface RunManifest {
   scope?: RunScope;
   publication?: RunPublication;
   latest_results_merge?: { is_merge?: boolean };
+  composition?: {
+    mode?: "fresh" | "baseline_delta" | string;
+    fresh_candidates?: string[];
+    baseline_candidates?: string[];
+    baseline_root?: string | null;
+    reuse_accuracy?: boolean;
+    reuse_performance?: boolean | "same-machine-only" | string;
+    all_baselines_valid?: boolean;
+    missing_baselines?: string[];
+    stale_baselines?: string[];
+    refresh_all?: boolean;
+  };
   labels?: {
     run_label?: string | null;
     run_phase?: string | null;

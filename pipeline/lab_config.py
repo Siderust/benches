@@ -7,6 +7,11 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from .baselines import BaselinePolicy, ConvergenceConfig, parse_baseline_policy, parse_convergence_config
+except ImportError:  # pragma: no cover - direct script path
+    from baselines import BaselinePolicy, ConvergenceConfig, parse_baseline_policy, parse_convergence_config
+
+try:
     import tomllib
 except ModuleNotFoundError:  # pragma: no cover - Python < 3.11 fallback
     import tomli as tomllib  # type: ignore[no-redef]
@@ -190,6 +195,9 @@ class PipelineConfig:
     publish_latest: bool
     allow_dirty_publish: bool
     allow_partial_publish: bool
+    baseline_policy: BaselinePolicy
+    convergence: ConvergenceConfig
+    refresh_baselines: bool
 
 
 def _as_list(value: Any, *, default: list[str]) -> list[str]:
@@ -218,9 +226,16 @@ def _resolve_experiments(raw: dict[str, Any], suite: str) -> list[str]:
     return experiments
 
 
-def load_pipeline_config(path: str | Path) -> PipelineConfig:
+def load_pipeline_config(
+    path: str | Path,
+    *,
+    lab_root: Path | None = None,
+    refresh_baselines: bool = False,
+) -> PipelineConfig:
     """Parse and validate a TOML pipeline config."""
     config_path = Path(path)
+    if lab_root is None:
+        lab_root = config_path.resolve().parent.parent
     with config_path.open("rb") as f:
         raw = tomllib.load(f)
 
@@ -245,6 +260,9 @@ def load_pipeline_config(path: str | Path) -> PipelineConfig:
     cache = raw.get("cache", {})
     kernels_de440 = raw.get("kernels", {}).get("de440", {})
     output = raw.get("output", {})
+    baselines = raw.get("baselines", {})
+    convergence = raw.get("convergence", {})
+    refresh = refresh_baselines or bool(raw.get("refresh_baselines", False))
 
     return PipelineConfig(
         run_label=str(raw["run_label"]) if raw.get("run_label") else None,
@@ -274,4 +292,11 @@ def load_pipeline_config(path: str | Path) -> PipelineConfig:
         publish_latest=bool(output.get("publish_latest", False)),
         allow_dirty_publish=bool(output.get("allow_dirty_publish", False)),
         allow_partial_publish=bool(output.get("allow_partial_publish", False)),
+        baseline_policy=parse_baseline_policy(
+            baselines,
+            lab_root=lab_root,
+            refresh_all=refresh,
+        ),
+        convergence=parse_convergence_config(convergence),
+        refresh_baselines=refresh,
     )

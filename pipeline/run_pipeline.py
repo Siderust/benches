@@ -35,8 +35,13 @@ def build_orchestrator_command(
     env: dict[str, str] | None = None,
     allow_dirty_publish: bool = False,
     allow_partial_publish: bool = False,
+    refresh_baselines: bool = False,
 ) -> list[str]:
-    cfg = load_pipeline_config(config_path)
+    cfg = load_pipeline_config(
+        config_path,
+        lab_root=LAB_ROOT,
+        refresh_baselines=refresh_baselines,
+    )
     cmd = [
         sys.executable,
         str(PIPELINE_DIR / "orchestrator.py"),
@@ -86,6 +91,34 @@ def build_orchestrator_command(
         cmd.append("--allow-dirty-publish")
     if cfg.allow_partial_publish or allow_partial_publish:
         cmd.append("--allow-partial-publish")
+    if cfg.baseline_policy.enabled:
+        cmd.append("--baselines-enabled")
+        cmd.extend(["--baselines-root", str(cfg.baseline_policy.root)])
+        if cfg.baseline_policy.reuse_candidates:
+            cmd.extend([
+                "--baselines-reuse-candidates",
+                ",".join(sorted(cfg.baseline_policy.reuse_candidates)),
+            ])
+        if cfg.baseline_policy.refresh_candidates:
+            cmd.extend([
+                "--baselines-refresh-candidates",
+                ",".join(sorted(cfg.baseline_policy.refresh_candidates)),
+            ])
+        if cfg.baseline_policy.reuse_accuracy:
+            cmd.append("--baselines-reuse-accuracy")
+        perf = cfg.baseline_policy.reuse_performance
+        if perf is True:
+            cmd.append("--baselines-reuse-performance")
+        elif perf == "same-machine-only":
+            cmd.extend(["--baselines-reuse-performance", "same-machine-only"])
+        if cfg.baseline_policy.require_complete_baselines:
+            cmd.append("--baselines-require-complete")
+        if cfg.baseline_policy.write_missing_baselines:
+            cmd.append("--baselines-write-missing")
+        if cfg.suite:
+            cmd.extend(["--suite", cfg.suite])
+    if cfg.refresh_baselines:
+        cmd.append("--refresh-baselines")
     return cmd
 
 
@@ -129,6 +162,11 @@ def main() -> int:
         action="store_true",
         help="Allow partial publish override when running orchestrator.",
     )
+    parser.add_argument(
+        "--refresh-baselines",
+        action="store_true",
+        help="Recompute all candidates and ignore stored baselines.",
+    )
     args = parser.parse_args()
 
     config_path = Path(args.config)
@@ -146,6 +184,7 @@ def main() -> int:
         env=env,
         allow_dirty_publish=args.allow_dirty_publish,
         allow_partial_publish=args.allow_partial_publish,
+        refresh_baselines=args.refresh_baselines,
     )
     try:
         display_path = config_path.relative_to(LAB_ROOT)

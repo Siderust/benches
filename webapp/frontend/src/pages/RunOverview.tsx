@@ -146,6 +146,7 @@ function ScopePanel({ manifest }: { manifest: RunManifest }) {
   const dirty = (publication?.git_dirty ?? manifest.metadata?.git_dirty) as Record<string, unknown> | undefined;
   const dirtyRepos = dirty ? Object.entries(dirty).filter(([, value]) => value === true).map(([repo]) => repo) : [];
   const missingRequested = scope.missing_requested_experiments ?? [];
+  const composition = manifest.composition;
 
   return (
     <section className={`rounded-lg border p-4 ${notPublicationGrade ? "border-amber-800/70 bg-amber-950/20" : "border-gray-800 bg-gray-900/40"}`}>
@@ -185,6 +186,29 @@ function ScopePanel({ manifest }: { manifest: RunManifest }) {
           Missing core experiments: {missing.slice(0, 10).join(", ")}
           {missing.length > 10 ? `, +${missing.length - 10} more` : ""}
         </p>
+      )}
+
+      {composition && composition.mode === "baseline_delta" && (
+        <div className="mt-3 rounded-md border border-violet-900/50 bg-violet-950/20 p-3 text-xs text-violet-100/90">
+          <p className="font-medium text-violet-200">Baseline composition</p>
+          <p className="mt-1">
+            Fresh: {(composition.fresh_candidates ?? []).slice(0, 8).join(", ") || "none"}
+            {(composition.fresh_candidates?.length ?? 0) > 8 ? `, +${(composition.fresh_candidates?.length ?? 0) - 8} more` : ""}
+          </p>
+          <p className="mt-1">
+            Reused: {(composition.baseline_candidates ?? []).slice(0, 8).join(", ") || "none"}
+          </p>
+          {composition.stale_baselines && composition.stale_baselines.length > 0 && (
+            <p className="mt-1 text-amber-200">
+              Stale baselines rejected: {composition.stale_baselines.join(", ")}
+            </p>
+          )}
+          {composition.missing_baselines && composition.missing_baselines.length > 0 && (
+            <p className="mt-1 text-amber-200">
+              Missing baselines: {composition.missing_baselines.join(", ")}
+            </p>
+          )}
+        </div>
       )}
 
       <div className="mt-4 grid grid-cols-2 gap-3 text-xs md:grid-cols-4">

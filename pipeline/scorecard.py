@@ -89,6 +89,17 @@ def _perf_workloads(perf: Any) -> dict[str, Any]:
 RANKABLE_COMPARABILITY = frozenset({"exact-model", "same-family-jpl", "best-available"})
 
 
+def _baseline_rankable(row: dict[str, Any]) -> bool:
+    validation = row.get("baseline_validation") or {}
+    if validation.get("valid") is False:
+        return False
+    if row.get("execution_origin") == "baseline":
+        reuse_kind = row.get("baseline_reuse_kind")
+        if reuse_kind == "accuracy":
+            return True
+    return True
+
+
 def _accuracy_rank_eligible(row: dict[str, Any]) -> bool:
     """Strict gate for accuracy crowns (matches publication policy)."""
     if row.get("status") != "ok":
@@ -98,6 +109,8 @@ def _accuracy_rank_eligible(row: dict[str, Any]) -> bool:
     if row.get("support_status") != "supported":
         return False
     if row.get("api_surface") != "public":
+        return False
+    if not _baseline_rankable(row):
         return False
     cc = row.get("comparability_class")
     return cc in RANKABLE_COMPARABILITY
@@ -109,6 +122,15 @@ def _performance_rank_eligible(row: dict[str, Any]) -> bool:
     if row.get("support_status") != "supported":
         return False
     if row.get("api_surface") != "public":
+        return False
+    if row.get("execution_origin") == "baseline":
+        reuse_kind = row.get("baseline_reuse_kind")
+        if reuse_kind != "combined":
+            return False
+        validation = row.get("baseline_validation") or {}
+        if validation.get("valid") is False:
+            return False
+    if row.get("rankable_performance") is False:
         return False
     return True
 
@@ -385,6 +407,12 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
                 "perf_warnings": scalar_perf.get("warnings") if isinstance(scalar_perf, dict) else [],
                 "source_provenance": r.get("source_provenance"),
                 "reference_source_tag": r.get("reference_source_tag"),
+                "execution_origin": r.get("execution_origin"),
+                "baseline_key": r.get("baseline_key"),
+                "baseline_run_id": r.get("baseline_run_id"),
+                "baseline_created_at": r.get("baseline_created_at"),
+                "baseline_reuse_kind": r.get("baseline_reuse_kind"),
+                "baseline_validation": r.get("baseline_validation"),
             }
             out_rows.append(row)
             public_results.append(r)

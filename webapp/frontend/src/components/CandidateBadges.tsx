@@ -22,6 +22,9 @@ export interface CandidateLike {
   skip_reason?: string | null;
   failure_reason?: string | null;
   rank_exclusion_reason?: string | null;
+  execution_origin?: string | null;
+  baseline_reuse_kind?: string | null;
+  baseline_validation?: { valid?: boolean; reason?: string | null } | null;
 }
 
 export function candidateId(row: CandidateLike): string {
@@ -65,9 +68,35 @@ export function CandidateBadges({ row }: { row: CandidateLike }) {
   const title = provenanceText(row);
   const lane = catalogLane(row);
   const parity = catalogParity(row);
+  const origin = row.execution_origin;
+  const baselineInvalid = row.baseline_validation?.valid === false;
 
   return (
     <span className="inline-flex flex-wrap items-center gap-1">
+      {origin === "baseline" && (
+        <span
+          className={`rounded border px-1.5 py-0.5 text-[10px] font-medium uppercase ${
+            baselineInvalid
+              ? "border-amber-700/60 bg-amber-950/50 text-amber-300"
+              : "border-violet-700/60 bg-violet-950/50 text-violet-300"
+          }`}
+          title={
+            baselineInvalid
+              ? row.baseline_validation?.reason ?? "stale baseline"
+              : `Reused baseline (${row.baseline_reuse_kind ?? "combined"})`
+          }
+        >
+          {baselineInvalid ? "stale baseline" : `baseline ${row.baseline_reuse_kind ?? "reuse"}`}
+        </span>
+      )}
+      {origin === "fresh" && (
+        <span
+          className="rounded border border-emerald-800/60 bg-emerald-950/40 px-1.5 py-0.5 text-[10px] font-medium uppercase text-emerald-300"
+          title="Computed in this run"
+        >
+          fresh
+        </span>
+      )}
       {row.api_surface && (
         <span className={`rounded border px-1.5 py-0.5 text-[10px] font-medium uppercase ${badgeClass("surface")}`} title={title}>
           {row.api_surface}

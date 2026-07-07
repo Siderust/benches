@@ -32,6 +32,7 @@ import statistics
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -49,6 +50,37 @@ from lab_config import (
     SUITES,
 )
 from catalog import default_registry as _default_catalog
+
+try:
+    from baselines import (
+        BaselinePolicy,
+        CompositionState,
+        annotate_fresh_row,
+        attach_stratification_hints,
+        build_run_fingerprints,
+        compose_experiment_results,
+        load_valid_baseline,
+        parse_baseline_policy,
+        persist_fresh_baselines,
+        should_attempt_baseline_reuse,
+        should_refresh_candidate,
+        validate_composition_for_publication,
+    )
+except ImportError:  # pragma: no cover
+    from .baselines import (
+        BaselinePolicy,
+        CompositionState,
+        annotate_fresh_row,
+        attach_stratification_hints,
+        build_run_fingerprints,
+        compose_experiment_results,
+        load_valid_baseline,
+        parse_baseline_policy,
+        persist_fresh_baselines,
+        should_attempt_baseline_reuse,
+        should_refresh_candidate,
+        validate_composition_for_publication,
+    )
 
 
 # Candidate variants whose ":<suffix>" is a *Siderust nutation profile*
@@ -82,6 +114,10 @@ ACTIVE_ADAPTERS: set[str] | None = None
 SIDERUST_PROFILES = ["iau2006a"]
 HORIZONS_USE_CACHE = True
 HORIZONS_ALLOW_NETWORK = True
+BASELINE_POLICY: BaselinePolicy | None = None
+RUN_SUITE_LABEL: str | None = None
+BASELINE_COMPOSITION = CompositionState(mode="fresh")
+BASELINE_RUN_CONTEXT: dict[str, Any] | None = None
 
 
 def configure_run(
@@ -91,9 +127,12 @@ def configure_run(
     horizons_use_cache: bool = True,
     horizons_allow_network: bool = True,
     output_dir: str | Path | None = None,
+    baseline_policy: BaselinePolicy | None = None,
+    suite_label: str | None = None,
 ) -> None:
     """Configure process-wide run settings used by experiment runners."""
     global ACTIVE_ADAPTERS, SIDERUST_PROFILES, HORIZONS_USE_CACHE, HORIZONS_ALLOW_NETWORK, RESULTS_DIR
+    global BASELINE_POLICY, RUN_SUITE_LABEL, BASELINE_COMPOSITION
 
     if adapters:
         valid_adapters = {"siderust", "astropy", "libnova", "anise"}
@@ -115,6 +154,16 @@ def configure_run(
     if output_dir is not None:
         out = Path(output_dir)
         RESULTS_DIR = out if out.is_absolute() else LAB_ROOT / out
+
+    BASELINE_POLICY = baseline_policy
+    RUN_SUITE_LABEL = suite_label
+    BASELINE_COMPOSITION = CompositionState(
+        mode="baseline_delta" if baseline_policy and baseline_policy.enabled else "fresh",
+        baseline_root=str(baseline_policy.root) if baseline_policy and baseline_policy.enabled else None,
+        reuse_accuracy=bool(baseline_policy.reuse_accuracy) if baseline_policy else False,
+        reuse_performance=baseline_policy.reuse_performance if baseline_policy else False,
+        refresh_all=bool(baseline_policy.refresh_all) if baseline_policy else False,
+    )
 
 
 def _adapter_enabled(name: str) -> bool:
@@ -247,8 +296,57 @@ def candidate_adapters_for(experiment: str):
             # The catalog records why; runtime-blocked entries surface in
             # the manifest as excluded_candidates via runtime_blocked_for().
             continue
+        if _skip_candidate_for_baseline(cid, experiment):
+            continue
         out.append((label, cmd))
     return out
+
+
+def _skip_candidate_for_baseline(candidate_id: str, experiment: str) -> bool:
+    """Return True when a valid baseline row makes adapter execution unnecessary."""
+    policy = BASELINE_POLICY
+    if policy is None or not policy.enabled or policy.refresh_all:
+        return False
+    if should_refresh_candidate(candidate_id, policy):
+        return False
+    if not should_attempt_baseline_reuse(candidate_id, policy):
+        return False
+    if BASELINE_RUN_CONTEXT is None:
+        return False
+
+    ctx = BASELINE_RUN_CONTEXT
+    metadata = ctx["metadata"]
+    catalog = _default_catalog()
+    entry = catalog.get(candidate_id, experiment)
+    fingerprints = build_run_fingerprints(
+        experiment=experiment,
+        candidate_id=candidate_id,
+        metadata=metadata,
+        n=int(ctx["n"]),
+        seed=int(ctx["seed"]),
+        dataset_fingerprint=ctx.get("dataset_fingerprints", {}).get(experiment),
+        reference_model=ctx.get("reference_models", {}).get(experiment),
+        reference_source_tag=ctx.get("reference_source_tags", {}).get(experiment),
+        reference_lane=ctx.get("reference_lanes", {}).get(experiment),
+        catalog_entry=entry,
+        perf_enabled=bool(ctx.get("perf_enabled", True)),
+        perf_rounds=int(ctx.get("perf_rounds", 10)),
+        perf_scalar_n=int(ctx.get("perf_scalar_n", 5000)),
+        perf_batch_n=int(ctx.get("perf_batch_n", 100000)),
+        perf_batch_rounds=int(ctx.get("perf_batch_rounds", 5)),
+        perf_warmup=int(ctx.get("perf_warmup", 100)),
+        perf_timeout_s=int(ctx.get("perf_timeout_s", 120)),
+        horizons_use_cache=bool(ctx.get("horizons_use_cache", True)),
+        horizons_allow_network=bool(ctx.get("horizons_allow_network", True)),
+        suite=ctx.get("suite"),
+    )
+    artifact, validation = load_valid_baseline(
+        policy=policy,
+        candidate_id=candidate_id,
+        experiment=experiment,
+        expected=fingerprints,
+    )
+    return artifact is not None and validation.valid
 
 
 def runtime_blocked_for(experiment: str) -> list[tuple[str, str, str]]:
@@ -980,6 +1078,37 @@ def dataset_fingerprint(data: dict) -> str:
     """Compute a SHA-256 fingerprint of the input dataset for reproducibility."""
     canonical = json.dumps(data, sort_keys=True, separators=(',', ':'))
     return hashlib.sha256(canonical.encode()).hexdigest()[:16]
+
+
+def preview_dataset_fingerprint(experiment: str, n: int, seed: int) -> str | None:
+    """Deterministic dataset fingerprint used before an experiment executes adapters."""
+    generators = {
+        "frame_rotation_bpn": lambda: generate_frame_rotation_inputs(n, seed),
+        "gmst_era": lambda: generate_gmst_era_inputs(n, seed),
+        "equ_ecl": lambda: generate_equ_ecl_inputs(n, seed),
+        "equ_horizontal": lambda: generate_equ_horizontal_inputs(n, seed),
+        "solar_position": lambda: generate_solar_position_inputs(n, seed),
+        "lunar_position": lambda: generate_lunar_position_inputs(n, seed),
+        "kepler_solver": lambda: generate_kepler_inputs(n, seed),
+        "horiz_to_equ": lambda: generate_horiz_to_equ_inputs(n, seed),
+    }
+    if experiment in PLANET_POSITION_EXPERIMENTS:
+        generators[experiment] = lambda: generate_planet_position_inputs(n, seed)
+    gen = generators.get(experiment)
+    if gen is None:
+        return None
+    inputs = gen()
+    ds_fp_data: dict[str, Any] = {"experiment": experiment, "n": n, "seed": seed}
+    if experiment == "frame_rotation_bpn":
+        epochs, directions, _labels = inputs
+        ds_fp_data["epochs_hash"] = hashlib.sha256(epochs.tobytes()).hexdigest()[:12]
+    elif isinstance(inputs, np.ndarray):
+        ds_fp_data["input_0_hash"] = hashlib.sha256(inputs.tobytes()).hexdigest()[:12]
+    elif isinstance(inputs, tuple):
+        for i, inp in enumerate(inputs):
+            if isinstance(inp, np.ndarray):
+                ds_fp_data[f"input_{i}_hash"] = hashlib.sha256(inp.tobytes()).hexdigest()[:12]
+    return dataset_fingerprint(ds_fp_data)
 
 
 def _build_rust_adapter(manifest: Path, name: str) -> None:
@@ -2985,7 +3114,9 @@ def _partial_accuracy_reason(accuracy: dict) -> str:
 def _validate_publish_latest(scope: dict, metadata: dict, *, perf_enabled: bool = True,
                              perf_rounds: int = 10, perf_scalar_n: int = 5000,
                              perf_batch_n: int = 100000, perf_batch_rounds: int = 5,
-                             perf_warmup: int = 100) -> list[str]:
+                             perf_warmup: int = 100,
+                             composition: dict | None = None,
+                             baseline_policy: BaselinePolicy | None = None) -> list[str]:
     """Return human-readable blockers for copying a run to latest_results/."""
     blockers: list[str] = []
     git_dirty = metadata.get("git_dirty") or {}
@@ -3010,6 +3141,20 @@ def _validate_publish_latest(scope: dict, metadata: dict, *, perf_enabled: bool 
             blockers.append(f"perf_warmup {perf_warmup} < 100 (publication standard)")
     else:
         blockers.append("performance measurement is disabled")
+    if composition and baseline_policy and baseline_policy.enabled:
+        comp_state = CompositionState(
+            mode=composition.get("mode", "fresh"),
+            fresh_candidates=list(composition.get("fresh_candidates") or []),
+            baseline_candidates=list(composition.get("baseline_candidates") or []),
+            baseline_root=composition.get("baseline_root"),
+            reuse_accuracy=bool(composition.get("reuse_accuracy")),
+            reuse_performance=composition.get("reuse_performance", False),
+            all_baselines_valid=bool(composition.get("all_baselines_valid", True)),
+            missing_baselines=list(composition.get("missing_baselines") or []),
+            stale_baselines=list(composition.get("stale_baselines") or []),
+            refresh_all=bool(composition.get("refresh_all")),
+        )
+        blockers.extend(validate_composition_for_publication(comp_state, baseline_policy))
     return blockers
 
 
@@ -4653,6 +4798,26 @@ def main():
                         help="Plan phase label written to the manifest")
     parser.add_argument("--run-tags", default="",
                         help="Comma-separated run tags written to the manifest")
+    parser.add_argument("--suite", default=None,
+                        help="Suite label recorded in baseline fingerprints")
+    parser.add_argument("--baselines-enabled", action="store_true",
+                        help="Enable validated baseline composition")
+    parser.add_argument("--baselines-root", default=None,
+                        help="Baseline artifact root directory")
+    parser.add_argument("--baselines-reuse-candidates", default="",
+                        help="Comma-separated candidate ids eligible for baseline reuse")
+    parser.add_argument("--baselines-refresh-candidates", default="",
+                        help="Comma-separated candidate ids that must run fresh")
+    parser.add_argument("--baselines-reuse-accuracy", action="store_true",
+                        help="Allow accuracy baseline reuse when fingerprints match")
+    parser.add_argument("--baselines-reuse-performance", nargs="?", const="true", default=None,
+                        help="Allow performance reuse: true or same-machine-only")
+    parser.add_argument("--baselines-require-complete", action="store_true",
+                        help="Fail when required baselines are missing or stale")
+    parser.add_argument("--baselines-write-missing", action="store_true",
+                        help="Write freshly computed reusable rows into the baseline store")
+    parser.add_argument("--refresh-baselines", action="store_true",
+                        help="Recompute all candidates; ignore stored baselines")
     args = parser.parse_args()
     # Apply CI-mode overrides (only when requested)
     if args.ci:
@@ -4662,12 +4827,43 @@ def main():
     adapters = [a.strip() for a in args.adapters.split(",") if a.strip()] if args.adapters else None
     siderust_profiles = [p.strip() for p in args.siderust_profiles.split(",") if p.strip()]
     run_tags = [t.strip() for t in args.run_tags.split(",") if t.strip()]
+
+    baseline_raw: dict[str, Any] = {}
+    if args.baselines_enabled:
+        baseline_raw["enabled"] = True
+        if args.baselines_root:
+            baseline_raw["root"] = args.baselines_root
+        if args.baselines_reuse_candidates:
+            baseline_raw["reuse_candidates"] = [
+                c.strip() for c in args.baselines_reuse_candidates.split(",") if c.strip()
+            ]
+        if args.baselines_refresh_candidates:
+            baseline_raw["refresh_candidates"] = [
+                c.strip() for c in args.baselines_refresh_candidates.split(",") if c.strip()
+            ]
+        baseline_raw["reuse_accuracy"] = bool(args.baselines_reuse_accuracy)
+        if args.baselines_reuse_performance is not None:
+            val = args.baselines_reuse_performance
+            if val in {"same-machine-only", "same_machine_only"}:
+                baseline_raw["reuse_performance"] = "same-machine-only"
+            else:
+                baseline_raw["reuse_performance"] = True
+        baseline_raw["require_complete_baselines"] = bool(args.baselines_require_complete)
+        baseline_raw["write_missing_baselines"] = bool(args.baselines_write_missing)
+    baseline_policy = parse_baseline_policy(
+        baseline_raw,
+        lab_root=LAB_ROOT,
+        refresh_all=bool(args.refresh_baselines),
+    )
+
     configure_run(
         adapters=adapters,
         siderust_profiles=siderust_profiles,
         horizons_use_cache=not args.horizons_no_cache,
         horizons_allow_network=not args.horizons_offline,
         output_dir=args.output_dir,
+        baseline_policy=baseline_policy,
+        suite_label=args.suite,
     )
 
     if not args.no_build:
@@ -4711,7 +4907,33 @@ def main():
         print(f"  Run label:     {args.run_label or '-'}")
         print(f"  Run phase:     {args.run_phase or '-'}")
         print(f"  Run tags:      {', '.join(run_tags) if run_tags else '-'}")
+    if baseline_policy.enabled:
+        print(f"  Baselines:     enabled ({_display_path(baseline_policy.root)})")
+        print(f"    reuse:       {', '.join(sorted(baseline_policy.reuse_candidates)) or '-'}")
+        print(f"    refresh:     {', '.join(sorted(baseline_policy.refresh_candidates)) or '-'}")
+        print(f"    perf reuse:  {baseline_policy.reuse_performance}")
     print(f"{'='*70}\n")
+
+    global BASELINE_RUN_CONTEXT
+    BASELINE_RUN_CONTEXT = {
+        "metadata": run_metadata(),
+        "n": args.n,
+        "seed": args.seed,
+        "suite": args.suite,
+        "perf_enabled": not args.no_perf,
+        "perf_rounds": args.perf_rounds,
+        "perf_scalar_n": args.perf_scalar_n,
+        "perf_batch_n": args.perf_batch_n,
+        "perf_batch_rounds": args.perf_batch_rounds,
+        "perf_warmup": args.perf_warmup,
+        "perf_timeout_s": args.perf_timeout_s,
+        "horizons_use_cache": not args.horizons_no_cache,
+        "horizons_allow_network": not args.horizons_offline,
+        "dataset_fingerprints": {},
+        "reference_models": {},
+        "reference_source_tags": {},
+        "reference_lanes": {},
+    }
 
     all_results = []
 
@@ -4805,9 +5027,58 @@ def main():
             print(f"Unknown experiment: {exp}", file=sys.stderr)
             continue
 
+        if BASELINE_RUN_CONTEXT is not None:
+            preview_fp = preview_dataset_fingerprint(exp, args.n, args.seed)
+            if preview_fp:
+                BASELINE_RUN_CONTEXT["dataset_fingerprints"][exp] = preview_fp
+            exp_meta = EXPERIMENT_METADATA.get(exp, {})
+            BASELINE_RUN_CONTEXT["reference_models"][exp] = exp_meta.get("reference_model")
+            BASELINE_RUN_CONTEXT["reference_lanes"][exp] = exp_meta.get("reference_lane")
+            if exp_meta.get("reference_model", "").startswith("JPL"):
+                BASELINE_RUN_CONTEXT["reference_source_tags"][exp] = "JPL Horizons"
+
         results = runner_fn()
 
+        if results and BASELINE_RUN_CONTEXT is not None:
+            probe = results[0]
+            BASELINE_RUN_CONTEXT["dataset_fingerprints"][exp] = (
+                (probe.get("inputs") or {}).get("dataset_fingerprint")
+                or BASELINE_RUN_CONTEXT["dataset_fingerprints"].get(exp)
+            )
+            BASELINE_RUN_CONTEXT["reference_models"][exp] = (
+                probe.get("reference_model")
+                or BASELINE_RUN_CONTEXT["reference_models"].get(exp)
+            )
+            BASELINE_RUN_CONTEXT["reference_source_tags"][exp] = (
+                probe.get("reference_source_tag")
+                or BASELINE_RUN_CONTEXT["reference_source_tags"].get(exp)
+            )
+            BASELINE_RUN_CONTEXT["reference_lanes"][exp] = (
+                probe.get("reference_lane")
+                or BASELINE_RUN_CONTEXT["reference_lanes"].get(exp)
+            )
+
+        if results and baseline_policy.enabled:
+            results = compose_experiment_results(
+                experiment=exp,
+                fresh_rows=results,
+                policy=baseline_policy,
+                composition=BASELINE_COMPOSITION,
+                run_context=BASELINE_RUN_CONTEXT,
+            )
+            if baseline_policy.require_complete_baselines and BASELINE_COMPOSITION.missing_baselines:
+                missing_for_exp = [m for m in BASELINE_COMPOSITION.missing_baselines if m.startswith(f"{exp}/")]
+                if missing_for_exp:
+                    print(
+                        f"\n  ✗ Missing required baselines for {exp}: {', '.join(missing_for_exp)}",
+                        file=sys.stderr,
+                    )
+                    raise SystemExit(2)
+        elif results:
+            results = [annotate_fresh_row(r) for r in results]
+
         if results:
+            results = [attach_stratification_hints(r) for r in results]
             write_results(results, exp, run_timestamp)
             all_results.extend(results)
 
@@ -4905,6 +5176,8 @@ def main():
             perf_batch_n=args.perf_batch_n,
             perf_batch_rounds=args.perf_batch_rounds,
             perf_warmup=args.perf_warmup,
+            composition=BASELINE_COMPOSITION.to_manifest_dict() if baseline_policy.enabled else None,
+            baseline_policy=baseline_policy if baseline_policy.enabled else None,
         )
         publication = {
             "grade": "publication" if not pub_blockers else "draft",
@@ -4939,6 +5212,7 @@ def main():
             "scope": scope,
             "publication": publication,
             "latest_results_merge": {"is_merge": False},
+            "composition": BASELINE_COMPOSITION.to_manifest_dict(),
             "labels": {
                 "run_label": args.run_label,
                 "run_phase": args.run_phase,
@@ -4961,6 +5235,16 @@ def main():
         with open(manifest_path, "w") as f:
             json.dump(manifest, f, indent=2)
         print(f"\n  ✓ Run manifest: {_display_path(manifest_path)}")
+
+        if baseline_policy.enabled and baseline_policy.write_missing_baselines:
+            written = persist_fresh_baselines(
+                rows=all_results,
+                policy=baseline_policy,
+                run_context=BASELINE_RUN_CONTEXT or {},
+                run_id=run_timestamp,
+            )
+            if written:
+                print(f"  ✓ Wrote {len(written)} baseline artifact(s) to {_display_path(baseline_policy.root)}")
 
         if args.publish_latest:
             if pub_blockers and not _publish_overrides_satisfy(

@@ -1,0 +1,55 @@
+# Publication-grade delta run: validated baselines where fingerprints match.
+suite = "core"
+n = 1000
+seed = 42
+adapters = ["siderust", "astropy", "libnova", "anise"]
+siderust_profiles = ["iau2006a"]
+
+[baselines]
+enabled = true
+root = ".benches_cache/baseline_results"
+reuse_candidates = [
+  "erfa",
+  "astropy",
+  "astropy:de440-local",
+  "libnova",
+  "anise",
+]
+refresh_candidates = [
+  "siderust",
+  "siderust:elp2000",
+  "siderust:de440",
+  "siderust:de440_barycenter",
+  "siderust:spk_barycenter",
+]
+reuse_accuracy = true
+reuse_performance = "same-machine-only"
+require_complete_baselines = true
+write_missing_baselines = false
+
+[performance]
+enabled = true
+rounds = 10
+scalar_n = 5000
+batch_n = 100000
+batch_rounds = 5
+warmup = 100
+timeout_s = 120
+
+[horizons]
+use_cache = true
+allow_network = true
+
+[cache]
+root = ".benches_cache"
+auto_download = true
+
+[kernels.de440]
+enabled = true
+filename = "de440.bsp"
+
+[output]
+dir = "results"
+publish_latest = true
+allow_dirty_publish = false
+allow_partial_publish = false

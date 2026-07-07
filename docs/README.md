@@ -49,7 +49,7 @@ Lab-owned paths:
 - `pipeline/orchestrator.py`: experiment orchestration.
 - `pipeline/run_pipeline.py`: TOML-driven local runner.
 - `pipeline/run_phase_b.py`: Phase B baseline matrix runner.
-- `pipeline/configs/*.toml`: public, CI, publication, full-suite, fast, and
+- `pipeline/configs/*.toml`: public, CI, publication, delta, full-suite, fast, and
   Phase B presets.
 - `pipeline/adapters/`: per-tool wrapper binaries and scripts.
 - `pipeline/horizons_client.py`: JPL Horizons cache/network integration.
@@ -126,6 +126,8 @@ Use the shell wrapper for build + run + export:
 ./run.sh core
 ./run.sh ci
 ./run.sh full
+./run.sh dev-delta
+./run.sh publication-delta
 ./run.sh pipeline/configs/publication.toml
 ```
 
@@ -156,6 +158,8 @@ Important config fields:
 - `siderust_profiles`: enabled Siderust model profiles.
 - `performance`: timing enablement and workload sizes.
 - `horizons`: cache and offline/network policy.
+- `baselines`: validated baseline reuse policy (see [Benchmarking](benchmarking.md#baseline-reuse)).
+- `convergence`: optional progressive sample-count schema (disabled unless enabled).
 - `cache`: benchmark cache root and DE440 auto-download policy.
 - `output`: result directory, `publish_latest`, and publication overrides.
 - `run_label`, `phase`/`run_phase`, and `tags`/`run_tags`: manifest labels.
@@ -315,9 +319,11 @@ Before citing or committing publication artifacts:
 3. The intended public run completed with `scope.partial == false`.
 4. `git_dirty.lab == false`, or the dirty override is intentionally documented.
 5. `latest_results_merge.is_merge == false`.
-6. Public planet rows use `*_barycenter_position`.
-7. No ranked rows have `status` in `partial`, `failed`, or `skipped`.
-8. Catalog truth tests pass:
+6. When `[baselines]` is enabled for publication, `composition.all_baselines_valid == true`
+   and no required baseline is missing or stale.
+7. Public planet rows use `*_barycenter_position`.
+8. No ranked rows have `status` in `partial`, `failed`, or `skipped`.
+9. Catalog truth tests pass:
 
    ```bash
    python3 -m pytest pipeline/tests/test_catalog_truth.py -v
@@ -337,3 +343,4 @@ family scorecards and experiment detail pages to check:
 - p50, p99, and max accuracy
 - valid performance, `ns/op`, coefficient of variation, and warnings
 - source provenance for JPL-backed experiments
+- execution origin (`fresh` vs `baseline`) and baseline validation metadata

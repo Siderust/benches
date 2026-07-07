@@ -1,0 +1,54 @@
+# Fast Siderust development run: fresh Siderust rows, reused non-Siderust baselines.
+suite = "core"
+n = 250
+seed = 42
+adapters = ["siderust", "astropy", "libnova", "anise"]
+siderust_profiles = ["iau2006a"]
+
+[baselines]
+enabled = true
+root = ".benches_cache/baseline_results"
+reuse_candidates = [
+  "erfa",
+  "astropy",
+  "astropy:de440-local",
+  "libnova",
+  "anise",
+]
+refresh_candidates = [
+  "siderust",
+  "siderust:elp2000",
+  "siderust:de440",
+  "siderust:de440_barycenter",
+  "siderust:spk_barycenter",
+]
+reuse_accuracy = true
+reuse_performance = false
+require_complete_baselines = false
+write_missing_baselines = true
+
+[performance]
+enabled = true
+rounds = 5
+scalar_n = 1000
+batch_n = 0
+batch_rounds = 0
+warmup = 50
+timeout_s = 60
+
+[horizons]
+use_cache = true
+allow_network = false
+
+[cache]
+root = ".benches_cache"
+auto_download = false
+
+[kernels.de440]
+enabled = false
+
+[output]
+dir = "results"
+publish_latest = false
+allow_dirty_publish = false
+allow_partial_publish = false

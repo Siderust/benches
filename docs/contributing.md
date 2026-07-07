@@ -61,6 +61,19 @@ cargo clippy --all-targets --all-features -- -D warnings
 python3 -m pipeline.export_static --lab-root . --output /tmp/lab-check
 ```
 
+For baseline delta development:
+
+```bash
+./run.sh dev-delta
+python3 pipeline/run_pipeline.py --config pipeline/configs/dev_delta.toml
+```
+
+For publication delta validation:
+
+```bash
+python3 pipeline/run_pipeline.py --config pipeline/configs/publication_delta.toml
+```
+
 `pipeline/configs/ci.toml` sets `horizons.allow_network = false`,
 `cache.auto_download = false`, and `kernels.de440.enabled = false`, so CI does
 not need a populated DE440 cache.

@@ -20,6 +20,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -r pipeline/requirements.txt
 ./run.sh ci
+./run.sh dev-delta
 ```
 
 For the maintained command reference, result layout, suite definitions,

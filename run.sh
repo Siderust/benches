@@ -11,7 +11,8 @@
 #   ./run.sh phase-b ci   # Build available adapters + run a Phase B matrix leg
 #   ./run.sh pipeline/configs/ci.toml
 #   ./run.sh run pipeline/configs/full_fast.toml --allow-dirty-publish
-#   ./run.sh pipeline/configs/full_fast.toml --allow-dirty-publish --allow-partial-publish
+#   ./run.sh dev-delta
+#   ./run.sh publication-delta --allow-partial-publish
 # =================================================================
 
 set -euo pipefail
@@ -102,8 +103,12 @@ build_all() {
 # ---- Run ----
 resolve_config() {
     case "${1:-core}" in
-        core|ci|diagnostic|full)
-            echo "pipeline/configs/${1}.toml"
+        core|ci|diagnostic|full|dev-delta|publication-delta)
+            case "$1" in
+                dev-delta) echo "pipeline/configs/dev_delta.toml" ;;
+                publication-delta) echo "pipeline/configs/publication_delta.toml" ;;
+                *) echo "pipeline/configs/${1}.toml" ;;
+            esac
             ;;
         *)
             echo "$1"
