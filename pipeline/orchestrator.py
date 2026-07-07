@@ -254,6 +254,10 @@ def candidate_adapters():
         ))
     if _adapter_enabled("astropy"):
         adapters.append(("astropy", [sys.executable, str(ASTROPY_SCRIPT)]))
+        adapters.append((
+            "astropy:jpl",
+            ["env", "ASTROPY_EPHEMERIS=jpl", sys.executable, str(ASTROPY_SCRIPT)],
+        ))
         if os.environ.get("SIDERUST_KERNEL_DE440_ENABLED", "1") != "0":
             adapters.append((
                 "astropy:de440-local",

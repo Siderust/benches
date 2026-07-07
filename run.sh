@@ -94,8 +94,7 @@ build_all() {
     if [ ! -d .venv ]; then
         python3 -m venv .venv
     fi
-    source .venv/bin/activate
-    pip install -q -r pipeline/requirements.txt
+    .venv/bin/pip install -q -r pipeline/requirements.txt
 
     log "Build step finished"
 }
@@ -120,21 +119,19 @@ run_all() {
     local CONFIG
     CONFIG="$(resolve_config "${1:-core}")"
     shift || true
-    source .venv/bin/activate
     setup_benchmark_cache
 
     log "Running pipeline config: $CONFIG"
-    python3 pipeline/run_pipeline.py --config "$CONFIG" "$@"
+    .venv/bin/python pipeline/run_pipeline.py --config "$CONFIG" "$@"
 
     log "Done. Results in results/"
 }
 
 # ---- Static export ----
 export_static() {
-    source .venv/bin/activate 2>/dev/null || true
     local OUT="${1:-static_export}"
     log "Exporting static lab data to $OUT"
-    python3 -m pipeline.export_static --lab-root "$LAB_ROOT" --output "$OUT"
+    .venv/bin/python -m pipeline.export_static --lab-root "$LAB_ROOT" --output "$OUT"
 }
 
 refresh_latest_results() {
@@ -169,8 +166,7 @@ case "${1:-all}" in
         ;;
     phase-b|phase_b)
         build_all
-        source .venv/bin/activate
-        python3 pipeline/run_phase_b.py --matrix "${2:-ci}"
+        .venv/bin/python pipeline/run_phase_b.py --matrix "${2:-ci}"
         ;;
     all|"")
         build_all
