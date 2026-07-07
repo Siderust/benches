@@ -182,7 +182,13 @@ export interface ScorecardRow {
   perf_cv_pct: number | null;
   perf_warnings: string[];
   accuracy_delta_vs_best: number | null;
+  /** Delta vs best when row is not rank-eligible (shown as diagnostic). */
+  accuracy_delta_diagnostic?: number | null;
   performance_delta_vs_best_pct: number | null;
+  /** ns/op for UI when batch fallback applies or scalar is invalid. */
+  ns_per_op_display?: number | null;
+  perf_valid_display?: boolean;
+  placeholder?: boolean;
   source_provenance: Record<string, unknown>;
   reference_source_tag?: string | null;
 }

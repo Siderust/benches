@@ -1,6 +1,6 @@
 {
   "experiment": "gmst_era",
-  "run_id": "2026-06-05_12-14-12",
+  "run_id": "2026-06-07_10-02-22",
   "rows": [
     {
       "experiment": "gmst_era",
@@ -90,8 +90,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 583858.6140000001,
-          "cv": 6.31199625888828,
+          "ns_per_op": 612590.8754,
+          "cv": 5.171752281974045,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -104,9 +104,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 534770.21555,
-          "items_per_sec": 1869.9620340140316,
-          "cv": 3.5321126173402093,
+          "ns_per_op": 596700.83642,
+          "items_per_sec": 1675.8816796699273,
+          "cv": 19.775770881256893,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -125,8 +125,8 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 127.5,
-          "cv": 50.45455258396972,
+          "ns_per_op": 89.3,
+          "cv": 54.23252381069658,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -135,16 +135,16 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (50.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (54.2%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 34.2,
-          "items_per_sec": 29239766.081871342,
-          "cv": 2.2596888752868827,
+          "ns_per_op": 33.8,
+          "items_per_sec": 29585798.81656805,
+          "cv": 6.12757660321219,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -171,9 +171,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:14:13Z",
+        "date": "2026-06-07T10:02:24Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -225,14 +225,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -365,8 +365,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 13.1,
-          "cv": 24.69035096604419,
+          "ns_per_op": 13.05,
+          "cv": 24.094048012068782,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -375,7 +375,7 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (24.7%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (24.1%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
@@ -384,7 +384,7 @@
         "batch_throughput": {
           "ns_per_op": 4.7,
           "items_per_sec": 212765957.44680852,
-          "cv": 1.1555328217408527,
+          "cv": 1.772584801978974,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -406,8 +406,8 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 127.5,
-          "cv": 50.45455258396972,
+          "ns_per_op": 89.3,
+          "cv": 54.23252381069658,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -416,16 +416,16 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (50.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (54.2%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 34.2,
-          "items_per_sec": 29239766.081871342,
-          "cv": 2.2596888752868827,
+          "ns_per_op": 33.8,
+          "items_per_sec": 29585798.81656805,
+          "cv": 6.12757660321219,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -452,9 +452,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:14:13Z",
+        "date": "2026-06-07T10:02:24Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -506,14 +506,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -648,8 +648,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 66.94999999999999,
-          "cv": 31.75741094650919,
+          "ns_per_op": 67.3,
+          "cv": 23.005796045319098,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -658,16 +658,16 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (31.8%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (23.0%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 40.2,
-          "items_per_sec": 24875621.89054726,
-          "cv": 8.840088608111065,
+          "ns_per_op": 40.7,
+          "items_per_sec": 24570024.57002457,
+          "cv": 12.294582733383445,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -686,8 +686,8 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 127.5,
-          "cv": 50.45455258396972,
+          "ns_per_op": 89.3,
+          "cv": 54.23252381069658,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -696,16 +696,16 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (50.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (54.2%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 34.2,
-          "items_per_sec": 29239766.081871342,
-          "cv": 2.2596888752868827,
+          "ns_per_op": 33.8,
+          "items_per_sec": 29585798.81656805,
+          "cv": 6.12757660321219,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -732,9 +732,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:14:13Z",
+        "date": "2026-06-07T10:02:24Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -786,14 +786,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},

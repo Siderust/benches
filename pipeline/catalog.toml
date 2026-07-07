@@ -421,7 +421,7 @@ library     = "libnova"
 display     = "libnova (VSOP87 + ELP2000)"
 description = "Public libnova C API: VSOP87 planets, ELP2000 lunar, Meeus precession + IAU 1980 nutation."
 experiments = [
-  "gmst_era", "frame_rotation_bpn", "equ_horizontal",
+  "gmst_era", "equ_horizontal",
   "solar_position", "lunar_position",
   "mercury_position", "venus_position", "mars_position",
   "jupiter_position", "saturn_position", "uranus_position", "neptune_position",
@@ -439,7 +439,6 @@ support     = "supported"
 
 [candidate.api_methods]
 gmst_era                    = "ln_get_mean_sidereal_time + ln_get_apparent_sidereal_time"
-frame_rotation_bpn          = "ln_get_equ_prec + ln_get_equ_nut + ln_get_equ_prec2"
 equ_horizontal              = "ln_get_hrz_from_equ + ln_get_equ_from_hrz"
 solar_position              = "ln_get_solar_geo_coords (geometric) / ln_get_solar_equ_coords (apparent)"
 lunar_position              = "ln_get_lunar_geo_posn (geometric) / ln_get_lunar_equ_coords (apparent)"
@@ -459,6 +458,21 @@ uranus_barycenter_position  = "ln_get_uranus_rect_helio - ln_get_earth_rect_heli
 neptune_barycenter_position = "ln_get_neptune_rect_helio - ln_get_earth_rect_helio (planet-center proxy for system barycenter)"
 kepler_solver               = "ln_solve_kepler"
 
+
+[[candidate]]
+id          = "libnova"
+library     = "libnova"
+display     = "libnova (BPN / ecliptic transforms)"
+description = "libnova uses Meeus precession + IAU 1980 nutation (ln_get_equ_prec / ln_get_equ_nut), not ERFA IAU 2006 pnm06a. Residual vs SOFA BPN is expected model-mismatch, not adapter failure."
+experiments = ["frame_rotation_bpn"]
+api_surface = "public"
+api_method  = "ln_get_equ_prec + ln_get_equ_nut + ln_get_equ_prec2"
+model       = "VSOP87 + ELP2000-82B + Meeus precession + IAU 1980 nutation"
+source      = "libnova C library"
+lane        = "geometric_vector"
+parity      = "model-mismatch"
+support     = "supported"
+exclusion_reason = "libnova uses Meeus precession and IAU 1980 nutation, not ERFA IAU 2006 pnm06a; BPN matrix residual vs SOFA is expected model-mismatch."
 
 [[candidate]]
 id          = "libnova"

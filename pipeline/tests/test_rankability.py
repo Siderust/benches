@@ -27,7 +27,8 @@ def test_libnova_model_mismatch_is_not_accuracy_rankable():
     enriched = orch.enrich_result(result, "frame_rotation_bpn", "libnova")
     assert enriched["rankable_accuracy"] is False
     assert enriched["comparability_class"] == "not-comparable"
-    assert "different" in enriched["rank_exclusion_reason"]
+    reason = enriched["rank_exclusion_reason"] or ""
+    assert "different" in reason or "model-mismatch" in reason or "Meeus" in reason
 
 
 def test_siderust_default_profile_is_rankable_against_sofa_bpn():

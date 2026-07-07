@@ -41,6 +41,26 @@ npm run preview
 The frontend is read-only. It must not write to the parent site's public
 directory and must not expose benchmark execution controls.
 
+## Phase-6 performance JSON contract
+
+Experiment artifacts under `experiments/<id>.json` store timing under
+`performance.scalar_warm` and `performance.batch_throughput`, not flat
+`per_op_ns`. Any consumer — including the parent Astro benchmark page —
+must normalize before reading latency:
+
+- Shared helper: `webapp/frontend/src/utils/perf.ts` (`normPerfFlat`,
+  `measuredNsPerOp`, `perfValid`)
+- Smoke test: `cd webapp/frontend && node scripts/test-perf-normalize.mjs`
+
+Badge parity in the UI uses `comparability_class` from the scorecard
+(authoritative). `catalog_parity` is catalog metadata only.
+
+The scorecard also exposes:
+
+- `accuracy_delta_diagnostic` — delta vs best for non-rankable rows
+- `ns_per_op_display` / `perf_valid_display` — UI timing with batch fallback
+- `placeholder: true` — catalog candidate not executed in the run
+
 ## Refresh Workflow
 
 ```bash

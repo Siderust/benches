@@ -1,6 +1,6 @@
 {
   "experiment": "lunar_position",
-  "run_id": "2026-06-05_12-14-12",
+  "run_id": "2026-06-07_10-02-22",
   "rows": [
     {
       "experiment": "lunar_position",
@@ -117,8 +117,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 2671.3999999999996,
-          "cv": 7.300449830672792,
+          "ns_per_op": 2755.0,
+          "cv": 6.973230427623442,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -131,9 +131,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 2748.1,
-          "items_per_sec": 363887.7770095703,
-          "cv": 5.454654245900798,
+          "ns_per_op": 2396.1,
+          "items_per_sec": 417344.85205124994,
+          "cv": 7.969744070306513,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -146,7 +146,7 @@
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 136.057663,
+          "setup_ms": 139.67707,
           "measured": true
         }
       },
@@ -162,9 +162,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -216,14 +216,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -410,12 +410,27 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 1654536.1789,
-          "cv": 26.078425350519407,
+          "ns_per_op": 336706.74710000004,
+          "cv": 5.209285827575387,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 100,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 424658.22801,
+          "items_per_sec": 2354.8348625814256,
+          "cv": 26.0784623532185,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
           "error_count": 0,
           "warmup": 100,
           "valid": false,
@@ -424,24 +439,6 @@
             "performance workload marked invalid"
           ],
           "skipped": null,
-          "status": null
-        },
-        "batch_throughput": {
-          "ns_per_op": null,
-          "items_per_sec": null,
-          "cv": null,
-          "rounds": 5,
-          "n": 100000,
-          "count_requested": null,
-          "count_valid": null,
-          "error_count": null,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "adapter returned no result",
-            "performance workload marked invalid"
-          ],
-          "skipped": false,
           "status": null
         },
         "setup_metrics": {
@@ -461,9 +458,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -515,14 +512,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -709,42 +706,36 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 3962844.5948,
-          "cv": 22.578877700941334,
+          "ns_per_op": 538699.5109,
+          "cv": 18.8819966523578,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
           "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (22.6%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": null,
-          "items_per_sec": null,
-          "cv": null,
+          "ns_per_op": 442644.85051,
+          "items_per_sec": 2259.1474832426825,
+          "cv": 7.838481147391298,
           "rounds": 5,
           "n": 100000,
-          "count_requested": null,
-          "count_valid": null,
-          "error_count": null,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
           "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "adapter returned no result",
-            "performance workload marked invalid"
-          ],
-          "skipped": false,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 1688.122898,
+          "setup_ms": 234.964568,
           "measured": true
         }
       },
@@ -760,9 +751,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -814,14 +805,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -1008,8 +999,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 6907.0,
-          "cv": 18.591065977467316,
+          "ns_per_op": 4808.25,
+          "cv": 17.92243079108101,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -1022,20 +1013,17 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 9945.1,
-          "items_per_sec": 100552.03064825894,
-          "cv": 30.762974272215693,
+          "ns_per_op": 3612.8,
+          "items_per_sec": 276793.6226749336,
+          "cv": 3.9071644716704976,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
           "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (30.8%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
@@ -1056,9 +1044,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -1110,14 +1098,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -1305,8 +1293,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 13146117.7,
-          "cv": 24.440961858108043,
+          "ns_per_op": 1393828.9,
+          "cv": 30.315595142797587,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -1315,7 +1303,7 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (24.4%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (30.3%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
@@ -1356,9 +1344,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -1410,14 +1398,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -1604,8 +1592,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 1078.0178999999998,
-          "cv": 10.080008472755422,
+          "ns_per_op": 633.0556,
+          "cv": 17.41836565131663,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -1618,9 +1606,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 831.54543,
-          "items_per_sec": 1202580.116398451,
-          "cv": 16.23885088232509,
+          "ns_per_op": 569.73406,
+          "items_per_sec": 1755204.875762562,
+          "cv": 6.0361191533496905,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -1649,9 +1637,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -1703,14 +1691,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -1897,42 +1885,36 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 1403.4184,
-          "cv": 53.0485014756996,
+          "ns_per_op": 585.1738,
+          "cv": 5.142921282424018,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
           "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (53.0%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 1657.98165,
-          "items_per_sec": 603142.984121688,
-          "cv": 39.4624030952848,
+          "ns_per_op": 465.74576,
+          "items_per_sec": 2147094.1571212583,
+          "cv": 7.798707931573685,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
           "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (39.5%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 310.364249,
+          "setup_ms": 126.701817,
           "measured": true
         }
       },
@@ -1948,9 +1930,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -2002,14 +1984,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -2196,8 +2178,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 450835.9044,
-          "cv": 2.3522501083165133,
+          "ns_per_op": 340866.9641,
+          "cv": 9.073117168797875,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -2210,21 +2192,18 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": null,
-          "items_per_sec": null,
-          "cv": null,
+          "ns_per_op": 339388.471,
+          "items_per_sec": 2946.4760457346233,
+          "cv": 12.815564054526801,
           "rounds": 5,
           "n": 100000,
-          "count_requested": null,
-          "count_valid": null,
-          "error_count": null,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
           "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "adapter returned no result",
-            "performance workload marked invalid"
-          ],
-          "skipped": false,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
           "status": null
         },
         "setup_metrics": {
@@ -2244,9 +2223,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:44:31Z",
+        "date": "2026-06-07T10:34:42Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -2298,14 +2277,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},

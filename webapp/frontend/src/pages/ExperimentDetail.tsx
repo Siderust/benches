@@ -27,6 +27,7 @@ import {
   fmtOpsS,
   libColor,
 } from "../utils/analytics";
+import { measuredNsPerOp, normPerfFlat, perfValid } from "../utils/perf";
 
 const TABS = ["Overview", "Accuracy", "Performance", "Assumptions"] as const;
 type Tab = (typeof TABS)[number];
@@ -220,9 +221,9 @@ function OverviewTab({ results, exactOnly = false }: { results: ExperimentResult
         const nan = (acc.nan_count as number) ?? 0;
         const inf = (acc.inf_count as number) ?? 0;
         const perf = normPerfFlat(r.performance as Record<string, unknown>);
-        const nsOp = (perf?.per_op_ns as number) ?? null;
+        const nsOp = measuredNsPerOp(perf);
         const opsS = (perf?.throughput_ops_s as number) ?? null;
-        const perfValid = (perf?.valid as boolean) ?? true;
+        const timingValid = perfValid(perf);
 
         const name = displayName(r);
         const unavailable = isUnavailable(r);
@@ -315,19 +316,6 @@ function OverviewTab({ results, exactOnly = false }: { results: ExperimentResult
                   FASTEST
                 </span>
               )}
-              {r.alignment?.candidate_parity && r.alignment.candidate_parity !== "reference" && (
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                  r.alignment.candidate_parity === "model-parity"
-                    ? "bg-emerald-900/40 text-emerald-400"
-                    : r.alignment.candidate_parity === "model-mismatch"
-                    ? "bg-amber-900/40 text-amber-400"
-                    : "bg-blue-900/40 text-blue-400"
-                }`}>
-                  {r.alignment.candidate_parity === "model-parity" ? "MODEL PARITY"
-                    : r.alignment.candidate_parity === "model-mismatch" ? "MODEL MISMATCH"
-                    : r.alignment.candidate_parity.toUpperCase().replace(/-/g, " ")}
-                </span>
-              )}
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -349,9 +337,14 @@ function OverviewTab({ results, exactOnly = false }: { results: ExperimentResult
                 unit={pm.unit}
               />
               <MetricCard
-                label={nsOp != null && !perfValid ? "Latency ⚠" : "Latency"}
+                label={nsOp != null && !timingValid ? "Latency ⚠" : "Latency"}
                 value={nsOp != null ? fmtNs(nsOp) : null}
-                accent={nsOp != null && !perfValid ? "red" : isPerfBest ? "yellow" : "default"}
+                accent={nsOp != null && !timingValid ? "red" : isPerfBest ? "yellow" : "default"}
+                secondary={
+                  nsOp != null && !timingValid
+                    ? (perf.warnings as string[] | undefined)?.[0] ?? "Timing sample not statistically valid"
+                    : undefined
+                }
               />
               <MetricCard
                 label="Throughput"
@@ -1018,28 +1011,6 @@ function displayName(r: ExperimentResult): string {
   return candidateId(r);
 }
 
-/**
- * Normalize a Phase-6 nested performance object to flat legacy-compatible fields.
- * Phase-6 stores data under `scalar_warm`, `batch_throughput`, `setup_metrics`.
- * Legacy format stores flat `per_op_ns`, `throughput_ops_s`, etc.
- * Returns a flat object with both field shapes populated for compatibility.
- */
-function normPerfFlat(raw: Record<string, unknown> | null | undefined): Record<string, unknown> {
-  if (!raw) return {};
-  const scalar = raw.scalar_warm as Record<string, unknown> | undefined;
-  const batch = raw.batch_throughput as Record<string, unknown> | undefined;
-  if (!scalar && !batch) return raw; // already flat/legacy format
-  return {
-    ...raw,
-    per_op_ns: scalar?.ns_per_op ?? null,
-    throughput_ops_s: batch?.items_per_sec ?? null,
-    valid: scalar?.valid ?? true,
-    rounds: scalar?.rounds ?? null,
-    per_op_ns_cv_pct: scalar?.cv ?? null,
-    warnings: scalar?.warnings ?? [],
-  };
-}
-
 function referenceLabel(experiment: string | undefined, fallback: string): string {
   return experiment === "kepler_solver" ? "pipeline_python" : fallback;
 }
@@ -1048,17 +1019,6 @@ function referenceTitle(experiment: string | undefined): string | undefined {
   return experiment === "kepler_solver"
     ? "Newton-Raphson to machine epsilon (no SOFA/ERFA public Kepler API)"
     : undefined;
-}
-
-function perfValid(perf: Record<string, unknown>): boolean {
-  const flat = normPerfFlat(perf);
-  const ns = flat?.per_op_ns as number | undefined;
-  const cv = flat?.per_op_ns_cv_pct as number | undefined;
-  if (ns == null) return false;
-  if (flat?.valid === false) return false;
-  if (ns < 10) return false;
-  if (cv != null && cv > 20) return false;
-  return true;
 }
 
 function fmtStat(v: number | null | undefined): string {

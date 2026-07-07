@@ -13,6 +13,11 @@ import re
 from pathlib import Path
 from typing import Any, Iterable
 
+try:
+    from .catalog import CandidateEntry, default_registry
+except ImportError:  # pragma: no cover - direct script / test path insert
+    from catalog import CandidateEntry, default_registry
+
 _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}(?:_\d{2}-\d{2}-\d{2})?$")
 
 _PRIMARY_METRICS: list[tuple[str, str, str]] = [
@@ -122,6 +127,111 @@ def _perf_valid(perf: dict[str, Any] | None) -> bool:
     return True
 
 
+def _display_perf_ns(
+    scalar_perf: dict[str, Any] | None,
+    batch_perf: dict[str, Any] | None,
+) -> tuple[float | None, bool]:
+    """Return (ns_for_display, perf_valid_for_crown) using scalar with batch fallback."""
+    scalar_ns = scalar_perf.get("ns_per_op") if isinstance(scalar_perf, dict) else None
+    scalar_valid = _perf_valid(scalar_perf)
+    if scalar_valid and isinstance(scalar_ns, (int, float)) and math.isfinite(scalar_ns):
+        return float(scalar_ns), True
+    if isinstance(batch_perf, dict) and _perf_valid(batch_perf):
+        batch_ns = batch_perf.get("ns_per_op")
+        if isinstance(batch_ns, (int, float)) and math.isfinite(batch_ns):
+            return float(batch_ns), True
+    if isinstance(scalar_ns, (int, float)) and math.isfinite(scalar_ns) and scalar_ns > 0:
+        return float(scalar_ns), False
+    if isinstance(batch_perf, dict):
+        batch_ns = batch_perf.get("ns_per_op")
+        if isinstance(batch_ns, (int, float)) and math.isfinite(batch_ns) and batch_ns > 0:
+            return float(batch_ns), False
+    return None, False
+
+
+def _catalog_display_name(entry: CandidateEntry) -> str:
+    lib = entry.library
+    if entry.id == lib:
+        return lib
+    suffix = entry.id.split(":", 1)[-1]
+    if lib == "siderust" and suffix == "iau2006a":
+        return lib
+    return f"{lib}/{suffix}"
+
+
+def _placeholder_scorecard_row(entry: CandidateEntry, experiment: str) -> dict[str, Any]:
+    """Synthetic row for catalog-published candidates missing from the run artifact."""
+    if entry.support == "unsupported":
+        status = "skipped"
+        skip_reason = entry.exclusion_reason or f"{entry.id} unsupported for {experiment}"
+        rankable = False
+        comparability = "not-comparable"
+        exclusion = entry.exclusion_reason or skip_reason
+    elif entry.support == "runtime-blocked":
+        status = "skipped"
+        skip_reason = entry.exclusion_reason or f"{entry.id} runtime-blocked for {experiment}"
+        rankable = False
+        comparability = "not-comparable"
+        exclusion = entry.exclusion_reason or skip_reason
+    else:
+        status = "skipped"
+        skip_reason = f"{entry.id} not executed in this run"
+        rankable = entry.is_rankable
+        comparability = (
+            "exact-model" if entry.parity == "exact-same-kernel"
+            else entry.parity if entry.parity in RANKABLE_COMPARABILITY
+            else "not-comparable"
+        )
+        exclusion = skip_reason
+    return {
+        "library": entry.library,
+        "display_name": _catalog_display_name(entry),
+        "profile": None if entry.id == entry.library else entry.id.split(":", 1)[-1],
+        "rankable_accuracy": rankable,
+        "rank_exclusion_reason": exclusion if not rankable else None,
+        "candidate_parity": None,
+        "comparability_class": comparability,
+        "model_parity_class": None,
+        "selected_model": None,
+        "model_source": None,
+        "lane": entry.lane or None,
+        "api_surface": entry.api_surface,
+        "support_status": entry.support,
+        "candidate_id": entry.id,
+        "catalog_model": entry.model,
+        "catalog_source": entry.source,
+        "catalog_lane": entry.lane,
+        "catalog_parity": entry.parity,
+        "status": status,
+        "skip_reason": skip_reason,
+        "failure_reason": None,
+        "p50": None,
+        "p99": None,
+        "max": None,
+        "rms": None,
+        "mean": None,
+        "ns_per_op": None,
+        "scalar_warm_ns_per_op": None,
+        "scalar_warm_cv": None,
+        "batch_throughput_ns_per_op": None,
+        "batch_throughput_items_per_sec": None,
+        "setup_ms": None,
+        "setup_measured": None,
+        "performance": {"scalar_warm": None, "batch_throughput": None, "setup_metrics": None},
+        "perf_valid": False,
+        "perf_cv_pct": None,
+        "perf_warnings": [],
+        "source_provenance": None,
+        "reference_source_tag": None,
+        "accuracy_delta_vs_best": None,
+        "accuracy_delta_diagnostic": None,
+        "performance_delta_vs_best_pct": None,
+        "ns_per_op_display": None,
+        "perf_valid_display": False,
+        "placeholder": True,
+    }
+
+
 def discover_runs(lab_root: Path) -> list[tuple[str, Path]]:
     """Return [(run_id, run_dir), ...] sorted newest-first.
 
@@ -188,8 +298,14 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
     family_map: dict[str, dict[str, Any]] = {}
     public_results: list[dict[str, Any]] = []
 
+    catalog = default_registry()
+
     for experiment, rows in experiments.items():
-        visible = [r for r in rows if (r.get("tier") or "public") == "public"]
+        visible = [
+            r for r in rows
+            if (r.get("tier") or "public") == "public"
+            and r.get("api_surface") != "reference"
+        ]
         if not visible:
             continue
 
@@ -222,6 +338,7 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
             batch_perf = perf.get("batch_throughput")
             setup_perf = perf.get("setup_metrics")
             ns = scalar_perf.get("ns_per_op") if isinstance(scalar_perf, dict) else None
+            ns_display, perf_valid_display = _display_perf_ns(scalar_perf, batch_perf)
             alignment = r.get("alignment") or {}
             row = {
                 "library": r.get("candidate_library"),
@@ -240,7 +357,7 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
                 "lane": r.get("lane") or alignment.get("lane"),
                 "api_surface": r.get("api_surface"),
                 "support_status": r.get("support_status"),
-                "candidate_id": r.get("candidate_id"),
+                "candidate_id": r.get("candidate_id") or r.get("candidate_library"),
                 "catalog_model": r.get("catalog_model"),
                 "catalog_source": r.get("catalog_source"),
                 "catalog_lane": r.get("catalog_lane"),
@@ -254,6 +371,8 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
                 "rms": stats.get("rms"),
                 "mean": stats.get("mean"),
                 "ns_per_op": ns,
+                "ns_per_op_display": ns_display,
+                "perf_valid_display": perf_valid_display,
                 "scalar_warm_ns_per_op": ns,
                 "scalar_warm_cv": scalar_perf.get("cv") if isinstance(scalar_perf, dict) else None,
                 "batch_throughput_ns_per_op": batch_perf.get("ns_per_op") if isinstance(batch_perf, dict) else None,
@@ -270,6 +389,22 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
             out_rows.append(row)
             public_results.append(r)
 
+        present_ids = {row.get("candidate_id") or row.get("display_name") for row in out_rows}
+        for entry in catalog.published_candidates_for(experiment):
+            if entry.api_surface == "reference":
+                continue
+            if entry.id in present_ids:
+                continue
+            out_rows.append(_placeholder_scorecard_row(entry, experiment))
+
+        for row in out_rows:
+            if row.get("placeholder"):
+                continue
+            p99 = row.get("p99")
+            ns = row.get("ns_per_op")
+            perf_valid_row = row.get("perf_valid_display") if row.get("perf_valid_display") is not None else row.get("perf_valid")
+            ns_for_perf = row.get("ns_per_op_display") if row.get("ns_per_op_display") is not None else ns
+
             if _accuracy_rank_eligible(row) and isinstance(p99, (int, float)):
                 if best_accuracy is None or _accuracy_rank_key(row) < _accuracy_rank_key(best_accuracy):
                     best_accuracy = row
@@ -279,11 +414,13 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
             # `raw_fastest` records the raw minimum regardless of validity so
             # the dashboard can show it as a diagnostic without ever conflating
             # it with the trustworthy winner.
-            if isinstance(ns, (int, float)) and math.isfinite(ns) and ns > 0:
-                if raw_fastest is None or ns < raw_fastest["ns_per_op"]:
+            if isinstance(ns_for_perf, (int, float)) and math.isfinite(ns_for_perf) and ns_for_perf > 0:
+                if raw_fastest is None or ns_for_perf < raw_fastest.get("ns_per_op_display", raw_fastest["ns_per_op"]):
                     raw_fastest = row
-                if row["perf_valid"] and _performance_rank_eligible(row):
-                    if best_performance is None or ns < best_performance["ns_per_op"]:
+                if perf_valid_row and _performance_rank_eligible(row):
+                    cmp_ns = row.get("ns_per_op_display") or row.get("ns_per_op")
+                    best_cmp = (best_performance.get("ns_per_op_display") or best_performance.get("ns_per_op")) if best_performance else None
+                    if best_performance is None or (isinstance(cmp_ns, (int, float)) and cmp_ns < best_cmp):
                         best_performance = row
 
         # Exact-model-only winner: subset of rankable rows whose
@@ -328,13 +465,23 @@ def compute_scorecard(run_id: str, experiments: dict[str, list[dict[str, Any]]])
         best_accuracy_exact_co_winners = _co_winners(best_accuracy_exact, out_rows, restrict_exact=True)
 
         for row in out_rows:
-            if best_accuracy and _accuracy_rank_eligible(row) and isinstance(row["p99"], (int, float)):
-                row["accuracy_delta_vs_best"] = abs(row["p99"]) - abs(best_accuracy["p99"])
+            p99 = row.get("p99")
+            row_ns = row.get("ns_per_op_display") if row.get("ns_per_op_display") is not None else row.get("ns_per_op")
+            if best_accuracy and _accuracy_rank_eligible(row) and isinstance(p99, (int, float)):
+                row["accuracy_delta_vs_best"] = abs(p99) - abs(best_accuracy["p99"])
+                row["accuracy_delta_diagnostic"] = None
+            elif best_accuracy and isinstance(p99, (int, float)):
+                row["accuracy_delta_vs_best"] = None
+                row["accuracy_delta_diagnostic"] = abs(p99) - abs(best_accuracy["p99"])
             else:
                 row["accuracy_delta_vs_best"] = None
-            if best_performance and isinstance(row["ns_per_op"], (int, float)) and math.isfinite(row["ns_per_op"]):
+                row["accuracy_delta_diagnostic"] = None
+            best_perf_ns = None
+            if best_performance:
+                best_perf_ns = best_performance.get("ns_per_op_display") or best_performance.get("ns_per_op")
+            if best_performance and isinstance(row_ns, (int, float)) and math.isfinite(row_ns) and isinstance(best_perf_ns, (int, float)) and best_perf_ns > 0:
                 row["performance_delta_vs_best_pct"] = (
-                    (row["ns_per_op"] / best_performance["ns_per_op"]) - 1.0
+                    (row_ns / best_perf_ns) - 1.0
                 ) * 100.0
             else:
                 row["performance_delta_vs_best_pct"] = None

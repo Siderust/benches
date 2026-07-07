@@ -36,8 +36,9 @@ export function catalogLane(row: CandidateLike): string | null | undefined {
   return row.catalog_lane ?? row.lane ?? (row.alignment?.lane as string | undefined);
 }
 
+/** Authoritative parity badge: comparability_class from the pipeline. */
 export function catalogParity(row: CandidateLike): string | null | undefined {
-  return row.catalog_parity ?? row.comparability_class ?? row.model_parity_class;
+  return row.comparability_class ?? row.catalog_parity ?? row.model_parity_class;
 }
 
 export function provenanceText(row: CandidateLike): string | undefined {
@@ -78,7 +79,10 @@ export function CandidateBadges({ row }: { row: CandidateLike }) {
         </span>
       )}
       {parity && (
-        <span className={`rounded border px-1.5 py-0.5 text-[10px] font-medium uppercase ${badgeClass("parity")}`} title={title}>
+        <span
+          className={`rounded border px-1.5 py-0.5 text-[10px] font-medium uppercase ${badgeClass("parity")}`}
+          title={[title, row.catalog_parity && row.catalog_parity !== parity ? `catalog: ${row.catalog_parity}` : null].filter(Boolean).join(" · ") || undefined}
+        >
           {parity.replace(/_/g, " ")}
         </span>
       )}

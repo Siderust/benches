@@ -1,6 +1,6 @@
 {
   "experiment": "kepler_solver",
-  "run_id": "2026-06-05_12-14-12",
+  "run_id": "2026-06-07_10-02-22",
   "rows": [
     {
       "experiment": "kepler_solver",
@@ -91,23 +91,26 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 1354.5,
-          "cv": 16.37099557503736,
+          "ns_per_op": 1140.0500000000002,
+          "cv": 20.86686760674647,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
           "warmup": 100,
-          "valid": true,
-          "warnings": [],
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (20.9%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 844.6,
-          "items_per_sec": 1183992.4224484963,
-          "cv": 2.7964280510816297,
+          "ns_per_op": 717.4,
+          "items_per_sec": 1393922.4979091163,
+          "cv": 9.755244203886175,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -139,9 +142,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:47:38Z",
+        "date": "2026-06-07T11:31:32Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -193,14 +196,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -336,23 +339,26 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 208.2,
-          "cv": 14.502769781542032,
+          "ns_per_op": 196.3,
+          "cv": 26.938424396167687,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
           "warmup": 100,
-          "valid": true,
-          "warnings": [],
+          "valid": false,
+          "warnings": [
+            "High coefficient of variation (26.9%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "performance workload marked invalid"
+          ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 124.8,
-          "items_per_sec": 8012820.512820513,
-          "cv": 10.478267622787714,
+          "ns_per_op": 98.8,
+          "items_per_sec": 10121457.489878543,
+          "cv": 7.123609989845376,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -384,9 +390,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:47:38Z",
+        "date": "2026-06-07T11:31:32Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -438,14 +444,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},

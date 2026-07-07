@@ -7,6 +7,7 @@
 import type { ExperimentResult, PercentileStats, RunDetail } from "../api/types";
 import { LIBRARY_COLORS } from "../api/types";
 import { candidateId } from "../components/CandidateBadges";
+import { measuredNsPerOp, normPerfFlat, normRefPerfFlat } from "./perf";
 
 // ─── Primary metric detection ────────────────────────────────────────
 
@@ -124,11 +125,14 @@ export function analyzeRun(run: RunDetail): RunAnalytics {
 
     // Reference performance (from first result that has it)
     for (const r of results) {
-      const refPerf = r.reference_performance as Record<string, unknown>;
-      if (refPerf?.per_op_ns != null) {
+      const refPerf = normRefPerfFlat(
+        r.reference_performance as Record<string, unknown>,
+      );
+      const refNs = measuredNsPerOp(refPerf);
+      if (refNs != null) {
         performance.push({
           library: refLib,
-          perOpNs: refPerf.per_op_ns as number,
+          perOpNs: refNs,
           throughputOpsS: (refPerf.throughput_ops_s as number) ?? null,
           isReference: true,
         });
@@ -141,12 +145,13 @@ export function analyzeRun(run: RunDetail): RunAnalytics {
       candidateLibs.add(id);
       allLibs.add(id);
 
-      // Performance
-      const perf = r.performance as Record<string, unknown>;
-      if (perf?.per_op_ns != null) {
+      // Performance (Phase-6 scalar_warm / legacy flat)
+      const perf = normPerfFlat(r.performance as Record<string, unknown>);
+      const perOpNs = measuredNsPerOp(perf);
+      if (perOpNs != null) {
         performance.push({
           library: id,
-          perOpNs: perf.per_op_ns as number,
+          perOpNs,
           throughputOpsS: (perf.throughput_ops_s as number) ?? null,
           isReference: false,
         });

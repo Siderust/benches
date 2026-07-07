@@ -433,17 +433,53 @@ function ExperimentRows({ rows, unit }: { rows: ScorecardRow[]; unit: string }) 
               <td className="px-4 py-2 text-gray-400" title={provenanceText(row)}>
                 {provenanceText(row) ?? "—"}
               </td>
-              <td className="px-4 py-2 text-right font-mono text-gray-400">{fmtValue(row.p50)}</td>
-              <td className="px-4 py-2 text-right font-mono text-gray-200">{fmtValue(row.p99)}</td>
-              <td className="px-4 py-2 text-right font-mono text-gray-400">{fmtValue(row.max)}</td>
-              <td className="px-4 py-2 text-right font-mono text-gray-400">
-                {row.accuracy_delta_vs_best == null ? "—" : `${fmtValue(row.accuracy_delta_vs_best)} ${unit}`}
+              <td className="px-4 py-2 text-right font-mono text-gray-400">{unavailable ? "n/a" : fmtValue(row.p50)}</td>
+              <td className="px-4 py-2 text-right font-mono text-gray-200">{unavailable ? "n/a" : fmtValue(row.p99)}</td>
+              <td className="px-4 py-2 text-right font-mono text-gray-400">{unavailable ? "n/a" : fmtValue(row.max)}</td>
+              <td
+                className="px-4 py-2 text-right font-mono text-gray-400"
+                title={
+                  unavailable
+                    ? row.skip_reason ?? undefined
+                    : row.accuracy_delta_vs_best == null && row.accuracy_delta_diagnostic != null
+                    ? row.rank_exclusion_reason ?? "Diagnostic delta — not rankable for accuracy crowns"
+                    : row.rank_exclusion_reason ?? undefined
+                }
+              >
+                {unavailable
+                  ? "n/a"
+                  : row.accuracy_delta_vs_best != null
+                  ? `${fmtValue(row.accuracy_delta_vs_best)} ${unit}`
+                  : row.accuracy_delta_diagnostic != null
+                  ? `${fmtValue(row.accuracy_delta_diagnostic)} ${unit} (diag)`
+                  : "—"}
               </td>
-              <td className={`px-4 py-2 text-right font-mono ${row.perf_valid ? "text-gray-300" : "text-gray-500"}`}>
-                {fmtNs(row.ns_per_op)}
+              <td
+                className={`px-4 py-2 text-right font-mono ${(row.perf_valid_display ?? row.perf_valid) ? "text-gray-300" : "text-gray-500"}`}
+                title={
+                  unavailable
+                    ? row.skip_reason ?? undefined
+                    : !(row.perf_valid_display ?? row.perf_valid) && (row.ns_per_op_display ?? row.ns_per_op) != null
+                    ? row.perf_warnings?.join("; ") || "Measured timing — not statistically valid for performance crowns"
+                    : undefined
+                }
+              >
+                {unavailable ? "n/a" : fmtNs(row.ns_per_op_display ?? row.ns_per_op)}
+                {!unavailable && !(row.perf_valid_display ?? row.perf_valid) && (row.ns_per_op_display ?? row.ns_per_op) != null && (
+                  <span className="ml-1 text-amber-400" title="High CV or invalid scalar sample">⚠</span>
+                )}
               </td>
-              <td className="px-4 py-2 text-right font-mono text-gray-400">
-                {row.performance_delta_vs_best_pct == null ? "—" : `+${row.performance_delta_vs_best_pct.toFixed(1)}%`}
+              <td
+                className="px-4 py-2 text-right font-mono text-gray-400"
+                title={
+                  unavailable
+                    ? row.skip_reason ?? undefined
+                    : row.performance_delta_vs_best_pct != null && !(row.perf_valid_display ?? row.perf_valid)
+                    ? "Delta vs valid winner — this row is not perf-valid"
+                    : undefined
+                }
+              >
+                {unavailable ? "n/a" : row.performance_delta_vs_best_pct == null ? "—" : `+${row.performance_delta_vs_best_pct.toFixed(1)}%`}
               </td>
             </tr>
             );

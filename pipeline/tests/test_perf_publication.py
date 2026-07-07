@@ -204,10 +204,10 @@ def test_legacy_ephemeris_perf_becomes_scorecard_valid():
     ]
     sc = scorecard.compute_scorecard("t", {"solar_position": rows})
     exp = sc["families"][0]["experiments"][0]
-    by_lib = {row["library"]: row for row in exp["rows"]}
-    assert by_lib["astropy"]["perf_valid"] is True
-    assert by_lib["libnova"]["perf_valid"] is True
-    assert by_lib["astropy"]["performance"]["scalar_warm"]["count_valid"] == 5000
+    by_id = {row["candidate_id"]: row for row in exp["rows"]}
+    assert by_id["astropy"]["perf_valid"] is True
+    assert by_id["libnova"]["perf_valid"] is True
+    assert by_id["astropy"]["performance"]["scalar_warm"]["count_valid"] == 5000
 
 
 def test_partial_perf_cannot_win_scorecard():

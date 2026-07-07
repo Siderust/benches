@@ -1,6 +1,6 @@
 {
   "experiment": "mercury_barycenter_position",
-  "run_id": "2026-06-05_12-14-12",
+  "run_id": "2026-06-07_10-02-22",
   "rows": [
     {
       "experiment": "mercury_barycenter_position",
@@ -116,8 +116,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 3006.55,
-          "cv": 4.829582251561751,
+          "ns_per_op": 4203.5,
+          "cv": 1.9952012484765995,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -130,9 +130,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 3138.3,
-          "items_per_sec": 318643.85176688014,
-          "cv": 6.3978446731721625,
+          "ns_per_op": 4011.0,
+          "items_per_sec": 249314.38544003988,
+          "cv": 2.6875795062821988,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -145,7 +145,7 @@
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 127.87705,
+          "setup_ms": 166.253003,
           "measured": true
         }
       },
@@ -161,9 +161,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:10:58Z",
+        "date": "2026-06-07T10:49:51Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -215,14 +215,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -408,8 +408,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 378911.5597,
-          "cv": 6.716038625327127,
+          "ns_per_op": 403867.2944,
+          "cv": 5.721108276754622,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -422,9 +422,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 341473.39079,
-          "items_per_sec": 2928.485870265019,
-          "cv": 5.517842670159343,
+          "ns_per_op": 393206.28552,
+          "items_per_sec": 2543.1943405419856,
+          "cv": 5.209834692801459,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -437,7 +437,7 @@
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 216.902057,
+          "setup_ms": 214.388166,
           "measured": true
         }
       },
@@ -453,9 +453,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:10:58Z",
+        "date": "2026-06-07T10:49:51Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -507,14 +507,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -700,8 +700,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 152781.65000000002,
-          "cv": 9.336768806289323,
+          "ns_per_op": 168957.15000000002,
+          "cv": 1.1659469499819364,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -714,9 +714,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 129342.5,
-          "items_per_sec": 7731.410789183757,
-          "cv": 1.7412643858759291,
+          "ns_per_op": 168531.7,
+          "items_per_sec": 5933.601809036519,
+          "cv": 4.7109803730226645,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -745,9 +745,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:10:58Z",
+        "date": "2026-06-07T10:49:51Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -799,14 +799,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -992,8 +992,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 110307.9535,
-          "cv": 3.883636124540342,
+          "ns_per_op": 105539.9797,
+          "cv": 8.204283157333721,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -1006,9 +1006,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 94729.27367,
-          "items_per_sec": 10556.398896117495,
-          "cv": 9.484168177946685,
+          "ns_per_op": 93703.49902,
+          "items_per_sec": 10671.96007041915,
+          "cv": 1.9217165195403882,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -1037,9 +1037,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:10:58Z",
+        "date": "2026-06-07T10:49:51Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -1091,14 +1091,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -1284,8 +1284,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 553.9422,
-          "cv": 2.845996085405266,
+          "ns_per_op": 563.8586,
+          "cv": 4.505210318001084,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -1298,9 +1298,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 335.47504,
-          "items_per_sec": 2980847.695852425,
-          "cv": 8.334384944828454,
+          "ns_per_op": 358.461,
+          "items_per_sec": 2789703.7613575812,
+          "cv": 2.9141900680457873,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -1329,9 +1329,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:10:58Z",
+        "date": "2026-06-07T10:49:51Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -1383,14 +1383,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -1576,8 +1576,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 573.0171,
-          "cv": 3.213485771627004,
+          "ns_per_op": 596.6836000000001,
+          "cv": 5.193581232264002,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -1590,9 +1590,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 325.11762,
-          "items_per_sec": 3075809.917653802,
-          "cv": 6.628760365065698,
+          "ns_per_op": 466.87907,
+          "items_per_sec": 2141882.2651441623,
+          "cv": 15.530542686769996,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -1621,9 +1621,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T13:10:58Z",
+        "date": "2026-06-07T10:49:51Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -1675,14 +1675,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},

@@ -742,8 +742,8 @@ EXPERIMENT_DESCRIPTIONS = {
                "on the GAST (sidereal time) model used.",
         "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
         "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. "
-                     "libnova uses a different sidereal-time model from SOFA/IERS and is not rankable "
-                     "for accuracy in this experiment.",
+                     "libnova uses a different sidereal-time model from SOFA/IERS and is ranked as "
+                     "best-available (same observable, disclosed cross-model comparison).",
         "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. "
                                 "Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop.",
     },

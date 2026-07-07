@@ -1,6 +1,6 @@
 {
   "experiment": "equ_horizontal",
-  "run_id": "2026-06-05_12-14-12",
+  "run_id": "2026-06-07_10-02-22",
   "rows": [
     {
       "experiment": "equ_horizontal",
@@ -16,7 +16,7 @@
         "what": "Converts celestial RA/Dec to local azimuth/altitude for a ground observer, using sidereal time and spherical trigonometry.",
         "why": "This is the 'where do I point my telescope?' calculation. Accuracy depends on the GAST (sidereal time) model used.",
         "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
-        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is not rankable for accuracy in this experiment.",
+        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is ranked as best-available (same observable, disclosed cross-model comparison).",
         "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop."
       },
       "alignment": {
@@ -91,8 +91,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 4455210.6153,
-          "cv": 13.267761390503768,
+          "ns_per_op": 5198432.6336,
+          "cv": 10.038548419856415,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -129,8 +129,8 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 48050.45,
-          "cv": 6.889535762685897,
+          "ns_per_op": 51531.100000000006,
+          "cv": 1.4469109287087891,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -143,9 +143,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 41867.7,
-          "items_per_sec": 23884.76080606291,
-          "cv": 7.717909536044683,
+          "ns_per_op": 51794.0,
+          "items_per_sec": 19307.25566667954,
+          "cv": 1.4998137541803858,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -172,9 +172,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:27:19Z",
+        "date": "2026-06-07T10:18:06Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -226,14 +226,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -294,7 +294,7 @@
         "what": "Converts celestial RA/Dec to local azimuth/altitude for a ground observer, using sidereal time and spherical trigonometry.",
         "why": "This is the 'where do I point my telescope?' calculation. Accuracy depends on the GAST (sidereal time) model used.",
         "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
-        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is not rankable for accuracy in this experiment.",
+        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is ranked as best-available (same observable, disclosed cross-model comparison).",
         "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop."
       },
       "alignment": {
@@ -369,8 +369,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 128.4,
-          "cv": 26.48807355916701,
+          "ns_per_op": 197.25,
+          "cv": 21.468497723638393,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -379,16 +379,16 @@
           "warmup": 100,
           "valid": false,
           "warnings": [
-            "High coefficient of variation (26.5%). Results are unstable. Consider increasing sample count or reducing system load.",
+            "High coefficient of variation (21.5%). Results are unstable. Consider increasing sample count or reducing system load.",
             "performance workload marked invalid"
           ],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 130.5,
-          "items_per_sec": 7662835.249042146,
-          "cv": 2.9804540752945896,
+          "ns_per_op": 130.4,
+          "items_per_sec": 7668711.656441717,
+          "cv": 4.598625699349061,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -407,8 +407,8 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 48050.45,
-          "cv": 6.889535762685897,
+          "ns_per_op": 51531.100000000006,
+          "cv": 1.4469109287087891,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -421,9 +421,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 41867.7,
-          "items_per_sec": 23884.76080606291,
-          "cv": 7.717909536044683,
+          "ns_per_op": 51794.0,
+          "items_per_sec": 19307.25566667954,
+          "cv": 1.4998137541803858,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -450,9 +450,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:27:19Z",
+        "date": "2026-06-07T10:18:06Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -504,14 +504,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},
@@ -572,7 +572,7 @@
         "what": "Converts celestial RA/Dec to local azimuth/altitude for a ground observer, using sidereal time and spherical trigonometry.",
         "why": "This is the 'where do I point my telescope?' calculation. Accuracy depends on the GAST (sidereal time) model used.",
         "units": "Angular separation in arcseconds between reference and candidate az/alt positions.",
-        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is not rankable for accuracy in this experiment.",
+        "interpret": "Lower separation = better. Differences mainly arise from GAST model choice. libnova uses a different sidereal-time model from SOFA/IERS and is ranked as best-available (same observable, disclosed cross-model comparison).",
         "performance_contract": "Timed scope: GAST computation + spherical trig per epoch+location. Input parsing (JD, RA/Dec, lon/lat) is outside the timed loop."
       },
       "alignment": {
@@ -647,8 +647,8 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 43248.2,
-          "cv": 13.23097074033949,
+          "ns_per_op": 101543.70000000001,
+          "cv": 14.575665564549414,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -661,9 +661,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 42690.4,
-          "items_per_sec": 23424.470138485467,
-          "cv": 11.264591802665961,
+          "ns_per_op": 86430.1,
+          "items_per_sec": 11570.043306672096,
+          "cv": 16.381926878093818,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -682,8 +682,8 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 48050.45,
-          "cv": 6.889535762685897,
+          "ns_per_op": 51531.100000000006,
+          "cv": 1.4469109287087891,
           "rounds": 10,
           "n_per_round": 5000,
           "count_requested": 5000,
@@ -696,9 +696,9 @@
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 41867.7,
-          "items_per_sec": 23884.76080606291,
-          "cv": 7.717909536044683,
+          "ns_per_op": 51794.0,
+          "items_per_sec": 19307.25566667954,
+          "cv": 1.4998137541803858,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
@@ -725,9 +725,9 @@
         "perf_timeout_s": 120
       },
       "run_metadata": {
-        "date": "2026-06-05T12:27:19Z",
+        "date": "2026-06-07T10:18:06Z",
         "git_shas": {
-          "lab": "56c27d320ef3",
+          "lab": "f6813a60274b",
           "siderust": "da582bedc1d1",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
@@ -779,14 +779,14 @@
             "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
             "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
             "size": 477432,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           },
           "libnova_adapter": {
             "present": true,
             "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
             "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
             "size": 3726528,
-            "mtime": "2026-06-05T12:12:32Z"
+            "mtime": "2026-06-07T10:02:16Z"
           }
         },
         "library_versions": {},

@@ -1,5 +1,5 @@
 {
-  "run_id": "2026-06-05_12-14-12",
+  "run_id": "2026-06-07_10-02-22",
   "config": {
     "run_label": null,
     "run_phase": null,
@@ -78,9 +78,9 @@
     "run_tags": []
   },
   "metadata": {
-    "date": "2026-06-05T13:47:40Z",
+    "date": "2026-06-07T11:31:34Z",
     "git_shas": {
-      "lab": "56c27d320ef3",
+      "lab": "f6813a60274b",
       "siderust": "da582bedc1d1",
       "anise": "43780d81d9fe",
       "erfa": "9915ba38c936",
@@ -132,14 +132,14 @@
         "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
         "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
         "size": 477432,
-        "mtime": "2026-06-05T12:12:32Z"
+        "mtime": "2026-06-07T10:02:16Z"
       },
       "libnova_adapter": {
         "present": true,
         "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
         "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
         "size": 3726528,
-        "mtime": "2026-06-05T12:12:32Z"
+        "mtime": "2026-06-07T10:02:16Z"
       }
     },
     "library_versions": {},
@@ -269,7 +269,7 @@
             "skip_reason": null,
             "failure_reason": null,
             "rankable": false,
-            "rankability_reason": "libnova uses a different physical model than the reference for this observable"
+            "rankability_reason": "libnova uses Meeus precession and IAU 1980 nutation, not ERFA IAU 2006 pnm06a; BPN matrix residual vs SOFA is expected model-mismatch."
           }
         ]
       },
