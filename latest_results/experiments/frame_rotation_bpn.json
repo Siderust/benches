@@ -1,6 +1,6 @@
 {
   "experiment": "frame_rotation_bpn",
-  "run_id": "2026-06-07_10-02-22",
+  "run_id": "2026-07-07_18-29-38",
   "rows": [
     {
       "experiment": "frame_rotation_bpn",
@@ -136,35 +136,32 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 1864910.6044,
-          "cv": 1.989629280974095,
-          "rounds": 10,
+          "ns_per_op": 1676878.1152,
+          "cv": 5.174619960496288,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": null,
-          "items_per_sec": null,
-          "cv": null,
+          "ns_per_op": 1572641.02195,
+          "items_per_sec": 635.8730225414365,
+          "cv": 2.19263381546692,
           "rounds": 5,
           "n": 100000,
-          "count_requested": null,
-          "count_valid": null,
-          "error_count": null,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "adapter returned no result",
-            "performance workload marked invalid"
-          ],
-          "skipped": false,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
           "status": null
         },
         "setup_metrics": {
@@ -174,29 +171,29 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 103278.75,
-          "cv": 17.594619568794517,
-          "rounds": 10,
+          "ns_per_op": 40525.5,
+          "cv": 7.02026818594534,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 56115.3,
-          "items_per_sec": 17820.451819735437,
-          "cv": 1.288993737840958,
+          "ns_per_op": 46310.6,
+          "items_per_sec": 21593.32852521885,
+          "cv": 0.32083414253279263,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -208,24 +205,24 @@
         }
       },
       "benchmark_config": {
-        "perf_rounds": 10,
+        "perf_rounds": 20,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true
       },
       "run_metadata": {
-        "date": "2026-06-07T10:08:53Z",
+        "date": "2026-07-07T18:35:07Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -233,7 +230,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -243,7 +240,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -253,9 +250,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -281,7 +278,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -289,7 +286,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -321,7 +318,96 @@
         "model": "SOFA pnm06a (IAU 2006/2000A)"
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      },
+      "stratification": {
+        "worst_case_labels": [
+          {
+            "jd_tt": 2457373.1418459243,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2459872.864052885,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2457210.2410271526,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2452331.9911045604,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2453128.6237994996,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2459570.4209590545,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2459582.2704167473,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2453146.6933232415,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2457250.267850082,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2451588.9133288655,
+            "label": null,
+            "angular_error_mas": 0.0,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          }
+        ]
+      }
     },
     {
       "experiment": "frame_rotation_bpn",
@@ -457,34 +543,31 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 5089.05,
-          "cv": 17.58523561847853,
-          "rounds": 10,
+          "ns_per_op": 2626.05,
+          "cv": 12.837088907533396,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 5391.5,
-          "items_per_sec": 185477.13994250208,
-          "cv": 22.85366236629504,
+          "ns_per_op": 2058.7,
+          "items_per_sec": 485743.430320105,
+          "cv": 9.187442473595503,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (22.9%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
@@ -495,29 +578,29 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 103278.75,
-          "cv": 17.594619568794517,
-          "rounds": 10,
+          "ns_per_op": 40525.5,
+          "cv": 7.02026818594534,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 56115.3,
-          "items_per_sec": 17820.451819735437,
-          "cv": 1.288993737840958,
+          "ns_per_op": 46310.6,
+          "items_per_sec": 21593.32852521885,
+          "cv": 0.32083414253279263,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -529,24 +612,24 @@
         }
       },
       "benchmark_config": {
-        "perf_rounds": 10,
+        "perf_rounds": 20,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true
       },
       "run_metadata": {
-        "date": "2026-06-07T10:08:53Z",
+        "date": "2026-07-07T18:35:07Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -554,7 +637,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -564,7 +647,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -574,9 +657,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -602,7 +685,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -610,7 +693,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -644,7 +727,96 @@
         "model": "SOFA pnm06a (IAU 2006/2000A)"
       },
       "rankable": false,
-      "rankability_reason": "libnova uses Meeus precession and IAU 1980 nutation, not ERFA IAU 2006 pnm06a; BPN matrix residual vs SOFA is expected model-mismatch."
+      "rankability_reason": "libnova uses Meeus precession and IAU 1980 nutation, not ERFA IAU 2006 pnm06a; BPN matrix residual vs SOFA is expected model-mismatch.",
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      },
+      "stratification": {
+        "worst_case_labels": [
+          {
+            "jd_tt": 2488069.5,
+            "label": null,
+            "angular_error_mas": 1286.9783702625518,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2415020.0,
+            "label": null,
+            "angular_error_mas": 1014.84503269628,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2456306.7250005747,
+            "label": null,
+            "angular_error_mas": 129.99607868179206,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462475.9832583084,
+            "label": null,
+            "angular_error_mas": 109.21887581046201,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462444.4444139553,
+            "label": null,
+            "angular_error_mas": 108.86007761164122,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462278.6457325276,
+            "label": null,
+            "angular_error_mas": 107.98888834626592,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462320.7926101927,
+            "label": null,
+            "angular_error_mas": 106.29006885644286,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462344.0564072407,
+            "label": null,
+            "angular_error_mas": 105.72431844234754,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462235.3819180597,
+            "label": null,
+            "angular_error_mas": 105.08864274853084,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2462171.7491413015,
+            "label": null,
+            "angular_error_mas": 105.02802620857743,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          }
+        ]
+      }
     },
     {
       "experiment": "frame_rotation_bpn",
@@ -789,29 +961,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 46723.55,
-          "cv": 3.2789359205487574,
-          "rounds": 10,
+          "ns_per_op": 40251.35,
+          "cv": 6.574278081467627,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 46777.3,
-          "items_per_sec": 21377.890558027077,
-          "cv": 3.603211891462848,
+          "ns_per_op": 45632.1,
+          "items_per_sec": 21914.397978615933,
+          "cv": 8.151752569949974,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -824,29 +996,29 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 103278.75,
-          "cv": 17.594619568794517,
-          "rounds": 10,
+          "ns_per_op": 40525.5,
+          "cv": 7.02026818594534,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 56115.3,
-          "items_per_sec": 17820.451819735437,
-          "cv": 1.288993737840958,
+          "ns_per_op": 46310.6,
+          "items_per_sec": 21593.32852521885,
+          "cv": 0.32083414253279263,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -858,24 +1030,24 @@
         }
       },
       "benchmark_config": {
-        "perf_rounds": 10,
+        "perf_rounds": 20,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true
       },
       "run_metadata": {
-        "date": "2026-06-07T10:08:53Z",
+        "date": "2026-07-07T18:35:07Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -883,7 +1055,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -893,7 +1065,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -903,9 +1075,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -931,7 +1103,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -939,7 +1111,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -971,7 +1143,96 @@
         "model": "SOFA pnm06a (IAU 2006/2000A)"
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      },
+      "stratification": {
+        "worst_case_labels": [
+          {
+            "jd_tt": 2460276.123245323,
+            "label": null,
+            "angular_error_mas": 7.443895528098467e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2454881.191963861,
+            "label": null,
+            "angular_error_mas": 6.876331453937067e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2461739.689447233,
+            "label": null,
+            "angular_error_mas": 6.577522422626512e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2461979.276261379,
+            "label": null,
+            "angular_error_mas": 6.271421559898415e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2452172.1189842294,
+            "label": null,
+            "angular_error_mas": 5.796119146428039e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2457245.91456977,
+            "label": null,
+            "angular_error_mas": 5.729581063919719e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2461297.388201367,
+            "label": null,
+            "angular_error_mas": 5.682349344134208e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2460320.6883594524,
+            "label": null,
+            "angular_error_mas": 5.372431377052227e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2459540.5311528323,
+            "label": null,
+            "angular_error_mas": 5.254850034476102e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          },
+          {
+            "jd_tt": 2455263.1224119086,
+            "label": null,
+            "angular_error_mas": 5.247047728710981e-08,
+            "eccentricity": null,
+            "altitude_deg": null,
+            "ecliptic_latitude_deg": null
+          }
+        ]
+      }
     }
   ]
 }

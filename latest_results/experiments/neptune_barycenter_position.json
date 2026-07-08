@@ -1,6 +1,6 @@
 {
   "experiment": "neptune_barycenter_position",
-  "run_id": "2026-06-07_10-02-22",
+  "run_id": "2026-07-07_18-29-38",
   "rows": [
     {
       "experiment": "neptune_barycenter_position",
@@ -116,62 +116,62 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 2936.55,
-          "cv": 6.5083331085908736,
-          "rounds": 10,
+          "ns_per_op": 4088.8,
+          "cv": 18.569443211131386,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 2735.3,
-          "items_per_sec": 365590.6116330932,
-          "cv": 9.892473348336207,
+          "ns_per_op": 3735.2,
+          "items_per_sec": 267723.2812165346,
+          "cv": 19.35371907170137,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 142.239362,
+          "setup_ms": 181.96192,
           "measured": true
         }
       },
       "reference_performance": {},
       "model": "SPK_geometric_translation(Neptune Barycenter->EARTH_J2000)",
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T11:26:27Z",
+        "date": "2026-07-07T20:51:24Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -179,7 +179,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -189,7 +189,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -199,9 +199,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -227,7 +227,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -235,7 +235,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -292,7 +292,12 @@
         }
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "neptune_barycenter_position",
@@ -408,62 +413,62 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 345024.0695,
-          "cv": 7.1789788858347094,
-          "rounds": 10,
+          "ns_per_op": 413703.0769,
+          "cv": 13.534784792452228,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 343761.64888,
-          "items_per_sec": 2908.992330174327,
-          "cv": 3.6942298503921993,
+          "ns_per_op": 354618.97642,
+          "items_per_sec": 2819.9280537531927,
+          "cv": 4.338294931134847,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "setup_metrics": {
-          "setup_ms": 187.127976,
+          "setup_ms": 238.470376,
           "measured": true
         }
       },
       "reference_performance": {},
-      "model": "Astropy solar_system_ephemeris(local DE440: /home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp) + get_body_barycentric (neptune system barycenter)",
+      "model": "Astropy solar_system_ephemeris(local DE440: /home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp) + get_body_barycentric (neptune system barycenter)",
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T11:26:27Z",
+        "date": "2026-07-07T20:51:24Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -471,7 +476,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -481,7 +486,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -491,9 +496,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -519,7 +524,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -527,7 +532,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -548,7 +553,7 @@
       "catalog_lane": "geometric_vector",
       "catalog_parity": "same-family-jpl",
       "reference_model": "JPL Horizons DE441 geometric vector",
-      "selected_model": "Astropy solar_system_ephemeris(local DE440: /home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp) + get_body_barycentric (neptune system barycenter)",
+      "selected_model": "Astropy solar_system_ephemeris(local DE440: /home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp) + get_body_barycentric (neptune system barycenter)",
       "model_source": "JPL DE440",
       "lane": "geometric_vector",
       "rankable_accuracy": true,
@@ -584,7 +589,309 @@
         }
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
+    },
+    {
+      "experiment": "neptune_barycenter_position",
+      "candidate_library": "astropy",
+      "reference_library": "jpl_horizons",
+      "reference_lane": "geometric_vector",
+      "reference_source_tag": "DE441",
+      "status": "ok",
+      "skip_reason": null,
+      "failure_reason": null,
+      "description": {
+        "title": "Neptune system barycenter Geocentric Position (geometric vector lane)",
+        "what": "Computes geocentric position of Neptune system barycenter at given epochs. Accuracy reference is JPL Horizons geometric VECTORS (ICRF, VEC_CORR=NONE, Earth geocenter, TT).",
+        "why": "Neptune system barycenter position is needed for planetary observation planning, guiding, and cross-checking analytic ephemerides against JPL kernels.",
+        "units": "Angular separation in arcseconds between JPL Horizons reference and candidate Neptune system barycenter positions.",
+        "interpret": "Lower error = closer to JPL Horizons DE441 ephemeris on the selected lane. Geometric and apparent lanes are reported separately because their model assumptions (aberration / light-time / nutation) differ."
+      },
+      "alignment": {
+        "units": {
+          "angles": "radians (internal), mas for error reporting",
+          "distances": "meters",
+          "float_type": "f64"
+        },
+        "time_input": "JD (Julian Date), TT scale for precession/nutation, UT1 for sidereal time",
+        "time_scales": "TT for BPN matrix; UT1\u2248TT-69.184s simplified",
+        "leap_seconds": "not applicable (JD input, no UTC conversion in this experiment)",
+        "earth_orientation": {
+          "ut1_minus_utc": "not used (JD(TT) input)",
+          "polar_motion_xp_yp": "zero (not applied)",
+          "eop_mode": "disabled"
+        },
+        "geodesy": "not applicable (direction-only experiment)",
+        "refraction": "disabled",
+        "ephemeris_source": "JPL Horizons (DE441) for reference; VSOP87/plan94/SPK for candidates",
+        "library_notes": {
+          "astropy": "The 'astropy' adapter uses public Astropy Time and SkyCoord APIs. Astropy may use ERFA internally, but this adapter no longer calls ERFA/pyerfa kernels directly."
+        },
+        "models": {
+          "jpl_horizons": "JPL Horizons geometric VECTORS of Neptune system barycenter (DE441, ICRF, VEC_CORR=NONE, Earth geocenter, TT)",
+          "erfa": "ERFA eraPlan94 heliocentric Neptune system barycenter analytic state minus eraEpv00 Earth state (geometric, J2000 equatorial)",
+          "siderust": "VSOP87A heliocentric Neptune system barycenter state shifted to geocenter, then rotated to ICRS (geometric, no aberration)",
+          "astropy": "Astropy public solar_system_ephemeris('builtin') + get_body_barycentric('neptune system barycenter') - get_body_barycentric('earth') (geometric, J2000 equatorial)",
+          "libnova": "VSOP87 via ln_get_neptune system barycenter_rect_helio - ln_get_earth_rect_helio (geometric rectangular, no nutation/aberration)",
+          "anise": "SPK translation NEPTUNE SYSTEM BARYCENTER_J2000 -> EARTH_J2000 (DE440 ephemeris, geometric state vector)"
+        },
+        "model_parity_class": "external-reference",
+        "accuracy_interpretation": "agreement with JPL Horizons geometric VECTORS reference for Neptune system barycenter (no aberration / nutation)",
+        "reference_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "reference_frame": "ICRF",
+        "reference_center": "Earth geocenter (500@399)",
+        "reference_time_scale": "TT",
+        "note": "Public geometric lane for Neptune system barycenter \u2014 JPL VECTORS (no aberration, no light-time, no nutation). Ranked as best-available model vs JPL reference: libnova VSOP87 geometric path, ERFA/Astropy use eraPlan94 analytic, ANISE uses DE440 SPK when available.",
+        "candidate_parity": "jpl-spk",
+        "lane": "geometric_vector",
+        "default_model_parity_class": "external-reference",
+        "horizons_source": "DE441",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa",
+        "horizons_from_cache": true
+      },
+      "inputs": {
+        "count": 1000,
+        "seed": 42,
+        "dataset_fingerprint": "515ab165bf43564b",
+        "reference_source": "jpl_horizons",
+        "reference_lane": "geometric_vector",
+        "horizons_ephemeris": "DE441",
+        "horizons_lane": "geometric_vector",
+        "horizons_mode": "VECTORS geometric ICRF state (X/Y/Z)",
+        "horizons_frame": "ICRF",
+        "horizons_center": "Earth geocenter (500@399)",
+        "horizons_time_scale": "TT",
+        "horizons_cache_key": "860b67a5daaff924aeba73aa"
+      },
+      "accuracy": {
+        "reference": "jpl_horizons",
+        "candidate": "astropy:jpl",
+        "angular_sep_arcsec": {
+          "p50": 0.04734538810107072,
+          "p90": 0.22857137203789882,
+          "p99": 0.30970887026269706,
+          "max": 0.3234697041203802,
+          "mean": 0.084368456575215,
+          "rms": 0.12364116394534966
+        },
+        "signed_ra_error_arcsec": {
+          "p50": 0.044186256355516304,
+          "p90": 0.2374943005316802,
+          "p99": 0.29217790934762045,
+          "max": 0.30151549892317286,
+          "mean": 0.030927100989659513,
+          "rms": 0.12575433407638112
+        },
+        "signed_dec_error_arcsec": {
+          "p50": 0.010557182542841508,
+          "p90": 0.04125234909255378,
+          "p99": 0.11500780954730332,
+          "max": 0.12354387343235654,
+          "mean": -0.0023069729969330296,
+          "rms": 0.03128308302111255
+        },
+        "nan_count": 0,
+        "dist_au_diff": {
+          "p50": 7.328983555154878e-06,
+          "p90": 1.0921785541739837e-05,
+          "p99": 1.1982547203075456e-05,
+          "max": 1.2231817354546592e-05,
+          "mean": -6.359184602711565e-06,
+          "rms": 7.5058372176820995e-06
+        },
+        "count_requested": 1000,
+        "count_valid": 1000,
+        "error_count": 0
+      },
+      "performance": {
+        "scalar_warm": {
+          "ns_per_op": 311905.2827,
+          "cv": 8.012153999693247,
+          "rounds": 20,
+          "n_per_round": 5000,
+          "count_requested": 5000,
+          "count_valid": 5000,
+          "error_count": 0,
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "batch_throughput": {
+          "ns_per_op": 348094.42862,
+          "items_per_sec": 2872.7836982753256,
+          "cv": 13.429231164716459,
+          "rounds": 5,
+          "n": 100000,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
+          "status": null
+        },
+        "setup_metrics": {
+          "setup_ms": 253.442258,
+          "measured": true
+        }
+      },
+      "reference_performance": {},
+      "model": "Astropy solar_system_ephemeris('jpl') + get_body_barycentric (neptune system barycenter)",
+      "benchmark_config": {
+        "perf_rounds": 20,
+        "perf_warmup": 200,
+        "perf_scalar_n": 5000,
+        "perf_batch_n": 100000,
+        "perf_batch_rounds": 5,
+        "perf_enabled": true,
+        "perf_timeout_s": 180
+      },
+      "run_metadata": {
+        "date": "2026-07-07T20:51:24Z",
+        "git_shas": {
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
+          "anise": "43780d81d9fe",
+          "erfa": "9915ba38c936",
+          "libnova": "edbf65abe27e",
+          "astropy": "7dc44b6ec773"
+        },
+        "git_dirty": {
+          "lab": false,
+          "siderust": false,
+          "anise": false,
+          "erfa": false,
+          "libnova": false,
+          "astropy": false
+        },
+        "cargo_lock_sha256": {
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
+          "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
+        },
+        "git_branch": "main",
+        "cpu": "x86_64",
+        "cpu_count": 22,
+        "os": "Linux 6.17.0-35-generic",
+        "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
+        "toolchain": {
+          "python": "3.12.3",
+          "numpy": "2.5.1",
+          "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+          "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "pyerfa": "2.0.1.5"
+        },
+        "cpu_model": "Intel(R) Core(TM) Ultra 9 185H",
+        "adapter_binaries": {
+          "siderust_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
+          },
+          "anise_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/anise_adapter/target/release/anise-adapter",
+            "sha256": "5c4ee32a8f55c10099e84f0c1d9a793dd6ccb70a2686333e47d3d6984b84727b",
+            "size": 959744,
+            "mtime": "2026-06-05T08:32:34Z"
+          },
+          "erfa_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/erfa_adapter/build/erfa_adapter",
+            "sha256": "c8551f06ece72f9c1416a5b4b2607422617cc1c87aa5f60a7cdc71e3a230e63e",
+            "size": 477432,
+            "mtime": "2026-06-07T10:02:16Z"
+          },
+          "libnova_adapter": {
+            "present": true,
+            "path": "pipeline/adapters/libnova_adapter/build/libnova_adapter",
+            "sha256": "debf997da8f056f3f5e2171a347a2cedd096fdec829683cf1238a26a8f5f1fb2",
+            "size": 3726528,
+            "mtime": "2026-06-07T10:02:16Z"
+          }
+        },
+        "library_versions": {},
+        "anise_spk": {
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+          "size": 119799808,
+          "source_tag": "de440"
+        },
+        "siderust_planet_spks": {
+          "kernels": [
+            {
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "filename": "de440.bsp",
+              "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
+              "size": 119799808
+            }
+          ]
+        }
+      },
+      "comparability_class": "same-family-jpl",
+      "family": "solar_system_ephemerides",
+      "tier": "public",
+      "candidate_profile": "jpl",
+      "candidate_id": "astropy:jpl",
+      "api_surface": "public",
+      "api_method": "solar_system_ephemeris.set('jpl'); get_body_barycentric(body) - get_body_barycentric('earth')",
+      "support_status": "supported",
+      "catalog_model": "JPL DE440/DE441 via Astropy solar_system_ephemeris",
+      "catalog_source": "Astropy default JPL ephemeris (de440 / de441)",
+      "catalog_lane": "geometric_vector",
+      "catalog_parity": "same-family-jpl",
+      "reference_model": "JPL Horizons DE441 geometric vector",
+      "selected_model": "Astropy solar_system_ephemeris('jpl') + get_body_barycentric (neptune system barycenter)",
+      "model_source": "ASTROPY",
+      "lane": "geometric_vector",
+      "rankable_accuracy": true,
+      "rank_exclusion_reason": null,
+      "rankable_performance": true,
+      "source_provenance": {
+        "source": "JPL Horizons",
+        "source_tag": "DE441",
+        "lane": "geometric_vector",
+        "cache_key": "860b67a5daaff924aeba73aa",
+        "from_cache": true,
+        "frame": "ICRF",
+        "center": "Earth geocenter (500@399)",
+        "vec_corr": "NONE",
+        "time_scale": "TT",
+        "query_params": {
+          "format": "text",
+          "COMMAND": "'8'",
+          "OBJ_DATA": "NO",
+          "MAKE_EPHEM": "YES",
+          "EPHEM_TYPE": "VECTORS",
+          "CENTER": "'500@399'",
+          "REF_PLANE": "FRAME",
+          "REF_SYSTEM": "ICRF",
+          "VEC_CORR": "NONE",
+          "OUT_UNITS": "AU-D",
+          "VEC_TABLE": "2",
+          "VEC_LABELS": "NO",
+          "TIME_TYPE": "TT",
+          "TLIST_TYPE": "JD",
+          "TLIST": "2415110.074599963612854\n2415141.313865290489048\n2415312.753521968144923\n2415348.731876779813319\n2415366.356381515972316",
+          "CSV_FORMAT": "YES"
+        }
+      },
+      "rankable": true,
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "neptune_barycenter_position",
@@ -700,29 +1007,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 62157.2,
-          "cv": 14.02968623877403,
-          "rounds": 10,
+          "ns_per_op": 87544.45,
+          "cv": 14.081781492475235,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 62232.6,
-          "items_per_sec": 16068.748533726697,
-          "cv": 7.393077593924138,
+          "ns_per_op": 71074.1,
+          "items_per_sec": 14069.822903139117,
+          "cv": 11.477308297310982,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -736,26 +1043,26 @@
       "reference_performance": {},
       "model": "libnova_VSOP87_neptune_geometric",
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T11:26:27Z",
+        "date": "2026-07-07T20:51:24Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -763,7 +1070,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -773,7 +1080,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -783,9 +1090,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -811,7 +1118,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -819,7 +1126,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -876,7 +1183,12 @@
         }
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "neptune_barycenter_position",
@@ -992,29 +1304,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 114768.9174,
-          "cv": 5.130700407335173,
-          "rounds": 10,
+          "ns_per_op": 126070.1704,
+          "cv": 3.8555518932841553,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 110736.96675,
-          "items_per_sec": 9030.408086376448,
-          "cv": 6.317555674478418,
+          "ns_per_op": 110782.02049,
+          "items_per_sec": 9026.735526007737,
+          "cv": 5.83142353552483,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -1028,26 +1340,26 @@
       "reference_performance": {},
       "model": "siderust_vsop87a_geometric_neptune",
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T11:26:27Z",
+        "date": "2026-07-07T20:51:24Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -1055,7 +1367,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -1065,7 +1377,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -1075,9 +1387,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -1103,7 +1415,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -1111,7 +1423,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -1168,7 +1480,12 @@
         }
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "neptune_barycenter_position",
@@ -1284,29 +1601,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 440.3301,
-          "cv": 6.664812657988553,
-          "rounds": 10,
+          "ns_per_op": 431.41510000000005,
+          "cv": 4.583400325550565,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 305.08299,
-          "items_per_sec": 3277796.6414974495,
-          "cv": 11.303765862359985,
+          "ns_per_op": 317.35867,
+          "items_per_sec": 3151008.919970581,
+          "cv": 3.1558520051320547,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -1320,26 +1637,26 @@
       "reference_performance": {},
       "model": "JPL_DE440_embedded_system_barycenter",
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T11:26:27Z",
+        "date": "2026-07-07T20:51:24Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -1347,7 +1664,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -1357,7 +1674,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -1367,9 +1684,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -1395,7 +1712,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -1403,7 +1720,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -1460,7 +1777,12 @@
         }
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "neptune_barycenter_position",
@@ -1576,29 +1898,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 470.0874,
-          "cv": 4.667612521929629,
-          "rounds": 10,
+          "ns_per_op": 457.0086,
+          "cv": 4.005247848080338,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 295.90871,
-          "items_per_sec": 3379420.632802597,
-          "cv": 6.241207253071808,
+          "ns_per_op": 344.52288,
+          "items_per_sec": 2902564.845620703,
+          "cv": 3.400191857899622,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -1612,26 +1934,26 @@
       "reference_performance": {},
       "model": "SPK_runtime_system_barycenter",
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T11:26:27Z",
+        "date": "2026-07-07T20:51:24Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -1639,7 +1961,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -1649,7 +1971,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -1659,9 +1981,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -1687,7 +2009,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -1695,7 +2017,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -1752,7 +2074,12 @@
         }
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     }
   ]
 }

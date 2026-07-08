@@ -1,5 +1,5 @@
 {
-  "run_id": "2026-06-07_10-02-22",
+  "run_id": "2026-07-07_18-29-38",
   "config": {
     "run_label": null,
     "run_phase": null,
@@ -23,12 +23,12 @@
     "n": 1000,
     "seed": 42,
     "perf_enabled": true,
-    "perf_rounds": 10,
+    "perf_rounds": 20,
     "perf_scalar_n": 5000,
     "perf_batch_n": 100000,
     "perf_batch_rounds": 5,
-    "perf_warmup": 100,
-    "perf_timeout_s": 120,
+    "perf_warmup": 200,
+    "perf_timeout_s": 180,
     "ci_mode": false,
     "adapters": [
       "siderust",
@@ -54,23 +54,33 @@
     "extra_experiments": []
   },
   "publication": {
-    "grade": "draft",
-    "publish_blockers": [
-      "git_dirty.lab is true (working tree has uncommitted changes)"
-    ],
+    "grade": "publication",
+    "publish_blockers": [],
     "git_dirty": {
-      "lab": true,
+      "lab": false,
       "siderust": false,
       "anise": false,
       "erfa": false,
       "libnova": false,
       "astropy": false
     },
-    "allow_dirty_override": true,
+    "allow_dirty_override": false,
     "allow_partial_override": false
   },
   "latest_results_merge": {
     "is_merge": false
+  },
+  "composition": {
+    "mode": "fresh",
+    "fresh_candidates": [],
+    "baseline_candidates": [],
+    "baseline_root": null,
+    "reuse_accuracy": true,
+    "reuse_performance": false,
+    "all_baselines_valid": true,
+    "missing_baselines": [],
+    "stale_baselines": [],
+    "refresh_all": false
   },
   "labels": {
     "run_label": null,
@@ -78,17 +88,17 @@
     "run_tags": []
   },
   "metadata": {
-    "date": "2026-06-07T11:31:34Z",
+    "date": "2026-07-07T21:01:24Z",
     "git_shas": {
-      "lab": "f6813a60274b",
-      "siderust": "da582bedc1d1",
+      "lab": "51f3907b8ea1",
+      "siderust": "b943a4a1e906",
       "anise": "43780d81d9fe",
       "erfa": "9915ba38c936",
       "libnova": "edbf65abe27e",
       "astropy": "7dc44b6ec773"
     },
     "git_dirty": {
-      "lab": true,
+      "lab": false,
       "siderust": false,
       "anise": false,
       "erfa": false,
@@ -96,7 +106,7 @@
       "astropy": false
     },
     "cargo_lock_sha256": {
-      "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+      "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
       "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
     },
     "git_branch": "main",
@@ -106,7 +116,7 @@
     "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
     "toolchain": {
       "python": "3.12.3",
-      "numpy": "2.4.6",
+      "numpy": "2.5.1",
       "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
       "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
       "pyerfa": "2.0.1.5"
@@ -116,9 +126,9 @@
       "siderust_adapter": {
         "present": true,
         "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-        "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-        "size": 6307552,
-        "mtime": "2026-06-05T08:32:14Z"
+        "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+        "size": 6308456,
+        "mtime": "2026-07-07T18:29:27Z"
       },
       "anise_adapter": {
         "present": true,
@@ -144,7 +154,7 @@
     },
     "library_versions": {},
     "anise_spk": {
-      "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+      "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
       "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
       "size": 119799808,
       "source_tag": "de440"
@@ -152,7 +162,7 @@
     "siderust_planet_spks": {
       "kernels": [
         {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
           "filename": "de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808
@@ -184,6 +194,7 @@
       "anise",
       "astropy",
       "astropy:de440-local",
+      "astropy:jpl",
       "erfa",
       "libnova",
       "siderust",
@@ -358,12 +369,13 @@
           "anise",
           "astropy",
           "astropy:de440-local",
+          "astropy:jpl",
           "erfa",
           "libnova",
           "siderust",
           "siderust:de440"
         ],
-        "ok": 7,
+        "ok": 8,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -404,6 +416,14 @@
             "rankability_reason": null
           },
           {
+            "library": "astropy:jpl",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
             "library": "astropy:de440-local",
             "status": "ok",
             "skip_reason": null,
@@ -434,13 +454,14 @@
           "anise",
           "astropy",
           "astropy:de440-local",
+          "astropy:jpl",
           "erfa",
           "libnova",
           "siderust",
           "siderust:de440",
           "siderust:elp2000"
         ],
-        "ok": 8,
+        "ok": 9,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -489,6 +510,14 @@
             "rankability_reason": null
           },
           {
+            "library": "astropy:jpl",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
             "library": "astropy:de440-local",
             "status": "ok",
             "skip_reason": null,
@@ -518,12 +547,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -549,6 +579,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -585,12 +623,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -616,6 +655,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -652,12 +699,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -683,6 +731,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -719,12 +775,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -750,6 +807,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -786,12 +851,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -817,6 +883,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -853,12 +927,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -884,6 +959,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -920,12 +1003,13 @@
         "requested_adapters": [
           "anise",
           "astropy:de440-local",
+          "astropy:jpl",
           "libnova",
           "siderust",
           "siderust:de440_barycenter",
           "siderust:spk_barycenter"
         ],
-        "ok": 6,
+        "ok": 7,
         "partial": 0,
         "skipped": 0,
         "failed": 0,
@@ -951,6 +1035,14 @@
           },
           {
             "library": "siderust:spk_barycenter",
+            "status": "ok",
+            "skip_reason": null,
+            "failure_reason": null,
+            "rankable": true,
+            "rankability_reason": null
+          },
+          {
+            "library": "astropy:jpl",
             "status": "ok",
             "skip_reason": null,
             "failure_reason": null,
@@ -1017,5 +1109,5 @@
     }
   },
   "experiment_count": 14,
-  "total_results": 71
+  "total_results": 80
 }

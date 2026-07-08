@@ -1,6 +1,6 @@
 {
   "experiment": "equ_ecl",
-  "run_id": "2026-06-07_10-02-22",
+  "run_id": "2026-07-07_18-29-38",
   "rows": [
     {
       "experiment": "equ_ecl",
@@ -91,38 +91,32 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 1956911.4290999998,
-          "cv": 42.319170999062045,
-          "rounds": 10,
+          "ns_per_op": 1251202.4786999999,
+          "cv": 5.978917364660499,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (42.3%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": null,
-          "items_per_sec": null,
-          "cv": null,
+          "ns_per_op": 1158300.05619,
+          "items_per_sec": 863.334154786544,
+          "cv": 3.6399191894776606,
           "rounds": 5,
           "n": 100000,
-          "count_requested": null,
-          "count_valid": null,
-          "error_count": null,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "adapter returned no result",
-            "performance workload marked invalid"
-          ],
-          "skipped": false,
+          "count_requested": 100000,
+          "count_valid": 100000,
+          "error_count": 0,
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
+          "skipped": null,
           "status": null
         },
         "setup_metrics": {
@@ -132,37 +126,31 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 479.75,
-          "cv": 22.895311274706902,
-          "rounds": 10,
+          "ns_per_op": 302.45,
+          "cv": 13.98054624702006,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (22.9%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 740.0,
-          "items_per_sec": 1351351.3513513512,
-          "cv": 32.82467955272896,
+          "ns_per_op": 157.9,
+          "items_per_sec": 6333122.229259024,
+          "cv": 9.468883295040778,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (32.8%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
@@ -172,26 +160,26 @@
         }
       },
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T10:13:44Z",
+        "date": "2026-07-07T18:52:23Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -199,7 +187,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -209,7 +197,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -219,9 +207,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -247,7 +235,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -255,7 +243,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -287,7 +275,12 @@
         "model": "SOFA IAU 2006 ecliptic of date"
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "equ_ecl",
@@ -378,29 +371,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 3257.3500000000004,
-          "cv": 14.500542481024697,
-          "rounds": 10,
+          "ns_per_op": 2605.1499999999996,
+          "cv": 14.82911616900614,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 2945.5,
-          "items_per_sec": 339500.9336275675,
-          "cv": 15.436367032609308,
+          "ns_per_op": 2017.6,
+          "items_per_sec": 495638.3822363204,
+          "cv": 7.5129695847990074,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -413,37 +406,31 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 479.75,
-          "cv": 22.895311274706902,
-          "rounds": 10,
+          "ns_per_op": 302.45,
+          "cv": 13.98054624702006,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (22.9%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 740.0,
-          "items_per_sec": 1351351.3513513512,
-          "cv": 32.82467955272896,
+          "ns_per_op": 157.9,
+          "items_per_sec": 6333122.229259024,
+          "cv": 9.468883295040778,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (32.8%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
@@ -453,26 +440,26 @@
         }
       },
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T10:13:44Z",
+        "date": "2026-07-07T18:52:23Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -480,7 +467,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -490,7 +477,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -500,9 +487,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -528,7 +515,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -536,7 +523,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -570,7 +557,12 @@
         "model": "SOFA IAU 2006 ecliptic of date"
       },
       "rankable": false,
-      "rankability_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path."
+      "rankability_reason": "libnova uses Meeus precession and obliquity (ln_get_equ_prec / ln_get_ecl_from_equ), not ERFA IAU 2006 Eqec06; residual vs ERFA is expected model-mismatch, not a broken adapter path.",
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     },
     {
       "experiment": "equ_ecl",
@@ -661,32 +653,29 @@
       },
       "performance": {
         "scalar_warm": {
-          "ns_per_op": 403.3,
-          "cv": 20.920475609737597,
-          "rounds": 10,
+          "ns_per_op": 305.70000000000005,
+          "cv": 18.616653435710358,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (20.9%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 224.3,
-          "items_per_sec": 4458314.757021845,
-          "cv": 6.375485673813087,
+          "ns_per_op": 152.1,
+          "items_per_sec": 6574621.959237345,
+          "cv": 13.471987354267531,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
+          "warmup": 200,
           "valid": true,
           "warnings": [],
           "skipped": null,
@@ -699,37 +688,31 @@
       },
       "reference_performance": {
         "scalar_warm": {
-          "ns_per_op": 479.75,
-          "cv": 22.895311274706902,
-          "rounds": 10,
+          "ns_per_op": 302.45,
+          "cv": 13.98054624702006,
+          "rounds": 20,
           "n_per_round": 5000,
           "count_requested": 5000,
           "count_valid": 5000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (22.9%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
         "batch_throughput": {
-          "ns_per_op": 740.0,
-          "items_per_sec": 1351351.3513513512,
-          "cv": 32.82467955272896,
+          "ns_per_op": 157.9,
+          "items_per_sec": 6333122.229259024,
+          "cv": 9.468883295040778,
           "rounds": 5,
           "n": 100000,
           "count_requested": 100000,
           "count_valid": 100000,
           "error_count": 0,
-          "warmup": 100,
-          "valid": false,
-          "warnings": [
-            "High coefficient of variation (32.8%). Results are unstable. Consider increasing sample count or reducing system load.",
-            "performance workload marked invalid"
-          ],
+          "warmup": 200,
+          "valid": true,
+          "warnings": [],
           "skipped": null,
           "status": null
         },
@@ -739,26 +722,26 @@
         }
       },
       "benchmark_config": {
-        "perf_rounds": 10,
-        "perf_warmup": 100,
+        "perf_rounds": 20,
+        "perf_warmup": 200,
         "perf_scalar_n": 5000,
         "perf_batch_n": 100000,
         "perf_batch_rounds": 5,
         "perf_enabled": true,
-        "perf_timeout_s": 120
+        "perf_timeout_s": 180
       },
       "run_metadata": {
-        "date": "2026-06-07T10:13:44Z",
+        "date": "2026-07-07T18:52:23Z",
         "git_shas": {
-          "lab": "f6813a60274b",
-          "siderust": "da582bedc1d1",
+          "lab": "51f3907b8ea1",
+          "siderust": "b943a4a1e906",
           "anise": "43780d81d9fe",
           "erfa": "9915ba38c936",
           "libnova": "edbf65abe27e",
           "astropy": "7dc44b6ec773"
         },
         "git_dirty": {
-          "lab": true,
+          "lab": false,
           "siderust": false,
           "anise": false,
           "erfa": false,
@@ -766,7 +749,7 @@
           "astropy": false
         },
         "cargo_lock_sha256": {
-          "siderust_adapter": "caa626743dd3448ee0b9f3fa5f2a987f967cdb28950302325b8c7981cac3da52",
+          "siderust_adapter": "b130a582b849c0ba625f5f243903c6762ef33e7c5aa476cb725f254d37efbbac",
           "anise_adapter": "a4908e89d56641ad0e0cf6dc97b2fdf6e317b6be3863bc934a7226509c9b3656"
         },
         "git_branch": "main",
@@ -776,7 +759,7 @@
         "platform_detail": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39",
         "toolchain": {
           "python": "3.12.3",
-          "numpy": "2.4.6",
+          "numpy": "2.5.1",
           "rustc": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
           "cc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
           "pyerfa": "2.0.1.5"
@@ -786,9 +769,9 @@
           "siderust_adapter": {
             "present": true,
             "path": "pipeline/adapters/siderust_adapter/target/release/siderust-adapter",
-            "sha256": "7ea8d7f72c369ffbd04f271f12d348ec3187f89993f57955fb6badc26581ec69",
-            "size": 6307552,
-            "mtime": "2026-06-05T08:32:14Z"
+            "sha256": "1ec84dff978b32f5577d3d3799d3c01f4abe0a1694ff2804308591e1c6368424",
+            "size": 6308456,
+            "mtime": "2026-07-07T18:29:27Z"
           },
           "anise_adapter": {
             "present": true,
@@ -814,7 +797,7 @@
         },
         "library_versions": {},
         "anise_spk": {
-          "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
+          "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/kernels/de440.bsp",
           "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
           "size": 119799808,
           "source_tag": "de440"
@@ -822,7 +805,7 @@
         "siderust_planet_spks": {
           "kernels": [
             {
-              "path": "/home/valles/workspace/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
+              "path": "/home/valles/workspace/siderust/siderust.github.io/benches/.benches_cache/siderust_datasets/de440_dataset/de440.bsp",
               "filename": "de440.bsp",
               "sha256": "a4ce9bf9b3282becc9f4b2ac3cebe03a2ae7599981aabd7265fd8482fff7c4b5",
               "size": 119799808
@@ -854,7 +837,12 @@
         "model": "SOFA IAU 2006 ecliptic of date"
       },
       "rankable": true,
-      "rankability_reason": null
+      "rankability_reason": null,
+      "execution_origin": "fresh",
+      "baseline_validation": {
+        "valid": true,
+        "reason": null
+      }
     }
   ]
 }
